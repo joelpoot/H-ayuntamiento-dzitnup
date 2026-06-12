@@ -29,8 +29,9 @@
         </div>
         <div class="p-4">
           <p class="text-sm text-gray-600 mb-3">{{ aviso.descripcion }}</p>
-          <div class="bg-gray-100 rounded-lg h-32 flex items-center justify-center text-gray-400 text-sm mb-3">
-            [ Evidencia / Póster del Aviso ]
+          <div class="rounded-lg h-32 mb-3 overflow-hidden bg-gray-100 flex items-center justify-center">
+          <img v-if="aviso.imagen_url" :src="aviso.imagen_url" class="w-full h-full object-contain" />
+            <span v-else class="text-gray-400 text-sm">[ Evidencia / Póster del Aviso ]</span>
           </div>
           <div class="text-xs text-gray-500 space-y-1">
             <p><span class="font-semibold">Área:</span> {{ aviso.area }}</p>

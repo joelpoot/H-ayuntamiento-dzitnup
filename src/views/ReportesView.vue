@@ -17,13 +17,18 @@
 
             <!-- Mensaje de éxito -->
             <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
-              ✅ Reporte enviado correctamente. ¡Gracias por tu reporte!
+              ✅ Reporte enviado correctamente. Será revisado por el administrador antes de publicarse.
             </div>
 
             <!-- Mensaje de error -->
             <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
               ❌ Ocurrió un error al enviar el reporte. Intenta de nuevo.
             </div>
+
+              <!-- Mensaje de validación -->
+              <div v-if="errorValidacion" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4">
+                ⚠️ {{ errorValidacion }}
+              </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -58,7 +63,7 @@
               <!-- Ubicación -->
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ubicación (Calle o Referencia)</label>
-                <input v-model="form.ubicacion" type="text" placeholder="Ej. Calle 12 s/n x 15, frente a la plaza"
+                <input v-model="form.ubicacion" type="text" placeholder="Ej. Calle 12 s/n x 15, frente al parque"
                   class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
               </div>
 
@@ -80,7 +85,7 @@
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Estado Inicial</label>
                 <div class="mt-1 w-full border border-[#F5A623] bg-yellow-50 rounded-lg px-3 py-2 text-sm text-[#F5A623] font-semibold">
-                  ⏳ Pendiente
+                  ⏳ En Revisión
                 </div>
               </div>
 
@@ -89,13 +94,13 @@
             <!-- Foto y coordenadas -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
-                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Adjunta del Problema</label>
-                            <div @click="$refs.inputFoto.click()"
-                class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-[#1a5f5a] transition-colors">
-                <img v-if="fotoPreview" :src="fotoPreview" class="h-full w-full object-cover rounded-lg" />
-                <span v-else>📷 Subir imagen desde tu dispositivo</span>
-              </div>
-            <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoChange" />
+                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Adjunta del Problema <span class="text-red-500">*</span></label>
+                <div @click="$refs.inputFoto.click()"
+                  class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-[#1a5f5a] transition-colors overflow-hidden">
+                  <img v-if="fotoPreview" :src="fotoPreview" class="h-full w-full object-cover" />
+                  <span v-else>📷 Subir imagen desde tu dispositivo</span>
+                </div>
+                <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoChange" />
               </div>
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Coordenadas GPS</label>
@@ -131,6 +136,7 @@ import { supabase } from '../supabase.js'
 const cargando = ref(false)
 const exito = ref(false)
 const error = ref(false)
+const errorValidacion = ref('')
 
 const fechaHoy = new Date().toLocaleDateString('es-MX', {
   day: '2-digit', month: '2-digit', year: 'numeric'
@@ -144,7 +150,6 @@ const form = ref({
   telefono: '',
   latitud: null,
   longitud: null,
-  estado: 'Pendiente'
 })
 
 const obtenerUbicacion = () => {
@@ -168,16 +173,35 @@ const onFotoChange = (e) => {
 }
 
 const guardarReporte = async () => {
-  if (!form.value.tipo || !form.value.descripcion || !form.value.ubicacion) {
-    alert('Por favor llena los campos obligatorios: Tipo, Descripción y Ubicación')
+  if (!form.value.tipo || !form.value.descripcion || !form.value.ubicacion || !fotoArchivo.value) {
+    errorValidacion.value = 'Por favor llena los campos obligatorios: Tipo, Descripción, Ubicación y Foto'
     return
   }
+  errorValidacion.value = ''
 
   cargando.value = true
   error.value = false
   exito.value = false
 
-  const { data, error: err } = await supabase
+  let foto_url = null
+
+  if (fotoArchivo.value) {
+    const archivo = fotoArchivo.value
+    const nombreArchivo = `${Date.now()}_${archivo.name}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('reportes')
+      .upload(nombreArchivo, archivo)
+
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage
+        .from('reportes')
+        .getPublicUrl(nombreArchivo)
+      foto_url = urlData.publicUrl
+    }
+  }
+
+  const { error: err } = await supabase
     .from('reportes')
     .insert([{
       tipo: form.value.tipo,
@@ -187,6 +211,7 @@ const guardarReporte = async () => {
       telefono: form.value.telefono,
       latitud: form.value.latitud,
       longitud: form.value.longitud,
+      foto_url: foto_url,
       estado: 'En Revisión',
       moderado: false
     }])
@@ -196,9 +221,11 @@ const guardarReporte = async () => {
   if (err) {
     error.value = true
     console.log('Error Supabase:', err)
-  }else {
+  } else {
     exito.value = true
     form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
+    fotoPreview.value = null
+    fotoArchivo.value = null
   }
 }
 </script>
