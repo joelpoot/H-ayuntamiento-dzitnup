@@ -62,29 +62,60 @@
           <div v-if="cargandoReportes" class="text-center py-6 text-gray-400">Cargando...</div>
           <div v-else class="space-y-3">
             <div v-for="r in reportes" :key="r.id"
-              class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex justify-between items-start gap-4">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="font-bold text-gray-800">{{ r.tipo }}</p>
-                  <span :class="estadoColor(r.estado)" class="text-xs px-2 py-1 rounded-full font-semibold">{{ r.estado }}</span>
+              class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
+
+              <!-- Info principal -->
+              <div class="flex justify-between items-start gap-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <p class="font-bold text-gray-800">{{ r.tipo }}</p>
+                    <span :class="estadoColor(r.estado)" class="text-xs px-2 py-1 rounded-full font-semibold">{{ r.estado }}</span>
+                    <span v-if="!r.moderado" class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full font-semibold">⏳ Pendiente de revisión</span>
+                    <span v-else class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">✅ Aprobado</span>
+                  </div>
+                  <p class="text-sm text-gray-500 mt-1">{{ r.descripcion }}</p>
+                  <p class="text-xs text-gray-400 mt-1">📍 {{ r.ubicacion }} | 📅 {{ formatFecha(r.fecha_registro) }}</p>
+                  <p v-if="r.nombre" class="text-xs text-gray-400">👤 {{ r.nombre }} {{ r.telefono ? '| 📞 ' + r.telefono : '' }}</p>
                 </div>
-                <p class="text-sm text-gray-500 mt-1">{{ r.descripcion }}</p>
-                <p class="text-xs text-gray-400 mt-1">📍 {{ r.ubicacion }} | 📅 {{ formatFecha(r.fecha_registro) }}</p>
+
+                <!-- Imagen evidencia -->
+                <div v-if="r.foto_url" class="shrink-0">
+                  <img :src="r.foto_url" class="w-24 h-24 object-cover rounded-lg border border-gray-200 cursor-pointer"
+                    @click="verImagen(r.foto_url)" />
+                </div>
+                <div v-else class="shrink-0 w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs text-center">
+                  Sin imagen
+                </div>
               </div>
-              <div class="flex flex-col gap-2 shrink-0">
-                <button @click="cambiarEstado(r, 'Resuelto')"
-                  class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-200 transition-colors">
-                  Marcar como Resuelto
-                </button>
-                <button @click="cambiarEstado(r, 'En Proceso')"
-                  class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-blue-200 transition-colors">
-                  Marcar como En Proceso
-                </button>
-                 <button @click="cambiarEstado(r, 'Pendiente')"
-                  class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-lg text-xs font-semibold hover:bg-yellow-200 transition-colors">
-                  Marcar como Pendiente
-                </button>
+
+              <!-- Botones de moderación -->
+              <div class="flex flex-wrap gap-2 border-t pt-3">
+                <div v-if="!r.moderado" class="flex gap-2">
+                  <button @click="aprobarReporte(r)"
+                    class="bg-green-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                    ✅ Aprobar
+                  </button>
+                  <button @click="rechazarReporte(r)"
+                    class="bg-red-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-semibold">
+                    ❌ Rechazar
+                  </button>
+                </div>
+                <div v-else class="flex gap-2">
+                  <button @click="cambiarEstado(r, 'Pendiente')"
+                    class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full hover:bg-yellow-200 transition-colors">
+                    Pendiente
+                  </button>
+                  <button @click="cambiarEstado(r, 'En Proceso')"
+                    class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">
+                    En Proceso
+                  </button>
+                  <button @click="cambiarEstado(r, 'Resuelto')"
+                    class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full hover:bg-green-200 transition-colors">
+                    Resuelto
+                  </button>
+                </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -203,6 +234,35 @@ const cambiarEstado = async (reporte, nuevoEstado) => {
   if (!error) {
     reporte.estado = nuevoEstado
   }
+}
+
+const aprobarReporte = async (reporte) => {
+  const { error } = await supabase
+    .from('reportes')
+    .update({ moderado: true, estado: 'Pendiente' })
+    .eq('id', reporte.id)
+
+  if (!error) {
+    reporte.moderado = true
+    reporte.estado = 'Pendiente'
+  }
+}
+
+const rechazarReporte = async (reporte) => {
+  if (confirm('¿Estás seguro de rechazar y eliminar este reporte?')) {
+    const { error } = await supabase
+      .from('reportes')
+      .delete()
+      .eq('id', reporte.id)
+
+    if (!error) {
+      reportes.value = reportes.value.filter(r => r.id !== reporte.id)
+    }
+  }
+}
+
+const verImagen = (url) => {
+  window.open(url, '_blank')
 }
 
 const publicarAviso = async () => {

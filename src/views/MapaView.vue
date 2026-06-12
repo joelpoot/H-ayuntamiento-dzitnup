@@ -112,6 +112,7 @@ onMounted(async () => {
   const { data, error } = await supabase
     .from('reportes')
     .select('*')
+    .eq('moderado', true)
     .order('fecha_registro', { ascending: false })
     .limit(10)
 

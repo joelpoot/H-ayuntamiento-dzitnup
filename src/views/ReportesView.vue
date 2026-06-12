@@ -90,9 +90,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Adjunta del Problema</label>
-                <div class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-[#1a5f5a] transition-colors">
-                  📷 Subir imagen desde tu dispositivo
-                </div>
+                            <div @click="$refs.inputFoto.click()"
+                class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-[#1a5f5a] transition-colors">
+                <img v-if="fotoPreview" :src="fotoPreview" class="h-full w-full object-cover rounded-lg" />
+                <span v-else>📷 Subir imagen desde tu dispositivo</span>
+              </div>
+            <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoChange" />
               </div>
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Coordenadas GPS</label>
@@ -153,6 +156,17 @@ const obtenerUbicacion = () => {
   }
 }
 
+const fotoPreview = ref(null)
+const fotoArchivo = ref(null)
+
+const onFotoChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    fotoArchivo.value = file
+    fotoPreview.value = URL.createObjectURL(file)
+  }
+}
+
 const guardarReporte = async () => {
   if (!form.value.tipo || !form.value.descripcion || !form.value.ubicacion) {
     alert('Por favor llena los campos obligatorios: Tipo, Descripción y Ubicación')
@@ -173,7 +187,8 @@ const guardarReporte = async () => {
       telefono: form.value.telefono,
       latitud: form.value.latitud,
       longitud: form.value.longitud,
-      estado: 'Pendiente'
+      estado: 'En Revisión',
+      moderado: false
     }])
 
   cargando.value = false

@@ -5,7 +5,7 @@
   <img src="/Cenote-Dzitnup-Valladolid-001.jpg" class="absolute inset-0 w-full h-full object-cover object-center" style="object-position: center 69%" />
   <div class="absolute inset-0 bg-gradient-to-b from-[#1a5f5a]/40 to-[#0f3d3a]/60"></div>
       <div class="relative text-center text-white px-4">
-        <h1 class="text-4xl font-bold tracking-wide">H. AYUNTAMIENTO DZITNUP, YUCATÁN</h1>
+        <h1 class="text-4xl font-bold tracking-wide">COMISARIA MUNICIPAL DE DZITNUP, YUCATÁN</h1>
         <p class="mt-2 text-yellow-200 text-lg">Administración 2024 - 2027</p>
         <div class="mt-4 w-16 h-1 bg-[#F5A623] mx-auto rounded"></div>
       </div>
