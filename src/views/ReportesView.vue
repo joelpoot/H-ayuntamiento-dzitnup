@@ -85,7 +85,7 @@
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Estado Inicial</label>
                 <div class="mt-1 w-full border border-[#F5A623] bg-yellow-50 rounded-lg px-3 py-2 text-sm text-[#F5A623] font-semibold">
-                  ⏳ En Revisión
+                   En Revisión
                 </div>
               </div>
 
@@ -233,7 +233,7 @@ const guardarReporte = async () => {
     fotoPreview.value = null
     fotoArchivo.value = null
     setTimeout(() => {
-      router.push('/reportes')
+      router.push('/')
     }, 2000)
   }
 }
