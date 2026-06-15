@@ -150,8 +150,6 @@
         </div>
         <div class="flex gap-4 text-green-200">
           <span class="cursor-pointer hover:text-white">Facebook</span>
-          <span class="cursor-pointer hover:text-white">Twitter</span>
-          <span class="cursor-pointer hover:text-white">Instagram</span>
         </div>
         <div class="flex items-center gap-2">
           <span>📍</span>

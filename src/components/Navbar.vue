@@ -5,11 +5,11 @@
       <!-- Logo y nombre -->
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 bg-[#F5A623] rounded-full flex items-center justify-center font-bold text-[#1a5f5a] text-sm">
-          H
+          C
         </div>
         <div class="leading-tight">
-          <p class="font-bold text-sm uppercase tracking-wide">H. Ayuntamiento</p>
-          <p class="text-xs text-green-200">Dzitnup, Yucatán</p>
+          <p class="font-bold text-sm uppercase tracking-wide">Comisaria Municipal de Dzitnup</p>
+          <p class="text-xs text-green-200">Valladolid, Yucatán</p>
         </div>
       </div>
 

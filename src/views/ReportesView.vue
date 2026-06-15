@@ -105,10 +105,14 @@
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Coordenadas GPS</label>
                 <div class="mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-500 h-32 flex flex-col justify-center items-center gap-2">
-                  <p>{{ form.latitud ? `${form.latitud}, ${form.longitud}` : 'No obtenidas aún' }}</p>
+                  <p class="text-center text-xs text-gray-400">
+                    Comparte tu ubicación para que se pueda localizar el problema más fácilmente.
+                  </p>
+                  <p v-if="form.latitud" class="text-xs text-green-600 font-semibold">✅ Ubicación obtenida correctamente</p>
+                  <p v-else class="text-xs text-gray-400 italic">"Tu ubicación no será compartida públicamente."</p>
                   <button @click="obtenerUbicacion"
                     class="bg-[#1a5f5a] text-white text-xs px-4 py-2 rounded-lg hover:bg-green-800 transition-colors">
-                    📍 Obtener mi ubicación
+                    📌 Obtener mi ubicación
                   </button>
                 </div>
               </div>
@@ -132,6 +136,8 @@
 <script setup>
 import { ref } from 'vue'
 import { supabase } from '../supabase.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const cargando = ref(false)
 const exito = ref(false)
@@ -226,6 +232,9 @@ const guardarReporte = async () => {
     form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
     fotoPreview.value = null
     fotoArchivo.value = null
+    setTimeout(() => {
+      router.push('/reportes')
+    }, 2000)
   }
 }
 </script>
