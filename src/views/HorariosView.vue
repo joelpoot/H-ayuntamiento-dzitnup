@@ -1,14 +1,14 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#1a5f5a] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">🕐 Horarios de Atención</h1>
-      <p class="text-green-200 text-sm mt-1">Horarios oficiales del H. Ayuntamiento de Dzitnup</p>
+    <div class="bg-[#14392b] px-8 py-6">
+      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Horarios de Atención</h1>
+      <p class="text-[#c2a878] text-sm mt-1">Horarios oficiales del H. Ayuntamiento de Dzitnup</p>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-10">
       <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-        <div class="bg-[#1a5f5a] px-6 py-4">
+        <div class="bg-[#14392b] px-6 py-4">
           <h2 class="text-white font-bold text-sm uppercase tracking-wide">Horarios por Departamento</h2>
         </div>
         <div class="p-6">
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
               <tr class="border-b border-gray-50" v-for="(area, i) in horarios" :key="i">
-                <td class="px-4 py-4 font-semibold text-[#1a5f5a]">{{ area.area }}</td>
+                <td class="px-4 py-4 font-semibold text-[#14392b]">{{ area.area }}</td>
                 <td class="px-4 py-4 text-gray-500">{{ area.dias }}</td>
                 <td class="px-4 py-4 text-gray-500">{{ area.hora_entrada }} - {{ area.hora_salida }}</td>
               </tr>

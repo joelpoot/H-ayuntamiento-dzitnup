@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#1a5f5a] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">📞 Directorio Municipal</h1>
-      <p class="text-green-200 text-sm mt-1">Contactos oficiales del H. Ayuntamiento de Dzitnup</p>
+    <div class="bg-[#14392b] px-8 py-6">
+      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Directorio Municipal</h1>
+      <p class="text-[#c2a878] text-sm mt-1">Contactos oficiales del H. Ayuntamiento de Dzitnup</p>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-10 space-y-4">
@@ -14,7 +14,7 @@
       <div v-else v-for="(persona, i) in directorio" :key="i"
         class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
         <div class="flex">
-          <div class="w-1 bg-[#F5A623]"></div>
+          <div class="w-1 bg-[#c2a878]"></div>
           <div class="flex-1 p-5 flex items-center gap-4">
 
             <!-- Avatar -->
@@ -25,13 +25,13 @@
             <!-- Info -->
             <div class="flex-1">
               <p class="font-bold text-gray-800">{{ persona.nombre }}</p>
-              <p class="text-xs font-semibold text-[#F5A623] uppercase tracking-wide">{{ persona.cargo }}</p>
+              <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-wide">{{ persona.cargo }}</p>
               <p class="text-xs text-gray-500 mt-1">📞 {{ persona.telefono }}</p>
             </div>
 
             <!-- Área -->
             <div class="hidden md:block text-right">
-              <span class="bg-[#1a5f5a] text-white text-xs px-3 py-1 rounded-full">{{ persona.area }}</span>
+              <span class="bg-[#14392b] text-white text-xs px-3 py-1 rounded-full">{{ persona.area }}</span>
             </div>
 
           </div>

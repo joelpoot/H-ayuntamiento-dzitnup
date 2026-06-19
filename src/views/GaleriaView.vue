@@ -1,18 +1,18 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#1a5f5a] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">🖼️ Galería</h1>
-      <p class="text-green-200 text-sm mt-1">Eventos, obras y actividades de la comunidad</p>
+    <div class="bg-[#14392b] px-8 py-6">
+      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Galería</h1>
+      <p class="text-[#c2a878] text-sm mt-1">Eventos, obras y actividades de la comunidad</p>
     </div>
 
     <!-- Filtros -->
     <div class="max-w-7xl mx-auto px-4 py-6 flex flex-wrap gap-2">
       <button @click="filtroActivo = 'Todos'"
-        :class="filtroActivo === 'Todos' ? 'bg-[#1a5f5a] text-white' : 'border border-[#1a5f5a] text-[#1a5f5a] hover:bg-[#1a5f5a] hover:text-white'"
+        :class="filtroActivo === 'Todos' ? 'bg-[#14392b] text-white' : 'border border-[#14392b] text-[#14392b] hover:bg-[#14392b] hover:text-white'"
         class="px-4 py-2 rounded-full text-sm font-semibold transition-colors">Todos</button>
       <button v-for="cat in categorias" :key="cat" @click="filtroActivo = cat"
-        :class="filtroActivo === cat ? 'bg-[#1a5f5a] text-white' : 'border border-[#1a5f5a] text-[#1a5f5a] hover:bg-[#1a5f5a] hover:text-white'"
+        :class="filtroActivo === cat ? 'bg-[#14392b] text-white' : 'border border-[#14392b] text-[#14392b] hover:bg-[#14392b] hover:text-white'"
         class="px-4 py-2 rounded-full text-sm font-semibold transition-colors">{{ cat }}</button>
     </div>
 
@@ -27,9 +27,9 @@
           <span v-if="!foto.imagen_url">[ {{ foto.titulo }} ]</span>
           <img v-else :src="foto.imagen_url" class="w-full h-full object-cover" />
         </div>
-        <div class="bg-[#1a5f5a] px-4 py-3 flex justify-between items-center">
+        <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center">
           <p class="text-white font-bold text-sm">{{ foto.titulo }}</p>
-          <span class="bg-[#F5A623] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
+          <span class="bg-[#c2a878] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
         </div>
         <div class="px-4 py-3 text-xs text-gray-500">
           <p>📁 Álbum: {{ foto.album }}</p>

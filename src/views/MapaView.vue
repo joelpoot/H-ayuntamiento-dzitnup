@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#1a5f5a] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">🗺️ Mapa de Incidencias</h1>
-      <p class="text-green-200 text-sm mt-1">Visualización geográfica de reportes ciudadanos</p>
+    <div class="bg-[#14392b] px-8 py-6">
+      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Mapa de Incidencias</h1>
+      <p class="text-[#c2a878] text-sm mt-1">Visualización geográfica de reportes ciudadanos</p>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -11,7 +11,7 @@
       <!-- Mapa -->
       <div class="md:col-span-2">
         <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-          <div class="bg-[#1a5f5a] px-4 py-3">
+          <div class="bg-[#14392b] px-4 py-3">
             <p class="text-white font-bold text-sm uppercase">Mapa Interactivo — Dzitnup, Yucatán</p>
           </div>
           <div id="mapa" class="h-96 w-full z-0"></div>
@@ -23,7 +23,7 @@
 
         <!-- Leyenda -->
         <div class="bg-white rounded-xl shadow-md border border-gray-100 p-4">
-          <p class="font-bold text-[#1a5f5a] text-sm uppercase mb-3">Código de Estatus</p>
+          <p class="font-bold text-[#14392b] text-sm uppercase mb-3">Código de Estatus</p>
           <div class="space-y-2">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>
@@ -39,16 +39,10 @@
             </div>
           </div>
         </div>
-
-        <!-- Lógica -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-4">
-          <p class="font-bold text-[#1a5f5a] text-sm uppercase mb-2">Lógica de Conexión</p>
-          <p class="text-xs text-gray-500">Este visor extrae en tiempo real las coordenadas del módulo de <strong class="text-[#1a5f5a]">Reportes Ciudadanos</strong>.</p>
-        </div>
-
+        
         <!-- Reportes recientes -->
         <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-          <div class="bg-[#1a5f5a] px-4 py-3">
+          <div class="bg-[#14392b] px-4 py-3">
             <p class="text-white font-bold text-sm uppercase">Reportes Recientes</p>
           </div>
           <div v-if="cargando" class="p-4 text-center text-gray-400 text-sm">Cargando...</div>
@@ -105,7 +99,7 @@ const estadoColor = (estado) => {
 const pinColor = (estado) => {
   if (estado === 'Resuelto') return '#22C55E'
   if (estado === 'En Proceso') return '#3B82F6'
-  return '#F5A623'
+  return '#c2a878'
 }
 
 onMounted(async () => {
@@ -139,7 +133,7 @@ onMounted(async () => {
 
         icono.bindPopup(`
           <div style="font-family:sans-serif;min-width:160px">
-            <strong style="color:#1a5f5a">${r.tipo}</strong><br/>
+            <strong style="color:#14392b">${r.tipo}</strong><br/>
             <span style="font-size:12px;color:#666">${r.ubicacion}</span><br/>
             <span style="font-size:12px;font-weight:bold;color:${pinColor(r.estado)}">
               ● ${r.estado}

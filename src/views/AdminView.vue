@@ -4,10 +4,10 @@
     <div v-if="!autenticado" class="min-h-screen bg-gray-50 flex items-center justify-center">
       <div class="bg-white rounded-xl shadow-md p-8 w-full max-w-md border border-gray-100">
         <div class="text-center mb-6">
-          <div class="w-16 h-16 bg-[#1a5f5a] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="w-16 h-16 bg-[#14392b] rounded-full flex items-center justify-center mx-auto mb-4">
             <span class="text-white text-2xl font-bold">C</span>
           </div>
-          <h1 class="text-xl font-bold text-[#1a5f5a]">Panel de Administración</h1>
+          <h1 class="text-xl font-bold text-[#14392b]">Panel de Administración</h1>
           <p class="text-sm text-gray-500 mt-1">Comisaria Municipal de Dzitnup</p>
         </div>
         <div v-if="errorLogin" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
@@ -17,15 +17,15 @@
           <div>
             <label class="text-xs font-semibold text-gray-500 uppercase">Usuario</label>
             <input v-model="loginForm.usuario" type="text" placeholder="admin"
-              class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+              class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
           </div>
           <div>
             <label class="text-xs font-semibold text-gray-500 uppercase">Contraseña</label>
             <input v-model="loginForm.password" type="password" placeholder="••••••••"
-              class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+              class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
           </div>
           <button @click="iniciarSesion"
-            class="w-full bg-[#1a5f5a] text-white font-bold py-3 rounded-lg hover:bg-green-800 transition-colors">
+            class="w-full bg-[#14392b] text-white font-bold py-3 rounded-lg hover:bg-[#0a1f17] transition-colors">
             Iniciar Sesión
           </button>
         </div>
@@ -34,21 +34,21 @@
 
     <!-- Panel Admin -->
     <div v-else>
-      <div class="bg-[#1a5f5a] px-8 py-6 flex justify-between items-center">
+      <div class="bg-[#14392b] px-8 py-6 flex justify-between items-center">
         <div>
-          <h1 class="text-white text-2xl font-bold uppercase tracking-wide">⚙️ Panel de Administración</h1>
+          <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Panel de Administración</h1>
           <p class="text-green-200 text-sm mt-1">Comisaria Municipal de Dzitnup</p>
         </div>
         <button @click="cerrarSesion"
-          class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition-colors">
-          Cerrar Sesión
+         class="bg-[#c2a878] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#a8916a] transition-colors">
+         Cerrar Sesión
         </button>
       </div>
 
       <div class="max-w-7xl mx-auto px-4 py-6">
         <div class="flex gap-2 mb-6 flex-wrap">
           <button v-for="tab in tabs" :key="tab.id" @click="tabActivo = tab.id"
-            :class="tabActivo === tab.id ? 'bg-[#1a5f5a] text-white' : 'border border-[#1a5f5a] text-[#1a5f5a] hover:bg-[#1a5f5a] hover:text-white'"
+            :class="tabActivo === tab.id ? 'bg-[#14392b] text-white' : 'border border-[#14392b] text-[#14392b] hover:bg-[#14392b] hover:text-white'"
             class="px-4 py-2 rounded-full text-sm font-semibold transition-colors">
             {{ tab.label }}
           </button>
@@ -56,7 +56,7 @@
 
         <!-- Tab Reportes -->
         <div v-if="tabActivo === 'reportes'">
-          <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Gestión de Reportes</h2>
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Gestión de Reportes</h2>
           <div v-if="cargandoReportes" class="text-center py-6 text-gray-400">Cargando...</div>
           <div v-else class="space-y-3">
             <div v-for="r in reportes" :key="r.id"
@@ -95,59 +95,59 @@
 
         <!-- Tab Avisos -->
         <div v-if="tabActivo === 'avisos'">
-          <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Publicar Nuevo Aviso</h2>
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Publicar Nuevo Aviso</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div v-if="exitoAviso" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Aviso publicado correctamente</div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Título</label>
-                <input v-model="nuevoAviso.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+                <input v-model="nuevoAviso.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               </div>
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label>
-                <select v-model="nuevoAviso.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]">
+                <select v-model="nuevoAviso.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]">
                   <option>Corte de agua</option><option>Corte de luz</option><option>Obra</option><option>Evento</option><option>General</option>
                 </select>
               </div>
               <div class="md:col-span-2">
                 <label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label>
-                <textarea v-model="nuevoAviso.descripcion" rows="3" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"></textarea>
+                <textarea v-model="nuevoAviso.descripcion" rows="3" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea>
               </div>
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Área</label>
-                <input v-model="nuevoAviso.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+                <input v-model="nuevoAviso.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               </div>
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Fecha de Vigencia</label>
-                <input v-model="nuevoAviso.fecha_vigencia" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+                <input v-model="nuevoAviso.fecha_vigencia" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               </div>
             </div>
             <div class="mt-4">
               <label class="text-xs font-semibold text-gray-500 uppercase">Imagen (opcional)</label>
-              <input @change="seleccionarImagen" type="file" accept="image/*" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+              <input @change="seleccionarImagen" type="file" accept="image/*" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               <div v-if="previstaImagen" class="mt-4">
                 <p class="text-xs text-gray-500 mb-1">Vista previa:</p>
                 <img :src="previstaImagen" class="w-48 h-48 object-cover rounded-lg border border-gray-200" />
               </div>
             </div>
             <div class="mt-6 text-center">
-              <button @click="publicarAviso" class="bg-[#F5A623] text-white font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition-colors uppercase">Publicar Aviso</button>
+              <button @click="publicarAviso" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Publicar Aviso</button>
             </div>
           </div>
           <div class="mt-8">
-            <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Avisos Publicados</h2>
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Avisos Publicados</h2>
             <div v-if="cargandoAvisos" class="text-center py-6 text-gray-400">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="a in avisos" :key="a.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="avisoEditando && avisoEditando.id === a.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="avisoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="avisoEditando.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"><option>Corte de agua</option><option>Corte de luz</option><option>Obra</option><option>Evento</option><option>General</option></select></div>
-                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="avisoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"></textarea></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="avisoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha de Vigencia</label><input v-model="avisoEditando.fecha_vigencia" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Estado</label><select v-model="avisoEditando.estado" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"><option>Activo</option><option>Inactivo</option></select></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="avisoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="avisoEditando.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Corte de agua</option><option>Corte de luz</option><option>Obra</option><option>Evento</option><option>General</option></select></div>
+                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="avisoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="avisoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha de Vigencia</label><input v-model="avisoEditando.fecha_vigencia" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Estado</label><select v-model="avisoEditando.estado" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Activo</option><option>Inactivo</option></select></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicion" class="bg-[#1a5f5a] text-white text-xs px-4 py-2 rounded-lg hover:bg-green-800 transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicion" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicion" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -158,7 +158,7 @@
                     <div>
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm">{{ a.titulo }}</p>
-                        <span class="bg-[#F5A623] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ a.categoria }}</span>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ a.categoria }}</span>
                         <span :class="a.estado === 'Activo' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ a.estado }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ a.descripcion }}</p>
@@ -177,36 +177,36 @@
 
         <!-- Tab Galería -->
         <div v-if="tabActivo === 'galeria'">
-          <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Subir Foto a Galería</h2>
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Subir Foto a Galería</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div v-if="exitoGaleria" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Foto subida correctamente</div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevaFoto.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="nuevaFoto.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Álbum</label><input v-model="nuevaFoto.album" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="nuevaFoto.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="nuevaFoto.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"></textarea></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevaFoto.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="nuevaFoto.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Álbum</label><input v-model="nuevaFoto.album" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="nuevaFoto.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="nuevaFoto.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
             </div>
             <div class="mt-4">
               <label class="text-xs font-semibold text-gray-500 uppercase">Imagen <span class="text-red-500">*</span></label>
-              <input @change="seleccionarImagenGaleria" type="file" accept="image/*" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" />
+              <input @change="seleccionarImagenGaleria" type="file" accept="image/*" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               <div v-if="previstaGaleria" class="mt-4"><p class="text-xs text-gray-500 mb-1">Vista previa:</p><img :src="previstaGaleria" class="w-48 h-48 object-cover rounded-lg border border-gray-200" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="subirFoto" class="bg-[#F5A623] text-white font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition-colors uppercase">Subir Foto</button></div>
+            <div class="mt-6 text-center"><button @click="subirFoto" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Subir Foto</button></div>
           </div>
           <div class="mt-8">
-            <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Fotos en Galería</h2>
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Fotos en Galería</h2>
             <div v-if="cargandoGaleria" class="text-center py-6 text-gray-400">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="f in galeria" :key="f.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="fotoEditando && fotoEditando.id === f.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="fotoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="fotoEditando.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Álbum</label><input v-model="fotoEditando.album" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="fotoEditando.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="fotoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"></textarea></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="fotoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="fotoEditando.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Álbum</label><input v-model="fotoEditando.album" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="fotoEditando.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="fotoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionFoto" class="bg-[#1a5f5a] text-white text-xs px-4 py-2 rounded-lg hover:bg-green-800 transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionFoto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicionFoto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -217,15 +217,15 @@
                     <div>
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm">{{ f.titulo }}</p>
-                        <span class="bg-[#F5A623] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ f.categoria }}</span>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ f.categoria }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ f.descripcion }}</p>
                       <p class="text-xs text-gray-400 mt-1">📁 {{ f.album }} | {{ f.fecha }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionFoto(f)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">✏️ Editar</button>
-                    <button @click="eliminarFoto(f)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">🗑️ Eliminar</button>
+                    <button @click="iniciarEdicionFoto(f)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold"> Editar</button>
+                    <button @click="eliminarFoto(f)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold"> Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -235,31 +235,31 @@
 
         <!-- Tab Horarios -->
         <div v-if="tabActivo === 'horarios'">
-          <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Agregar Horario</h2>
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Horario</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div v-if="exitoHorario" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Horario guardado correctamente</div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área / Departamento</label><input v-model="nuevoHorario.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="nuevoHorario.dias" type="text" placeholder="Ej. Lunes a Viernes" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada</label><input v-model="nuevoHorario.hora_entrada" type="text" placeholder="Ej. 8:00 AM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="nuevoHorario.hora_salida" type="text" placeholder="Ej. 3:00 PM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones (opcional)</label><input v-model="nuevoHorario.observaciones" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área / Departamento</label><input v-model="nuevoHorario.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="nuevoHorario.dias" type="text" placeholder="Ej. Lunes a Viernes" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada</label><input v-model="nuevoHorario.hora_entrada" type="text" placeholder="Ej. 8:00 AM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="nuevoHorario.hora_salida" type="text" placeholder="Ej. 3:00 PM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones (opcional)</label><input v-model="nuevoHorario.observaciones" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarHorario" class="bg-[#F5A623] text-white font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition-colors uppercase">Agregar Horario</button></div>
+            <div class="mt-6 text-center"><button @click="agregarHorario" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Horario</button></div>
           </div>
           <div class="mt-8">
-            <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Horarios Registrados</h2>
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Horarios Registrados</h2>
             <div v-if="cargandoHorarios" class="text-center py-6 text-gray-400">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="h in horarios" :key="h.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="horarioEditando && horarioEditando.id === h.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="horarioEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="horarioEditando.dias" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada</label><input v-model="horarioEditando.hora_entrada" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="horarioEditando.hora_salida" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones</label><input v-model="horarioEditando.observaciones" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="horarioEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="horarioEditando.dias" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada</label><input v-model="horarioEditando.hora_entrada" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="horarioEditando.hora_salida" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones</label><input v-model="horarioEditando.observaciones" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionHorario" class="bg-[#1a5f5a] text-white text-xs px-4 py-2 rounded-lg hover:bg-green-800 transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionHorario" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicionHorario" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -270,8 +270,8 @@
                     <p v-if="h.observaciones" class="text-xs text-gray-400 mt-1">{{ h.observaciones }}</p>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionHorario(h)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">✏️ Editar</button>
-                    <button @click="eliminarHorario(h)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">🗑️ Eliminar</button>
+                    <button @click="iniciarEdicionHorario(h)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold"> Editar</button>
+                    <button @click="eliminarHorario(h)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -281,33 +281,33 @@
 
         <!-- Tab Directorio -->
         <div v-if="tabActivo === 'directorio'">
-          <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Agregar Contacto</h2>
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Contacto</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div v-if="exitoDirectorio" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Contacto guardado correctamente</div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="nuevoContacto.nombre" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="nuevoContacto.iniciales" type="text" placeholder="Ej. BP" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="nuevoContacto.cargo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="nuevoContacto.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="nuevoContacto.telefono" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo (opcional)</label><input v-model="nuevoContacto.correo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="nuevoContacto.nombre" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="nuevoContacto.iniciales" type="text" placeholder="Ej. BP" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="nuevoContacto.cargo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="nuevoContacto.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="nuevoContacto.telefono" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo (opcional)</label><input v-model="nuevoContacto.correo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarContacto" class="bg-[#F5A623] text-white font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition-colors uppercase">Agregar Contacto</button></div>
+            <div class="mt-6 text-center"><button @click="agregarContacto" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Contacto</button></div>
           </div>
           <div class="mt-8">
-            <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Contactos Registrados</h2>
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Contactos Registrados</h2>
             <div v-if="cargandoDirectorio" class="text-center py-6 text-gray-400">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="c in directorio" :key="c.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="contactoEditando && contactoEditando.id === c.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="contactoEditando.nombre" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="contactoEditando.iniciales" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="contactoEditando.cargo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="contactoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="contactoEditando.telefono" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo</label><input v-model="contactoEditando.correo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="contactoEditando.nombre" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="contactoEditando.iniciales" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="contactoEditando.cargo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="contactoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="contactoEditando.telefono" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo</label><input v-model="contactoEditando.correo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionContacto" class="bg-[#1a5f5a] text-white text-xs px-4 py-2 rounded-lg hover:bg-green-800 transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionContacto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicionContacto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -316,13 +316,13 @@
                     <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 shrink-0">{{ c.iniciales }}</div>
                     <div>
                       <p class="font-bold text-gray-800 text-sm">{{ c.nombre }}</p>
-                      <p class="text-xs text-[#F5A623] font-semibold uppercase">{{ c.cargo }}</p>
+                      <p class="text-xs text-[#c2a878] font-semibold uppercase">{{ c.cargo }}</p>
                       <p class="text-xs text-gray-400 mt-0.5">📞 {{ c.telefono }} | {{ c.area }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionContacto(c)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">✏️ Editar</button>
-                    <button @click="eliminarContacto(c)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">🗑️ Eliminar</button>
+                    <button @click="iniciarEdicionContacto(c)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
+                    <button @click="eliminarContacto(c)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold"> Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -332,56 +332,56 @@
 
         <!-- Tab Agenda -->
         <div v-if="tabActivo === 'agenda'">
-          <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Agregar Evento</h2>
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Evento</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div v-if="exitoAgenda" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Evento guardado correctamente</div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevoEvento.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Tipo</label><select v-model="nuevoEvento.tipo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"><option>Cabildo</option><option>Cultural</option><option>Actividad</option><option>Cívico</option><option>General</option></select></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="nuevoEvento.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora</label><input v-model="nuevoEvento.hora" type="text" placeholder="Ej. 10:00 AM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Lugar</label><input v-model="nuevoEvento.lugar" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Dirigido a</label><input v-model="nuevoEvento.dirigido" type="text" placeholder="Ej. Toda la comunidad" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-              <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="nuevoEvento.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"></textarea></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevoEvento.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Tipo</label><select v-model="nuevoEvento.tipo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Cabildo</option><option>Cultural</option><option>Actividad</option><option>Cívico</option><option>General</option></select></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="nuevoEvento.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora</label><input v-model="nuevoEvento.hora" type="text" placeholder="Ej. 10:00 AM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Lugar</label><input v-model="nuevoEvento.lugar" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Dirigido a</label><input v-model="nuevoEvento.dirigido" type="text" placeholder="Ej. Toda la comunidad" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="nuevoEvento.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarEvento" class="bg-[#F5A623] text-white font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition-colors uppercase">Agregar Evento</button></div>
+            <div class="mt-6 text-center"><button @click="agregarEvento" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Evento</button></div>
           </div>
           <div class="mt-8">
-            <h2 class="text-[#1a5f5a] font-bold text-lg mb-4">Eventos Registrados</h2>
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Eventos Registrados</h2>
             <div v-if="cargandoAgenda" class="text-center py-6 text-gray-400">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="e in agenda" :key="e.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="eventoEditando && eventoEditando.id === e.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="eventoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Tipo</label><select v-model="eventoEditando.tipo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"><option>Cabildo</option><option>Cultural</option><option>Actividad</option><option>Cívico</option><option>General</option></select></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="eventoEditando.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora</label><input v-model="eventoEditando.hora" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Lugar</label><input v-model="eventoEditando.lugar" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Dirigido a</label><input v-model="eventoEditando.dirigido" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]" /></div>
-                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="eventoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1a5f5a]"></textarea></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="eventoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Tipo</label><select v-model="eventoEditando.tipo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Cabildo</option><option>Cultural</option><option>Actividad</option><option>Cívico</option><option>General</option></select></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="eventoEditando.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora</label><input v-model="eventoEditando.hora" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Lugar</label><input v-model="eventoEditando.lugar" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Dirigido a</label><input v-model="eventoEditando.dirigido" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="eventoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionEvento" class="bg-[#1a5f5a] text-white text-xs px-4 py-2 rounded-lg hover:bg-green-800 transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionEvento" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicionEvento" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
                 <div v-else class="flex justify-between items-start gap-4">
                   <div class="flex gap-3 items-start">
-                    <div class="bg-[#1a5f5a] text-white rounded-lg px-3 py-2 text-center shrink-0">
+                    <div class="bg-[#14392b] text-white rounded-lg px-3 py-2 text-center shrink-0">
                       <p class="text-lg font-bold">{{ e.fecha ? new Date(e.fecha).getUTCDate().toString().padStart(2,'0') : '' }}</p>
                       <p class="text-xs uppercase">{{ e.fecha ? new Date(e.fecha).toLocaleDateString('es-MX', {month:'short'}).toUpperCase() : '' }}</p>
                     </div>
                     <div>
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm">{{ e.titulo }}</p>
-                        <span class="bg-[#F5A623] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ e.tipo }}</span>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ e.tipo }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ e.descripcion }}</p>
                       <p class="text-xs text-gray-400 mt-1">📍 {{ e.lugar }} | 🕐 {{ e.hora }} | 👥 {{ e.dirigido }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionEvento(e)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">✏️ Editar</button>
-                    <button @click="eliminarEvento(e)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">🗑️ Eliminar</button>
+                    <button @click="iniciarEdicionEvento(e)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold"> Editar</button>
+                    <button @click="eliminarEvento(e)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold"> Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -397,6 +397,7 @@
 <script setup>
 import { ref } from 'vue'
 import { supabase } from '../supabase.js'
+import { adminState } from '../stores/adminState.js'
 
 // --- Auth ---
 const autenticado = ref(false)
@@ -405,17 +406,18 @@ const tabActivo = ref('reportes')
 const loginForm = ref({ usuario: '', password: '' })
 
 const tabs = [
-  { id: 'reportes', label: '🚨 Reportes' },
-  { id: 'avisos', label: '📢 Avisos' },
-  { id: 'galeria', label: '🖼️ Galería' },
-  { id: 'horarios', label: '🕐 Horarios' },
-  { id: 'directorio', label: '📞 Directorio' },
-  { id: 'agenda', label: '📅 Agenda' },
+  { id: 'reportes', label: ' Reportes' },
+  { id: 'avisos', label: 'Avisos' },
+  { id: 'galeria', label: ' Galería' },
+  { id: 'horarios', label: 'Horarios' },
+  { id: 'directorio', label: ' Directorio' },
+  { id: 'agenda', label: 'Agenda' },
 ]
 
 const iniciarSesion = () => {
   if (loginForm.value.usuario === 'admin' && loginForm.value.password === 'dzitnup2024') {
     autenticado.value = true
+    adminState.autenticado = true
     errorLogin.value = false
     cargarReportes()
     cargarAvisos()
@@ -430,6 +432,7 @@ const iniciarSesion = () => {
 
 const cerrarSesion = () => {
   autenticado.value = false
+  adminState.autenticado = false
   loginForm.value = { usuario: '', password: '' }
 }
 
