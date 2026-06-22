@@ -12,7 +12,8 @@
       <div v-if="cargando" class="text-center py-10 text-gray-400">Cargando agenda...</div>
 
       <div v-else v-for="(evento, i) in agenda" :key="i"
-        class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+        class="fila-escalonada bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
+        :style="{ animationDelay: (i * 0.08) + 's' }">
         <div class="flex">
           <div class="w-1 bg-[#c2a878]"></div>
           <div class="flex-1 p-5 flex gap-4 items-start">
@@ -75,3 +76,14 @@ onMounted(async () => {
   cargando.value = false
 })
 </script>
+
+<style scoped>
+@keyframes entradaEscalonada {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fila-escalonada {
+  animation: entradaEscalonada 0.4s ease forwards;
+  opacity: 0;
+}
+</style>

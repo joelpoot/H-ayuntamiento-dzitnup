@@ -15,18 +15,32 @@
         </div>
         <div class="space-y-4">
           <div>
-            <label class="text-xs font-semibold text-gray-500 uppercase">Usuario</label>
-            <input v-model="loginForm.usuario" type="text" placeholder="admin"
+            <label class="text-xs font-semibold text-gray-500 uppercase">Correo electrónico</label>
+            <input v-model="loginForm.email" type="email"
               class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
           </div>
           <div>
             <label class="text-xs font-semibold text-gray-500 uppercase">Contraseña</label>
-            <input v-model="loginForm.password" type="password" placeholder="••••••••"
-              class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+            <div class="relative mt-1">
+              <input v-model="loginForm.password" :type="mostrarPassword ? 'text' : 'password'" placeholder="••••••••" @keyup.enter="iniciarSesion"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:border-[#14392b]" />
+              <button type="button" @click="mostrarPassword = !mostrarPassword"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <svg v-if="!mostrarPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="12" cy="12" r="3" />
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke-linecap="round" stroke-linejoin="round" />
+              <line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round" />
+              </svg>
+              </button>
+            </div>
           </div>
-          <button @click="iniciarSesion"
-            class="w-full bg-[#14392b] text-white font-bold py-3 rounded-lg hover:bg-[#0a1f17] transition-colors">
-            Iniciar Sesión
+          
+          <button @click="iniciarSesion" :disabled="cargandoLogin"
+            class="w-full bg-[#14392b] text-white font-bold py-3 rounded-lg hover:bg-[#0a1f17] transition-colors disabled:opacity-50">
+            {{ cargandoLogin ? 'Verificando...' : 'Iniciar Sesión' }}
           </button>
         </div>
       </div>
@@ -40,8 +54,8 @@
           <p class="text-green-200 text-sm mt-1">Comisaria Municipal de Dzitnup</p>
         </div>
         <button @click="cerrarSesion"
-         class="bg-[#c2a878] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#a8916a] transition-colors">
-         Cerrar Sesión
+          class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition-colors">
+          Cerrar Sesión
         </button>
       </div>
 
@@ -60,33 +74,45 @@
           <div v-if="cargandoReportes" class="text-center py-6 text-gray-400">Cargando...</div>
           <div v-else class="space-y-3">
             <div v-for="r in reportes" :key="r.id"
-              class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
-              <div class="flex justify-between items-start gap-4">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <p class="font-bold text-gray-800">{{ r.tipo }}</p>
-                    <span :class="estadoColor(r.estado)" class="text-xs px-2 py-1 rounded-full font-semibold">{{ r.estado }}</span>
-                    <span v-if="!r.moderado" class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full font-semibold">⏳ Pendiente de revisión</span>
-                    <span v-else class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">✅ Aprobado</span>
-                  </div>
-                  <p class="text-sm text-gray-500 mt-1">{{ r.descripcion }}</p>
-                  <p class="text-xs text-gray-400 mt-1">📍 {{ r.ubicacion }} | 📅 {{ formatFecha(r.fecha_registro) }}</p>
-                  <p v-if="r.nombre" class="text-xs text-gray-400">👤 {{ r.nombre }} {{ r.telefono ? '| 📞 ' + r.telefono : '' }}</p>
-                </div>
-                <div v-if="r.foto_url" class="shrink-0">
-                  <img :src="r.foto_url" class="w-24 h-24 object-cover rounded-lg border border-gray-200 cursor-pointer" @click="verImagen(r.foto_url)" />
-                </div>
-                <div v-else class="shrink-0 w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs text-center">Sin imagen</div>
+              class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex">
+              <div class="w-1.5 shrink-0" :class="colorBarra(r.estado)"></div>
+              <div class="w-28 shrink-0 bg-gray-50 flex items-center justify-center border-r border-gray-100 p-2">
+                <img v-if="r.foto_url" :src="r.foto_url" class="w-full h-full object-contain cursor-pointer" @click="verImagen(r.foto_url)" />
+                <span v-else class="text-gray-300 text-3xl">🖼️</span>
               </div>
-              <div class="flex flex-wrap gap-2 border-t pt-3">
-                <div v-if="!r.moderado" class="flex gap-2">
-                  <button @click="aprobarReporte(r)" class="bg-green-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold">✅ Aprobar</button>
-                  <button @click="rechazarReporte(r)" class="bg-red-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-semibold">❌ Rechazar</button>
+              <div class="flex-1 min-w-0">
+                <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center gap-2 flex-wrap">
+                  <p class="text-white font-bold text-sm">{{ r.tipo }}</p>
+                  <div class="flex gap-2 flex-wrap">
+                    <span :class="estadoColor(r.estado)" class="text-xs px-3 py-1 rounded-full font-semibold">{{ r.estado }}</span>
+                    <span v-if="!r.moderado" class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full font-semibold">Pendiente de revisión</span>
+                    <span v-else class="bg-[#c2a878] text-white text-xs px-3 py-1 rounded-full font-semibold">✓ Aprobado</span>
+                  </div>
                 </div>
-                <div v-else class="flex gap-2">
-                  <button @click="cambiarEstado(r, 'Pendiente')" class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full hover:bg-yellow-200 transition-colors">Pendiente</button>
-                  <button @click="cambiarEstado(r, 'En Proceso')" class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">En Proceso</button>
-                  <button @click="cambiarEstado(r, 'Resuelto')" class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full hover:bg-green-200 transition-colors">Resuelto</button>
+                <div class="p-4">
+                  <p class="text-sm text-gray-600 mb-3">{{ r.descripcion }}</p>
+                  <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-sm mb-3">
+                    <div class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">📍</span>{{ r.ubicacion }}</div>
+                    <div class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">📅</span>{{ formatFecha(r.fecha_registro) }}</div>
+                    <div v-if="r.nombre" class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">👤</span>{{ r.nombre }}</div>
+                    <div v-if="r.telefono" class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">📞</span>{{ r.telefono }}</div>
+                  </div>
+                  <div class="border-t border-gray-100 pt-3 flex items-center gap-3 flex-wrap">
+                    <template v-if="!r.moderado">
+                      <button @click="aprobarReporte(r)" class="bg-green-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold">✅ Aprobar</button>
+                      <button @click="rechazarReporte(r)" class="bg-red-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-semibold">❌ Rechazar</button>
+                    </template>
+                    <template v-else>
+                      <span class="text-xs font-semibold text-gray-500">Cambiar estado:</span>
+                      <select :value="r.estado" @change="cambiarEstado(r, $event.target.value)"
+                        class="text-xs px-3 py-1.5 rounded-lg border-2 font-semibold bg-white focus:outline-none"
+                        :class="bordeSelect(r.estado)">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Resuelto">Resuelto</option>
+                      </select>
+                    </template>
+                  </div>
                 </div>
               </div>
             </div>
@@ -145,7 +171,16 @@
                   <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="avisoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="avisoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha de Vigencia</label><input v-model="avisoEditando.fecha_vigencia" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Estado</label><select v-model="avisoEditando.estado" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Activo</option><option>Inactivo</option></select></div>
+                  <div class="md:col-span-2 flex items-center gap-3 mt-1">
+                    <span class="text-xs font-semibold text-gray-500 uppercase">Estado actual:</span>
+                    <span :class="estadoAviso(avisoEditando).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ estadoAviso(avisoEditando).label }}</span>
+                    <button v-if="!avisoVencido(avisoEditando) && avisoEditando.estado !== 'Cancelado'"
+                      type="button" @click="avisoEditando.estado = 'Cancelado'"
+                      class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-lg hover:bg-orange-200 transition-colors font-semibold">
+                      🚫 Cancelar aviso antes de su vigencia
+                    </button>
+                    <span v-else-if="avisoVencido(avisoEditando)" class="text-xs text-gray-400">Ya venció por fecha, no se puede reactivar desde aquí.</span>
+                  </div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
                     <button @click="guardarEdicion" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicion" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
@@ -159,15 +194,15 @@
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm">{{ a.titulo }}</p>
                         <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ a.categoria }}</span>
-                        <span :class="a.estado === 'Activo' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ a.estado }}</span>
+                        <span :class="estadoAviso(a).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ estadoAviso(a).label }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ a.descripcion }}</p>
                       <p class="text-xs text-gray-400 mt-1">Área: {{ a.area }} | Vig: {{ a.fecha_vigencia }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicion(a)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">✏️ Editar</button>
-                    <button @click="eliminarAviso(a)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">🗑️ Eliminar</button>
+                    <button @click="iniciarEdicion(a)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
+                    <button @click="eliminarAviso(a)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -224,8 +259,8 @@
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionFoto(f)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold"> Editar</button>
-                    <button @click="eliminarFoto(f)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold"> Eliminar</button>
+                    <button @click="iniciarEdicionFoto(f)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
+                    <button @click="eliminarFoto(f)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -270,7 +305,7 @@
                     <p v-if="h.observaciones" class="text-xs text-gray-400 mt-1">{{ h.observaciones }}</p>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionHorario(h)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold"> Editar</button>
+                    <button @click="iniciarEdicionHorario(h)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarHorario(h)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
                 </div>
@@ -290,7 +325,6 @@
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="nuevoContacto.cargo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="nuevoContacto.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="nuevoContacto.telefono" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo (opcional)</label><input v-model="nuevoContacto.correo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
             <div class="mt-6 text-center"><button @click="agregarContacto" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Contacto</button></div>
           </div>
@@ -305,7 +339,6 @@
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="contactoEditando.cargo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="contactoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="contactoEditando.telefono" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo</label><input v-model="contactoEditando.correo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
                     <button @click="guardarEdicionContacto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
                     <button @click="cancelarEdicionContacto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
@@ -322,7 +355,7 @@
                   </div>
                   <div class="flex gap-2 shrink-0">
                     <button @click="iniciarEdicionContacto(c)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
-                    <button @click="eliminarContacto(c)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold"> Eliminar</button>
+                    <button @click="eliminarContacto(c)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -380,8 +413,8 @@
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
-                    <button @click="iniciarEdicionEvento(e)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold"> Editar</button>
-                    <button @click="eliminarEvento(e)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold"> Eliminar</button>
+                    <button @click="iniciarEdicionEvento(e)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
+                    <button @click="eliminarEvento(e)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
                 </div>
               </div>
@@ -395,45 +428,73 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
+
 
 // --- Auth ---
 const autenticado = ref(false)
 const errorLogin = ref(false)
+const cargandoLogin = ref(false)
 const tabActivo = ref('reportes')
-const loginForm = ref({ usuario: '', password: '' })
+const loginForm = ref({ email: '', password: '' })
+const mostrarPassword = ref(false)
 
 const tabs = [
-  { id: 'reportes', label: ' Reportes' },
+  { id: 'reportes', label: 'Reportes' },
   { id: 'avisos', label: 'Avisos' },
-  { id: 'galeria', label: ' Galería' },
+  { id: 'galeria', label: 'Galería' },
   { id: 'horarios', label: 'Horarios' },
-  { id: 'directorio', label: ' Directorio' },
+  { id: 'directorio', label: 'Directorio' },
   { id: 'agenda', label: 'Agenda' },
 ]
 
-const iniciarSesion = () => {
-  if (loginForm.value.usuario === 'admin' && loginForm.value.password === 'dzitnup2024') {
+const cargarTodo = () => {
+  cargarReportes()
+  cargarAvisos()
+  cargarGaleria()
+  cargarHorarios()
+  cargarDirectorio()
+  cargarAgenda()
+}
+
+// Verifica si ya hay una sesión activa al cargar la página
+onMounted(async () => {
+  const { data } = await supabase.auth.getSession()
+  if (data.session) {
     autenticado.value = true
     adminState.autenticado = true
-    errorLogin.value = false
-    cargarReportes()
-    cargarAvisos()
-    cargarGaleria()
-    cargarHorarios()
-    cargarDirectorio()
-    cargarAgenda()
-  } else {
+    cargarTodo()
+  }
+})
+
+const iniciarSesion = async () => {
+  cargandoLogin.value = true
+  errorLogin.value = false
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: loginForm.value.email,
+    password: loginForm.value.password
+  })
+
+  cargandoLogin.value = false
+
+  if (error) {
     errorLogin.value = true
+  } else {
+    autenticado.value = true
+    adminState.autenticado = true
+    loginForm.value = { email: '', password: '' }
+    cargarTodo()
   }
 }
 
-const cerrarSesion = () => {
+const cerrarSesion = async () => {
+  await supabase.auth.signOut()
   autenticado.value = false
   adminState.autenticado = false
-  loginForm.value = { usuario: '', password: '' }
+  loginForm.value = { email: '', password: '' }
 }
 
 // --- Reportes ---
@@ -481,6 +542,30 @@ const cargarAvisos = async () => {
   const { data, error } = await supabase.from('avisos').select('*').order('fecha_publicacion', { ascending: false })
   if (!error) avisos.value = data
   cargandoAvisos.value = false
+}
+
+// --- Lógica de estado automático (fecha_vigencia) + cancelación manual anticipada ---
+// 'estado' ya no significa "Activo/Inactivo" elegido a mano para todo el ciclo de vida.
+// Ahora solo puede valer 'Activo' (default, sigue la fecha) o 'Cancelado' (apagado manual antes de tiempo).
+// El estado visible real (Activo / Vencido / Cancelado) se calcula siempre, nunca se confía en el texto crudo.
+
+const hoyStr = () => new Date().toISOString().split('T')[0]
+
+const avisoVencido = (aviso) => !!aviso.fecha_vigencia && aviso.fecha_vigencia < hoyStr()
+
+const estadoAviso = (aviso) => {
+  if (aviso.estado === 'Cancelado') return { label: 'Cancelado', clase: 'bg-gray-200 text-gray-700' }
+  if (avisoVencido(aviso)) return { label: 'Vencido', clase: 'bg-red-100 text-red-700' }
+  return { label: 'Activo', clase: 'bg-green-100 text-green-700' }
+}
+
+const cancelarAviso = async (aviso) => {
+  if (!confirm(`¿Cancelar el aviso "${aviso.titulo}" antes de que llegue su fecha de vigencia? Esta acción no se puede revertir desde el panel.`)) return
+  const { error } = await supabase.from('avisos').update({ estado: 'Cancelado' }).eq('id', aviso.id)
+  if (!error) {
+    const idx = avisos.value.findIndex(a => a.id === aviso.id)
+    if (idx !== -1) avisos.value[idx].estado = 'Cancelado'
+  }
 }
 
 const comprimirImagen = (file, maxWidth = 800, quality = 0.7) => {
@@ -681,7 +766,7 @@ const cargandoDirectorio = ref(false)
 const exitoDirectorio = ref(false)
 const contactoEditando = ref(null)
 
-const nuevoContacto = ref({ nombre: '', iniciales: '', cargo: '', area: '', telefono: '', correo: '' })
+const nuevoContacto = ref({ nombre: '', iniciales: '', cargo: '', area: '', telefono: '' })
 
 const cargarDirectorio = async () => {
   cargandoDirectorio.value = true
@@ -694,11 +779,11 @@ const agregarContacto = async () => {
   const { error } = await supabase.from('directorio').insert([{
     nombre: nuevoContacto.value.nombre, iniciales: nuevoContacto.value.iniciales,
     cargo: nuevoContacto.value.cargo, area: nuevoContacto.value.area,
-    telefono: nuevoContacto.value.telefono, correo: nuevoContacto.value.correo
+    telefono: nuevoContacto.value.telefono
   }])
   if (!error) {
     exitoDirectorio.value = true
-    nuevoContacto.value = { nombre: '', iniciales: '', cargo: '', area: '', telefono: '', correo: '' }
+    nuevoContacto.value = { nombre: '', iniciales: '', cargo: '', area: '', telefono: '' }
     cargarDirectorio()
     setTimeout(() => exitoDirectorio.value = false, 3000)
   }
@@ -717,7 +802,7 @@ const guardarEdicionContacto = async () => {
   const { error } = await supabase.from('directorio').update({
     nombre: contactoEditando.value.nombre, iniciales: contactoEditando.value.iniciales,
     cargo: contactoEditando.value.cargo, area: contactoEditando.value.area,
-    telefono: contactoEditando.value.telefono, correo: contactoEditando.value.correo
+    telefono: contactoEditando.value.telefono
   }).eq('id', contactoEditando.value.id)
   if (!error) {
     const idx = directorio.value.findIndex(c => c.id === contactoEditando.value.id)
@@ -784,6 +869,18 @@ const estadoColor = (estado) => {
   if (estado === 'Resuelto') return 'bg-green-100 text-green-700'
   if (estado === 'En Proceso') return 'bg-blue-100 text-blue-700'
   return 'bg-yellow-100 text-yellow-700'
+}
+
+const colorBarra = (estado) => {
+  if (estado === 'Resuelto') return 'bg-green-500'
+  if (estado === 'En Proceso') return 'bg-blue-500'
+  return 'bg-yellow-400'
+}
+
+const bordeSelect = (estado) => {
+  if (estado === 'Resuelto') return 'border-green-500 text-green-700'
+  if (estado === 'En Proceso') return 'border-blue-500 text-blue-700'
+  return 'border-yellow-400 text-yellow-700'
 }
 
 const formatFecha = (fecha) => {

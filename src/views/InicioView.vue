@@ -2,15 +2,15 @@
   <div>
     <!-- Hero Banner -->
     <div class="relative h-90 flex items-center justify-center overflow-hidden">
-      <img src="/Cenote-Dzitnup-Valladolid-001.jpg" class="absolute inset-0 w-full h-full object-cover object-center" style="object-position: center 69%" />
-      <div class="absolute inset-0 bg-gradient-to-b from-[#14392b]/60 to-[#0a1f17]/80"></div>
+      <img src="/Cenote-Dzitnup-Valladolid-001.jpg" class="absolute inset-0 w-full h-full object-cover object-center" style="object-position: center 69%; filter: saturate(1.25) brightness(1.05) contrast(1.05)" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#14392b]/30 via-[#14392b]/60 to-[#0a1f17]/55"></div>
       <div class="absolute inset-0" style="background: radial-gradient(circle at center 30%, rgba(194,168,120,0.15), transparent 60%)"></div>
       <div class="relative text-center text-white px-4">
-        <h1 class="text-4xl font-bold tracking-wide">COMISARIA MUNICIPAL DE DZITNUP, YUCATÁN</h1>
-        <p class="mt-2 text-[#c2a878] text-lg italic">Administración 2024 - 2027</p>
-        <div class="mt-4 w-16 h-1 bg-[#c2a878] mx-auto rounded"></div>
-      </div>
+        <h1 class="text-4xl font-bold tracking-wide" style="text-shadow: 0 2px 8px rgba(0,0,0,0.5)">COMISARIA MUNICIPAL DE DZITNUP, YUCATÁN</h1>
+        <p class="mt-2 text-[#c2a878] text-lg italic" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">Administración 2024 - 2027</p>
+      <div class="mt-4 w-16 h-1 bg-[#c2a878] mx-auto rounded"></div>
     </div>
+  </div>
 
     <!-- Grid de módulos -->
     <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="bg-[#14392b] px-8 py-6">
       <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Horarios de Atención</h1>
-      <p class="text-[#c2a878] text-sm mt-1">Horarios oficiales del H. Ayuntamiento de Dzitnup</p>
+      <p class="text-[#c2a878] text-sm mt-1">Horarios oficiales de la comisaria</p>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-10">
@@ -25,11 +25,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="border-b border-gray-50" v-for="(area, i) in horarios" :key="i">
-                <td class="px-4 py-4 font-semibold text-[#14392b]">{{ area.area }}</td>
-                <td class="px-4 py-4 text-gray-500">{{ area.dias }}</td>
-                <td class="px-4 py-4 text-gray-500">{{ area.hora_entrada }} - {{ area.hora_salida }}</td>
-              </tr>
+              <template v-for="(area, i) in horarios" :key="i">
+                <tr class="border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors">
+                  <td class="px-4 py-4 font-semibold text-[#14392b]">{{ area.area }}</td>
+                  <td class="px-4 py-4 text-gray-500">{{ area.dias }}</td>
+                  <td class="px-4 py-4 text-gray-500">{{ area.hora_entrada }} - {{ area.hora_salida }}</td>
+                </tr>
+                <tr v-if="area.observaciones" class="border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors">
+                  <td colspan="3" class="px-4 pb-4 -mt-2 text-xs text-gray-400 italic">{{ area.observaciones }}</td>
+                </tr>
+              </template>
             </tbody>
           </table>
           <p class="text-xs text-gray-400 italic mt-4">* Emergencias de seguridad operan en formato 24/7 de manera presencial.</p>

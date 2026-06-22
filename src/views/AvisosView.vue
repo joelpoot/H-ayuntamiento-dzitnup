@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="bg-[#14392b] px-8 py-6">
       <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Avisos y Noticias</h1>
-      <p class="text-[#c2a878] text-sm mt-1">Información oficial del H. Ayuntamiento de Dzitnup</p>
+      <p class="text-[#c2a878] text-sm mt-1">Información oficial de la Comisaria</p>
     </div>
 
     <!-- Filtros -->
@@ -37,10 +37,6 @@
             <p><span class="font-semibold">Área:</span> {{ aviso.area }}</p>
             <p><span class="font-semibold">Pub:</span> {{ aviso.fecha_publicacion }} | <span class="font-semibold">Vig:</span> {{ aviso.fecha_vigencia }}</p>
           </div>
-          <div class="mt-2 flex items-center gap-1">
-            <span :class="aviso.estado === 'Activo' ? 'bg-green-500' : 'bg-red-500'" class="w-2 h-2 rounded-full inline-block"></span>
-            <span :class="aviso.estado === 'Activo' ? 'text-green-600' : 'text-red-600'" class="text-xs font-semibold">{{ aviso.estado }}</span>
-          </div>
         </div>
       </div>
     </div>
@@ -62,9 +58,14 @@ const filtroActivo = ref('Todos')
 
 const categorias = ['Corte de agua', 'Corte de luz', 'Obra', 'Evento', 'General']
 
+const hoyStr = () => new Date().toISOString().split('T')[0]
+
+const esVisible = (aviso) => aviso.estado !== 'Cancelado' && !!aviso.fecha_vigencia && aviso.fecha_vigencia >= hoyStr()
+
 const avisosFiltrados = computed(() => {
-  if (filtroActivo.value === 'Todos') return avisos.value
-  return avisos.value.filter(a => a.categoria === filtroActivo.value)
+  const vigentes = avisos.value.filter(esVisible)
+  if (filtroActivo.value === 'Todos') return vigentes
+  return vigentes.filter(a => a.categoria === filtroActivo.value)
 })
 
 onMounted(async () => {

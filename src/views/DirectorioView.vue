@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="bg-[#14392b] px-8 py-6">
       <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Directorio Municipal</h1>
-      <p class="text-[#c2a878] text-sm mt-1">Contactos oficiales del H. Ayuntamiento de Dzitnup</p>
+      <p class="text-[#c2a878] text-sm mt-1">Contactos oficiales de la comisaria</p>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-10 space-y-4">
@@ -12,7 +12,8 @@
       <div v-if="cargando" class="text-center py-10 text-gray-400">Cargando directorio...</div>
 
       <div v-else v-for="(persona, i) in directorio" :key="i"
-        class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+        class="fila-escalonada bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
+        :style="{ animationDelay: (i * 0.08) + 's' }">
         <div class="flex">
           <div class="w-1 bg-[#c2a878]"></div>
           <div class="flex-1 p-5 flex items-center gap-4">
@@ -59,3 +60,14 @@ onMounted(async () => {
   cargando.value = false
 })
 </script>
+
+<style scoped>
+@keyframes entradaEscalonada {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fila-escalonada {
+  animation: entradaEscalonada 0.4s ease forwards;
+  opacity: 0;
+}
+</style>

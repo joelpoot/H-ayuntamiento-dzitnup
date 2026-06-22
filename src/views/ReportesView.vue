@@ -48,8 +48,8 @@
 
               <!-- Nombre -->
               <div>
-                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nombre del Reportante (Opcional)</label>
-                <input v-model="form.nombre" type="text" placeholder="Ej. Pedro Ucán Tun"
+                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nombre del Reportante</label>
+                <input v-model="form.nombre" type="text"
                   class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               </div>
 
@@ -62,9 +62,10 @@
 
               <!-- Teléfono -->
               <div>
-                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Teléfono / Correo Electrónico <span class="text-red-500">*</span></label>
-                <input v-model="form.telefono" type="text" placeholder="Ej. 9851122334"
+                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Número de Teléfono <span class="text-red-500">*</span></label>
+                <input v-model="form.telefono" @input="filtrarTelefono" type="tel" maxlength="10" placeholder="Ej. 9851122334"
                   class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+                <p v-if="errorTelefono" class="text-xs text-red-500 mt-1">{{ errorTelefono }}</p>
               </div>
 
               <!-- Fecha -->
@@ -95,6 +96,7 @@
               </div>
 
               <p v-if="errorBusqueda" class="text-xs text-red-500 mt-1">{{ errorBusqueda }}</p>
+              <p v-if="errorArea" class="text-xs text-red-600 font-semibold mt-1">⚠️ {{ errorArea }}</p>
               <p class="text-xs text-gray-400 mt-1 italic">Puedes arrastrar el pin en el mapa para ajustar la ubicación exacta. Tu ubicación no será compartida públicamente.</p>
 
               <div id="mapaReporte" class="mt-3 h-64 w-full rounded-lg border border-gray-300 z-0"></div>
@@ -155,6 +157,7 @@ const cargando = ref(false)
 const exito = ref(false)
 const error = ref(false)
 const errorValidacion = ref('')
+const errorTelefono = ref('')
 
 const fechaHoy = new Date().toLocaleDateString('es-MX', {
   day: '2-digit', month: '2-digit', year: 'numeric'
@@ -177,9 +180,26 @@ const direccionBusqueda = ref('')
 const buscando = ref(false)
 const errorBusqueda = ref('')
 
-const CENTRO_DZITNUP = [20.6633, -88.2442]
+const CENTRO_DZITNUP = [20.6471, -88.2448]
+const errorArea = ref('')
+
+// Rectángulo ajustado al polígono real de Dzitnup (centro del pueblo + margen ~1.5km)
+const LIMITES_DZITNUP = L.latLngBounds(
+  [20.6320, -88.2620], // esquina suroeste
+  [20.6620, -88.2270]  // esquina noreste
+)
+
+const dentroDelArea = (lat, lng) => {
+  return LIMITES_DZITNUP.contains([lat, lng])
+}
 
 const colocarPin = (lat, lng) => {
+  if (!dentroDelArea(lat, lng)) {
+    errorArea.value = 'Esa ubicación está fuera del área de Dzitnup. Por favor marca un punto dentro de la comunidad.'
+    return
+  }
+  errorArea.value = ''
+
   form.value.latitud = lat.toFixed(6)
   form.value.longitud = lng.toFixed(6)
 
@@ -189,6 +209,13 @@ const colocarPin = (lat, lng) => {
     marker = L.marker([lat, lng], { draggable: true }).addTo(map)
     marker.on('dragend', (e) => {
       const pos = e.target.getLatLng()
+      if (!dentroDelArea(pos.lat, pos.lng)) {
+        errorArea.value = 'Esa ubicación está fuera del área de Dzitnup. Por favor mueve el pin dentro de la comunidad.'
+        // Regresa el pin a la última posición válida
+        marker.setLatLng([form.value.latitud, form.value.longitud])
+        return
+      }
+      errorArea.value = ''
       form.value.latitud = pos.lat.toFixed(6)
       form.value.longitud = pos.lng.toFixed(6)
     })
@@ -211,12 +238,17 @@ const buscarDireccion = async () => {
     if (data && data.length > 0) {
       const lat = parseFloat(data[0].lat)
       const lng = parseFloat(data[0].lon)
+      if (!dentroDelArea(lat, lng)) {
+        map.setView(CENTRO_DZITNUP, 17)
+        errorBusqueda.value = 'Esa dirección parece estar fuera de Dzitnup. Toca el punto exacto dentro de la comunidad para marcarlo.'
+        return
+      }
       colocarPin(lat, lng)
     } else {
       // No se encontró la dirección exacta: centramos en Dzitnup con buen zoom
       // para que el usuario marque el punto manualmente.
       map.setView(CENTRO_DZITNUP, 17)
-      errorBusqueda.value = 'No pudimos ubicar esa dirección automáticamente. Por favor, toca el punto exacto en el mapa de abajo para marcar dónde está el problema.'
+      errorBusqueda.value = 'No encontramos esa calle en el mapa (es normal en comunidades pequeñas). Tu descripción ya quedó guardada — ahora toca el punto exacto en el mapa para marcarlo.'
     }
   } catch (e) {
     errorBusqueda.value = 'Error al buscar la dirección. Intenta de nuevo o marca el punto directamente en el mapa.'
@@ -233,8 +265,16 @@ const obtenerUbicacion = () => {
   }
 }
 
+const filtrarTelefono = () => {
+  form.value.telefono = form.value.telefono.replace(/\D/g, '').slice(0, 10)
+}
+
 onMounted(() => {
-  map = L.map('mapaReporte').setView(CENTRO_DZITNUP, 14)
+  map = L.map('mapaReporte', {
+    maxBounds: LIMITES_DZITNUP.pad(0.1),
+    maxBoundsViscosity: 1.0,
+    minZoom: 13
+  }).setView(CENTRO_DZITNUP, 14)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
   }).addTo(map)
@@ -257,10 +297,18 @@ const onFotoChange = (e) => {
 }
 
 const guardarReporte = async () => {
+  errorTelefono.value = ''
+
   if (!form.value.tipo || !form.value.descripcion || !form.value.latitud || !fotoArchivo.value || !form.value.telefono) {
-    errorValidacion.value = 'Por favor llena los campos obligatorios: Tipo, Descripción, Ubicación en el mapa, Foto y Teléfono/Correo'
+    errorValidacion.value = 'Por favor llena los campos obligatorios: Tipo, Descripción, Ubicación en el mapa, Foto y Teléfono'
     return
   }
+
+  if (form.value.telefono.length !== 10) {
+    errorTelefono.value = 'El número de teléfono debe tener exactamente 10 dígitos.'
+    return
+  }
+
   errorValidacion.value = ''
 
   cargando.value = true
