@@ -111,7 +111,7 @@
             <div>
               <p class="font-bold text-sm">{{ persona.nombre }}</p>
               <p class="text-xs text-[#c2a878] font-semibold">{{ persona.cargo }}</p>
-              <p class="text-xs text-gray-500">📞 {{ persona.telefono }}</p>
+              <p class="text-xs text-gray-500 flex items-center gap-1"><Phone :size="12" />{{ persona.telefono }}</p>
             </div>
           </div>
           <div v-if="directorioPreview.length === 0" class="text-xs text-gray-400">Sin contactos registrados.</div>
@@ -147,9 +147,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 border-b border-white/10 justify-items-center text-center">
           <div>
             <p class="text-[#c2a878] text-xs font-semibold uppercase tracking-widest mb-3">Contacto</p>
-            <p class="text-white/70 text-sm mb-1">📞 985-100-2211</p>
-            <p class="text-white/70 text-sm mb-1">✉️ ayuntamiento@dzitnup.gob.mx</p>
-            <p class="text-white/70 text-sm">📍 Calle Principal S/N, Dzitnup</p>
+            <p class="text-white/70 text-sm mb-1 flex items-center justify-center gap-2"><Phone :size="14" />985-100-2211</p>
+            <p class="text-white/70 text-sm mb-1 flex items-center justify-center gap-2"><Mail :size="14" />ayuntamiento@dzitnup.gob.mx</p>
+            <p class="text-white/70 text-sm flex items-center justify-center gap-2"><MapPin :size="14" />Calle Principal S/N, Dzitnup</p>
           </div>
           <div>
             <p class="text-[#c2a878] text-xs font-semibold uppercase tracking-widest mb-3">Redes Sociales</p>
@@ -173,6 +173,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { Phone, Mail, MapPin } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const ultimoAviso = ref(null)
@@ -192,15 +193,16 @@ const formatMes = (fecha) => {
 }
 
 onMounted(async () => {
+  const hoy = new Date().toISOString().split('T')[0]
   const { data: avisos } = await supabase
     .from('avisos')
     .select('*')
     .eq('estado', 'Activo')
+    .gte('fecha_vigencia', hoy)
     .order('fecha_publicacion', { ascending: false })
     .limit(1)
   if (avisos && avisos.length > 0) ultimoAviso.value = avisos[0]
 
-  const hoy = new Date().toISOString().split('T')[0]
   const { data: eventos } = await supabase
     .from('agenda')
     .select('*')

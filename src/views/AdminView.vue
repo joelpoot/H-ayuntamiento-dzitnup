@@ -1,48 +1,107 @@
 <template>
   <div>
     <!-- Login -->
-    <div v-if="!autenticado" class="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div class="bg-white rounded-xl shadow-md p-8 w-full max-w-md border border-gray-100">
-        <div class="text-center mb-6">
-          <div class="w-16 h-16 bg-[#14392b] rounded-full flex items-center justify-center mx-auto mb-4">
-            <span class="text-white text-2xl font-bold">C</span>
-          </div>
-          <h1 class="text-xl font-bold text-[#14392b]">Panel de Administración</h1>
-          <p class="text-sm text-gray-500 mt-1">Comisaria Municipal de Dzitnup</p>
-        </div>
-        <div v-if="errorLogin" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
-          ❌ Credenciales incorrectas
-        </div>
-        <div class="space-y-4">
-          <div>
-            <label class="text-xs font-semibold text-gray-500 uppercase">Correo electrónico</label>
-            <input v-model="loginForm.email" type="email"
-              class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-500 uppercase">Contraseña</label>
-            <div class="relative mt-1">
-              <input v-model="loginForm.password" :type="mostrarPassword ? 'text' : 'password'" placeholder="••••••••" @keyup.enter="iniciarSesion"
-              class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:border-[#14392b]" />
-              <button type="button" @click="mostrarPassword = !mostrarPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-              <svg v-if="!mostrarPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round" />
-              <circle cx="12" cy="12" r="3" />
-              </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke-linecap="round" stroke-linejoin="round" />
-              <line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round" />
-              </svg>
+    <div v-if="!autenticado" class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-2xl flex flex-col md:flex-row">
+
+        <!-- Columna formulario -->
+        <div class="flex-1 p-8 md:p-10 flex flex-col justify-center">
+
+          <!-- Vista: Iniciar sesión -->
+          <template v-if="vistaLogin === 'login'">
+            <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-widest mb-1">Panel de Administración</p>
+            <h1 class="text-2xl font-bold text-[#14392b] mb-6">Iniciar Sesión</h1>
+
+            <div v-if="errorLogin" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <XCircle :size="16" class="shrink-0" />
+              Credenciales incorrectas
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="text-xs font-semibold text-gray-500 uppercase">Correo electrónico</label>
+                <input v-model="loginForm.email" type="email" placeholder="admin@dzitnup.gob.mx"
+                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-gray-500 uppercase">Contraseña</label>
+                <div class="relative mt-1">
+                  <input v-model="loginForm.password" :type="mostrarPassword ? 'text' : 'password'" placeholder="••••••••" @keyup.enter="iniciarSesion"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:border-[#14392b]" />
+                  <button type="button" @click="mostrarPassword = !mostrarPassword"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <svg v-if="!mostrarPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke-linecap="round" stroke-linejoin="round" />
+                  <line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round" />
+                  </svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="button" @click="vistaLogin = 'recuperar'" class="text-xs text-[#14392b] underline hover:no-underline">
+                ¿Olvidaste tu contraseña?
+              </button>
+
+              <button @click="iniciarSesion" :disabled="cargandoLogin"
+                class="w-full bg-[#14392b] text-white font-bold py-3 rounded-lg hover:bg-[#0a1f17] transition-colors disabled:opacity-50">
+                {{ cargandoLogin ? 'Verificando...' : 'Iniciar Sesión' }}
               </button>
             </div>
-          </div>
-          
-          <button @click="iniciarSesion" :disabled="cargandoLogin"
-            class="w-full bg-[#14392b] text-white font-bold py-3 rounded-lg hover:bg-[#0a1f17] transition-colors disabled:opacity-50">
-            {{ cargandoLogin ? 'Verificando...' : 'Iniciar Sesión' }}
-          </button>
+          </template>
+
+          <!-- Vista: Recuperar contraseña -->
+          <template v-else>
+            <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-widest mb-1">Panel de Administración</p>
+            <h1 class="text-2xl font-bold text-[#14392b] mb-2">Recuperar Contraseña</h1>
+            <p class="text-sm text-gray-500 mb-6">Te enviaremos un enlace a tu correo para crear una nueva contraseña.</p>
+
+            <div v-if="recuperarEnviado" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />
+              Si el correo existe, te llegará un enlace en unos minutos. Revisa también spam.
+            </div>
+            <div v-if="recuperarError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <XCircle :size="16" class="shrink-0" />
+              Ocurrió un error al enviar el enlace. Intenta de nuevo.
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="text-xs font-semibold text-gray-500 uppercase">Correo electrónico</label>
+                <input v-model="recuperarForm.email" type="email" placeholder="admin@dzitnup.gob.mx" @keyup.enter="enviarRecuperacion"
+                  class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+              </div>
+
+              <button @click="enviarRecuperacion" :disabled="cargandoRecuperar"
+                class="w-full bg-[#14392b] text-white font-bold py-3 rounded-lg hover:bg-[#0a1f17] transition-colors disabled:opacity-50">
+                {{ cargandoRecuperar ? 'Enviando...' : 'Enviar enlace de recuperación' }}
+              </button>
+
+              <button type="button" @click="vistaLogin = 'login'; recuperarEnviado = false; recuperarError = false"
+                class="w-full text-xs text-gray-500 underline hover:no-underline">
+                Volver a iniciar sesión
+              </button>
+            </div>
+          </template>
+
         </div>
+
+        <!-- Columna institucional -->
+        <div class="flex-1 bg-[#14392b] p-8 md:p-10 flex flex-col items-center justify-center text-center relative overflow-hidden">
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 70% 20%, rgba(194,168,120,0.18), transparent 60%)"></div>
+          <div class="relative w-20 h-20 rounded-full bg-white flex items-center justify-center mb-4" style="box-shadow: 0 0 24px rgba(194,168,120,0.4)">
+            <Landmark :size="34" class="text-[#14392b]" />
+          </div>
+          <p class="relative text-[#f0e6d0] font-bold text-sm tracking-wide">COMISARÍA MUNICIPAL</p>
+          <p class="relative text-white font-extrabold text-2xl tracking-wide mt-0.5">DZITNUP</p>
+          <p class="relative text-[#9fb8ad] text-xs tracking-widest mt-1">YUCATÁN &middot; MÉXICO</p>
+          <div class="relative w-12 h-0.5 bg-[#c2a878] my-4 opacity-70"></div>
+          <p class="relative text-[#cfe0d8] text-sm leading-relaxed">Acceso exclusivo para personal autorizado de la Comisaría.</p>
+        </div>
+
       </div>
     </div>
 
@@ -78,7 +137,7 @@
               <div class="w-1.5 shrink-0" :class="colorBarra(r.estado)"></div>
               <div class="w-28 shrink-0 bg-gray-50 flex items-center justify-center border-r border-gray-100 p-2">
                 <img v-if="r.foto_url" :src="r.foto_url" class="w-full h-full object-contain cursor-pointer" @click="verImagen(r.foto_url)" />
-                <span v-else class="text-gray-300 text-3xl">🖼️</span>
+                <ImageOff v-else :size="28" class="text-gray-300" />
               </div>
               <div class="flex-1 min-w-0">
                 <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center gap-2 flex-wrap">
@@ -86,21 +145,23 @@
                   <div class="flex gap-2 flex-wrap">
                     <span :class="estadoColor(r.estado)" class="text-xs px-3 py-1 rounded-full font-semibold">{{ r.estado }}</span>
                     <span v-if="!r.moderado" class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full font-semibold">Pendiente de revisión</span>
-                    <span v-else class="bg-[#c2a878] text-white text-xs px-3 py-1 rounded-full font-semibold">✓ Aprobado</span>
+                    <span v-else class="bg-[#c2a878] text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+                      <Check :size="12" />Aprobado
+                    </span>
                   </div>
                 </div>
                 <div class="p-4">
                   <p class="text-sm text-gray-600 mb-3">{{ r.descripcion }}</p>
                   <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-sm mb-3">
-                    <div class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">📍</span>{{ r.ubicacion }}</div>
-                    <div class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">📅</span>{{ formatFecha(r.fecha_registro) }}</div>
-                    <div v-if="r.nombre" class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">👤</span>{{ r.nombre }}</div>
-                    <div v-if="r.telefono" class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs shrink-0">📞</span>{{ r.telefono }}</div>
+                    <div class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center shrink-0"><MapPin :size="14" /></span>{{ r.ubicacion }}</div>
+                    <div class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center shrink-0"><Calendar :size="14" /></span>{{ formatFecha(r.fecha_registro) }}</div>
+                    <div v-if="r.nombre" class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center shrink-0"><User :size="14" /></span>{{ r.nombre }}</div>
+                    <div v-if="r.telefono" class="flex items-center gap-2 text-gray-500"><span class="w-6 h-6 rounded bg-gray-100 flex items-center justify-center shrink-0"><Phone :size="14" /></span>{{ r.telefono }}</div>
                   </div>
                   <div class="border-t border-gray-100 pt-3 flex items-center gap-3 flex-wrap">
                     <template v-if="!r.moderado">
-                      <button @click="aprobarReporte(r)" class="bg-green-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold">✅ Aprobar</button>
-                      <button @click="rechazarReporte(r)" class="bg-red-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-semibold">❌ Rechazar</button>
+                      <button @click="aprobarReporte(r)" class="bg-green-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold flex items-center gap-1.5"><CheckCircle2 :size="14" />Aprobar</button>
+                      <button @click="rechazarReporte(r)" class="bg-red-500 text-white text-xs px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-semibold flex items-center gap-1.5"><XCircle :size="14" />Rechazar</button>
                     </template>
                     <template v-else>
                       <span class="text-xs font-semibold text-gray-500">Cambiar estado:</span>
@@ -123,7 +184,9 @@
         <div v-if="tabActivo === 'avisos'">
           <h2 class="text-[#14392b] font-bold text-lg mb-4">Publicar Nuevo Aviso</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div v-if="exitoAviso" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Aviso publicado correctamente</div>
+            <div v-if="exitoAviso" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Aviso publicado correctamente
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Título</label>
@@ -176,13 +239,13 @@
                     <span :class="estadoAviso(avisoEditando).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ estadoAviso(avisoEditando).label }}</span>
                     <button v-if="!avisoVencido(avisoEditando) && avisoEditando.estado !== 'Cancelado'"
                       type="button" @click="avisoEditando.estado = 'Cancelado'"
-                      class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-lg hover:bg-orange-200 transition-colors font-semibold">
-                      🚫 Cancelar aviso antes de su vigencia
+                      class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-lg hover:bg-orange-200 transition-colors font-semibold flex items-center gap-1.5">
+                      <Ban :size="14" />Cancelar aviso antes de su vigencia
                     </button>
                     <span v-else-if="avisoVencido(avisoEditando)" class="text-xs text-gray-400">Ya venció por fecha, no se puede reactivar desde aquí.</span>
                   </div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicion" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicion" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicion" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -214,7 +277,9 @@
         <div v-if="tabActivo === 'galeria'">
           <h2 class="text-[#14392b] font-bold text-lg mb-4">Subir Foto a Galería</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div v-if="exitoGaleria" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Foto subida correctamente</div>
+            <div v-if="exitoGaleria" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Foto subida correctamente
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevaFoto.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="nuevaFoto.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
@@ -241,7 +306,7 @@
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="fotoEditando.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="fotoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionFoto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionFoto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicionFoto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -255,7 +320,7 @@
                         <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ f.categoria }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ f.descripcion }}</p>
-                      <p class="text-xs text-gray-400 mt-1">📁 {{ f.album }} | {{ f.fecha }}</p>
+                      <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><Folder :size="12" />{{ f.album }} | {{ f.fecha }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
@@ -272,7 +337,9 @@
         <div v-if="tabActivo === 'horarios'">
           <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Horario</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div v-if="exitoHorario" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Horario guardado correctamente</div>
+            <div v-if="exitoHorario" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Horario guardado correctamente
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Área / Departamento</label><input v-model="nuevoHorario.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="nuevoHorario.dias" type="text" placeholder="Ej. Lunes a Viernes" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
@@ -294,7 +361,7 @@
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="horarioEditando.hora_salida" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones</label><input v-model="horarioEditando.observaciones" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionHorario" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionHorario" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicionHorario" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -318,7 +385,9 @@
         <div v-if="tabActivo === 'directorio'">
           <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Contacto</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div v-if="exitoDirectorio" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Contacto guardado correctamente</div>
+            <div v-if="exitoDirectorio" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Contacto guardado correctamente
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="nuevoContacto.nombre" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="nuevoContacto.iniciales" type="text" placeholder="Ej. BP" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
@@ -340,7 +409,7 @@
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="contactoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="contactoEditando.telefono" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionContacto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionContacto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicionContacto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -350,7 +419,7 @@
                     <div>
                       <p class="font-bold text-gray-800 text-sm">{{ c.nombre }}</p>
                       <p class="text-xs text-[#c2a878] font-semibold uppercase">{{ c.cargo }}</p>
-                      <p class="text-xs text-gray-400 mt-0.5">📞 {{ c.telefono }} | {{ c.area }}</p>
+                      <p class="text-xs text-gray-400 mt-0.5 flex items-center gap-1"><Phone :size="12" />{{ c.telefono }} | {{ c.area }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
@@ -367,7 +436,9 @@
         <div v-if="tabActivo === 'agenda'">
           <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Evento</h2>
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div v-if="exitoAgenda" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">✅ Evento guardado correctamente</div>
+            <div v-if="exitoAgenda" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Evento guardado correctamente
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevoEvento.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Tipo</label><select v-model="nuevoEvento.tipo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Cabildo</option><option>Cultural</option><option>Actividad</option><option>Cívico</option><option>General</option></select></div>
@@ -393,7 +464,7 @@
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Dirigido a</label><input v-model="eventoEditando.dirigido" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="eventoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
-                    <button @click="guardarEdicionEvento" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold">💾 Guardar</button>
+                    <button @click="guardarEdicionEvento" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicionEvento" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
@@ -409,7 +480,11 @@
                         <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ e.tipo }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ e.descripcion }}</p>
-                      <p class="text-xs text-gray-400 mt-1">📍 {{ e.lugar }} | 🕐 {{ e.hora }} | 👥 {{ e.dirigido }}</p>
+                      <div class="flex gap-3 mt-1 text-xs text-gray-400">
+                        <span class="flex items-center gap-1"><MapPin :size="12" />{{ e.lugar }}</span>
+                        <span class="flex items-center gap-1"><Clock :size="12" />{{ e.hora }}</span>
+                        <span class="flex items-center gap-1"><Users :size="12" />{{ e.dirigido }}</span>
+                      </div>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
@@ -431,6 +506,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
+import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Folder, Clock, Users, Landmark } from 'lucide-vue-next'
 
 
 // --- Auth ---
@@ -440,6 +516,31 @@ const cargandoLogin = ref(false)
 const tabActivo = ref('reportes')
 const loginForm = ref({ email: '', password: '' })
 const mostrarPassword = ref(false)
+
+const vistaLogin = ref('login') // 'login' | 'recuperar'
+const recuperarForm = ref({ email: '' })
+const recuperarEnviado = ref(false)
+const recuperarError = ref(false)
+const cargandoRecuperar = ref(false)
+
+const enviarRecuperacion = async () => {
+  if (!recuperarForm.value.email) return
+  cargandoRecuperar.value = true
+  recuperarEnviado.value = false
+  recuperarError.value = false
+
+  const { error } = await supabase.auth.resetPasswordForEmail(recuperarForm.value.email, {
+    redirectTo: `${window.location.origin}/admin/restablecer`
+  })
+
+  cargandoRecuperar.value = false
+  if (error) {
+    recuperarError.value = true
+  } else {
+    recuperarEnviado.value = true
+    recuperarForm.value.email = ''
+  }
+}
 
 const tabs = [
   { id: 'reportes', label: 'Reportes' },

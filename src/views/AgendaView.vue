@@ -32,9 +32,9 @@
               </div>
               <p class="text-sm text-gray-500 mt-1">{{ evento.descripcion }}</p>
               <div class="flex gap-4 mt-2 text-xs text-gray-400">
-                <span>📍 {{ evento.lugar }}</span>
-                <span>🕐 {{ evento.hora }}</span>
-                <span>👥 {{ evento.dirigido }}</span>
+                <span class="flex items-center gap-1"><MapPin :size="12" />{{ evento.lugar }}</span>
+                <span class="flex items-center gap-1"><Clock :size="12" />{{ evento.hora }}</span>
+                <span class="flex items-center gap-1"><Users :size="12" />{{ evento.dirigido }}</span>
               </div>
             </div>
 
@@ -53,6 +53,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { MapPin, Clock, Users } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const agenda = ref([])

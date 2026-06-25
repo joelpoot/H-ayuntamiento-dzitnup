@@ -29,7 +29,7 @@
         :centered-slides="true"
         slides-per-view="auto"
         :coverflow-effect="{ rotate: 0, stretch: 0, depth: 140, modifier: 1.8, slideShadows: false }"
-        :autoplay="{ delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true }"
+        :autoplay="{ delay: 1500, disableOnInteraction: false, pauseOnMouseEnter: true }"
         pagination
         class="galeria-swiper"
       >
@@ -44,7 +44,7 @@
               <span class="bg-[#c2a878] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
             </div>
             <div class="px-4 py-3 text-xs text-gray-500">
-              <p>📁 Álbum: {{ foto.album }}</p>
+              <p class="flex items-center gap-1"><Folder :size="12" />Álbum: {{ foto.album }}</p>
               <p class="mt-1">{{ foto.descripcion }}</p>
             </div>
           </div>
@@ -61,6 +61,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { Folder } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules'
@@ -101,7 +102,7 @@ onMounted(async () => {
 }
 .galeria-swiper :deep(.swiper-slide) {
   opacity: 0.55;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 .galeria-swiper :deep(.swiper-slide-active) {
   opacity: 1;

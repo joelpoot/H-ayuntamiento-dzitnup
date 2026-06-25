@@ -21,6 +21,7 @@ const router = createRouter({
     { path: '/galeria', component: GaleriaView },
     { path: '/mapa', component: MapaView },
     { path: '/admin', component: () => import('../views/AdminView.vue') },
+    { path: '/admin/restablecer', name: 'restablecer-password', component: () => import('../views/RestablecerPasswordView.vue') },
   ]
 })
 

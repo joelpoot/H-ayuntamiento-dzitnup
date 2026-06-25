@@ -16,18 +16,21 @@
             <h2 class="text-[#14392b] font-bold text-lg mb-6">Formulario de Reporte</h2>
 
             <!-- Mensaje de éxito -->
-            <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
-              ✅ Reporte enviado correctamente. Será revisado por el administrador antes de publicarse.
+            <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2">
+              <CheckCircle2 :size="18" class="shrink-0" />
+              Reporte enviado correctamente. Será revisado por el administrador antes de publicarse.
             </div>
 
             <!-- Mensaje de error -->
-            <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-              ❌ Ocurrió un error al enviar el reporte. Intenta de nuevo.
+            <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2">
+              <XCircle :size="18" class="shrink-0" />
+              Ocurrió un error al enviar el reporte. Intenta de nuevo.
             </div>
 
             <!-- Mensaje de validación -->
-            <div v-if="errorValidacion" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4">
-              ⚠️ {{ errorValidacion }}
+            <div v-if="errorValidacion" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2">
+              <AlertTriangle :size="18" class="shrink-0" />
+              {{ errorValidacion }}
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -62,7 +65,7 @@
 
               <!-- Teléfono -->
               <div>
-                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Número de Teléfono <span class="text-red-500">*</span></label>
+                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Número de teléfono para darle seguimiento a su reporte <span class="text-red-500">*</span></label>
                 <input v-model="form.telefono" @input="filtrarTelefono" type="tel" maxlength="10" placeholder="Ej. 9851122334"
                   class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
                 <p v-if="errorTelefono" class="text-xs text-red-500 mt-1">{{ errorTelefono }}</p>
@@ -96,14 +99,16 @@
               </div>
 
               <p v-if="errorBusqueda" class="text-xs text-red-500 mt-1">{{ errorBusqueda }}</p>
-              <p v-if="errorArea" class="text-xs text-red-600 font-semibold mt-1">⚠️ {{ errorArea }}</p>
+              <p v-if="errorArea" class="text-xs text-red-600 font-semibold mt-1 flex items-center gap-1">
+                <AlertTriangle :size="14" class="shrink-0" />{{ errorArea }}
+              </p>
               <p class="text-xs text-gray-400 mt-1 italic">Puedes arrastrar el pin en el mapa para ajustar la ubicación exacta. Tu ubicación no será compartida públicamente.</p>
 
               <div id="mapaReporte" class="mt-3 h-64 w-full rounded-lg border border-gray-300 z-0"></div>
 
               <button @click="obtenerUbicacion" type="button"
-                class="mt-3 bg-[#c2a878] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#a8916a] transition-colors">
-                📌 Usar mi ubicación actual
+                class="mt-3 bg-[#c2a878] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#a8916a] transition-colors flex items-center gap-1.5">
+                <LocateFixed :size="14" />Usar mi ubicación actual
               </button>
             </div>
 
@@ -113,7 +118,7 @@
               <div @click="$refs.inputFoto.click()"
                 class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-[#14392b] transition-colors overflow-hidden">
                 <img v-if="fotoPreview" :src="fotoPreview" class="h-full w-full object-cover" />
-                <span v-else>📷 Subir imagen desde tu dispositivo</span>
+                <span v-else class="flex items-center gap-1.5"><Camera :size="16" />Subir imagen desde tu dispositivo</span>
               </div>
               <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoChange" />
             </div>
@@ -137,6 +142,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { useRouter } from 'vue-router'
+import { CheckCircle2, XCircle, AlertTriangle, LocateFixed, Camera } from 'lucide-vue-next'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import iconUrl from 'leaflet/dist/images/marker-icon.png'

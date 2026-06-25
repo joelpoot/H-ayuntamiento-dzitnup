@@ -19,19 +19,25 @@
           <table v-else class="w-full text-sm">
             <thead>
               <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
-                <th class="text-left px-4 py-3 rounded-l-lg">Área / Depto</th>
-                <th class="text-left px-4 py-3">Días</th>
-                <th class="text-left px-4 py-3 rounded-r-lg">Horario</th>
+                <th class="text-left px-4 py-3 rounded-l-lg">
+                  <span class="flex items-center gap-1.5"><Building2 :size="14" />Área / Depto</span>
+                </th>
+                <th class="text-left px-4 py-3">
+                  <span class="flex items-center gap-1.5"><CalendarDays :size="14" />Días</span>
+                </th>
+                <th class="text-left px-4 py-3 rounded-r-lg">
+                  <span class="flex items-center gap-1.5"><Clock :size="14" />Horario</span>
+                </th>
               </tr>
             </thead>
             <tbody>
               <template v-for="(area, i) in horarios" :key="i">
-                <tr class="border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors">
+                <tr class="fila-escalonada border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors" :style="{ animationDelay: (i * 0.12) + 's' }">
                   <td class="px-4 py-4 font-semibold text-[#14392b]">{{ area.area }}</td>
                   <td class="px-4 py-4 text-gray-500">{{ area.dias }}</td>
                   <td class="px-4 py-4 text-gray-500">{{ area.hora_entrada }} - {{ area.hora_salida }}</td>
                 </tr>
-                <tr v-if="area.observaciones" class="border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors">
+                <tr v-if="area.observaciones" class="fila-escalonada border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors" :style="{ animationDelay: (i * 0.12) + 's' }">
                   <td colspan="3" class="px-4 pb-4 -mt-2 text-xs text-gray-400 italic">{{ area.observaciones }}</td>
                 </tr>
               </template>
@@ -46,6 +52,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Building2, CalendarDays, Clock } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const horarios = ref([])
@@ -61,3 +68,14 @@ onMounted(async () => {
   cargando.value = false
 })
 </script>
+
+<style scoped>
+@keyframes entradaEscalonada {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fila-escalonada {
+  animation: entradaEscalonada 0.4s ease forwards;
+  opacity: 0;
+}
+</style>

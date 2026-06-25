@@ -27,7 +27,7 @@
             <div class="flex-1">
               <p class="font-bold text-gray-800">{{ persona.nombre }}</p>
               <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-wide">{{ persona.cargo }}</p>
-              <p class="text-xs text-gray-500 mt-1">📞 {{ persona.telefono }}</p>
+              <p class="text-xs text-gray-500 mt-1 flex items-center gap-1"><Phone :size="12" />{{ persona.telefono }}</p>
             </div>
 
             <!-- Área -->
@@ -45,6 +45,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Phone } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const directorio = ref([])

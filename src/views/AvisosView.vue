@@ -31,11 +31,14 @@
           <p class="text-sm text-gray-600 mb-3">{{ aviso.descripcion }}</p>
           <div class="rounded-lg h-32 mb-3 overflow-hidden bg-gray-100 flex items-center justify-center">
           <img v-if="aviso.imagen_url" :src="aviso.imagen_url" class="w-full h-full object-contain" />
-            <span v-else class="text-gray-400 text-sm">[ Evidencia / Póster del Aviso ]</span>
+            <span v-else class="text-gray-400 text-sm">[ Sin imagen ]</span>
           </div>
           <div class="text-xs text-gray-500 space-y-1">
             <p><span class="font-semibold">Área:</span> {{ aviso.area }}</p>
-            <p><span class="font-semibold">Pub:</span> {{ aviso.fecha_publicacion }} | <span class="font-semibold">Vig:</span> {{ aviso.fecha_vigencia }}</p>
+            <p class="flex items-center gap-1">
+              <Calendar :size="12" class="shrink-0" />
+              <span><span class="font-semibold">Pub:</span> {{ aviso.fecha_publicacion }} | <span class="font-semibold">Vig:</span> {{ aviso.fecha_vigencia }}</span>
+            </p>
           </div>
         </div>
       </div>
@@ -50,6 +53,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { Calendar } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const avisos = ref([])
