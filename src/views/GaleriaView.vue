@@ -1,9 +1,16 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#14392b] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Galería</h1>
-      <p class="text-[#c2a878] text-sm mt-1">Eventos, obras y actividades de la comunidad</p>
+    <div class="bg-[#14392b] px-8 py-8 border-l-4 border-[#c2a878] relative">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#c2a878]/15 flex items-center justify-center shrink-0">
+          <Image :size="24" class="text-black" />
+        </div>
+        <div>
+          <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Galería</h1>
+          <p class="text-[#c2a878] text-sm mt-1">Eventos, obras y actividades de la comunidad</p>
+        </div>
+      </div>
     </div>
 
     <!-- Filtros -->
@@ -43,9 +50,11 @@
               <p class="text-white font-bold text-sm">{{ foto.titulo }}</p>
               <span class="bg-[#c2a878] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
             </div>
-            <div class="px-4 py-3 text-xs text-gray-500">
-              <p class="flex items-center gap-1"><Folder :size="12" />Álbum: {{ foto.album }}</p>
-              <p class="mt-1">{{ foto.descripcion }}</p>
+            <div class="px-4 py-3">
+              <p class="text-sm text-gray-600 line-clamp-2">{{ foto.descripcion }}</p>
+              <p v-if="foto.fecha" class="text-xs text-gray-400 mt-2">
+               {{ new Date(foto.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) }}
+              </p>
             </div>
           </div>
         </SwiperSlide>
@@ -61,8 +70,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Folder } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
+import { Image } from 'lucide-vue-next'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'

@@ -1,9 +1,16 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#14392b] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Mapa de Incidencias</h1>
-      <p class="text-[#c2a878] text-sm mt-1">Visualización geográfica de reportes ciudadanos</p>
+    <div class="bg-[#14392b] px-8 py-8 border-l-4 border-[#c2a878] relative">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#c2a878]/15 flex items-center justify-center shrink-0">
+          <Map :size="24" class="text-black" />
+        </div>
+        <div>
+          <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Mapa de Incidencias</h1>
+          <p class="text-[#c2a878] text-sm mt-1">Visualización geográfica de reportes ciudadanos</p>
+        </div>
+      </div>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -72,6 +79,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
+import { Map } from 'lucide-vue-next'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 

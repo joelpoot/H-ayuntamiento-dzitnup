@@ -25,7 +25,7 @@ function onKeydown(e) {
     class="bg-[#14392b] text-white shadow-lg"
     @keydown="onKeydown"
   >
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+    <div class="w-full px-4 flex items-center justify-between h-16">
 
       <!-- Logo y nombre -->
       <div class="flex items-center gap-3 min-w-0">

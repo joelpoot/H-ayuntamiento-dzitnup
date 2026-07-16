@@ -1,11 +1,17 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#14392b] px-8 py-6">
-      <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Avisos y Noticias</h1>
-      <p class="text-[#c2a878] text-sm mt-1">Información oficial de la Comisaria</p>
-    </div>
-
+      <div class="bg-[#14392b] px-8 py-8 border-l-4 border-[#c2a878] relative">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-[#c2a878]/15 flex items-center justify-center shrink-0">
+            <Megaphone :size="24" class="text-black" />
+          </div>
+          <div>
+            <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Avisos y Noticias</h1>
+            <p class="text-[#c2a878] text-sm mt-1">Información oficial de la Comisaría</p>
+          </div>
+        </div>
+      </div>
     <!-- Filtros -->
     <div class="max-w-7xl mx-auto px-4 py-6 flex flex-wrap gap-2">
       <button @click="filtroActivo = 'Todos'"
@@ -53,7 +59,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Calendar } from 'lucide-vue-next'
+import { Calendar, Megaphone } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const avisos = ref([])

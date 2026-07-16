@@ -1,10 +1,17 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="bg-[#14392b] px-8 py-6">
+    <div class="bg-[#14392b] px-8 py-8 border-l-4 border-[#c2a878] relative">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#c2a878]/15 flex items-center justify-center shrink-0">
+          <Calendar :size="24" class="text-black" />
+        </div>
+      <div>
       <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Agenda Comunitaria</h1>
       <p class="text-[#c2a878] text-sm mt-1">Eventos, fechas cívicas y reuniones de cabildo</p>
     </div>
+  </div>
+</div>
 
     <div class="max-w-4xl mx-auto px-4 py-10 space-y-4">
 
@@ -53,7 +60,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { MapPin, Clock, Users } from 'lucide-vue-next'
+import { MapPin, Clock, Users, Calendar } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
 
 const agenda = ref([])

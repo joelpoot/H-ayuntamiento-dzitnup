@@ -61,7 +61,7 @@
 
             <div v-if="recuperarEnviado" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
               <CheckCircle2 :size="16" class="shrink-0" />
-              Si el correo existe, te llegará un enlace en unos minutos. Revisa también spam.
+              Si el correo existe, te llegará un enlace en unos minutos.
             </div>
             <div v-if="recuperarError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
               <XCircle :size="16" class="shrink-0" />
@@ -605,7 +605,18 @@ const cargandoReportes = ref(true)
 const cargarReportes = async () => {
   cargandoReportes.value = true
   const { data, error } = await supabase.from('reportes').select('*').order('fecha_registro', { ascending: false })
-  if (!error) reportes.value = data
+  if (!error) {
+    const reportesConUrl = await Promise.all(data.map(async (r) => {
+      if (r.foto_url) {
+        const { data: signedData } = await supabase.storage
+          .from('reportes')
+          .createSignedUrl(r.foto_url, 3600)
+        return { ...r, foto_url: signedData?.signedUrl || null }
+      }
+      return r
+    }))
+    reportes.value = reportesConUrl
+  }
   cargandoReportes.value = false
 }
 
