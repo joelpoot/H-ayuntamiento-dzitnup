@@ -283,7 +283,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="nuevaFoto.titulo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="nuevaFoto.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Álbum</label><input v-model="nuevaFoto.album" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="nuevaFoto.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="nuevaFoto.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
             </div>
@@ -302,7 +301,6 @@
                 <div v-if="fotoEditando && fotoEditando.id === f.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Título</label><input v-model="fotoEditando.titulo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Categoría</label><select v-model="fotoEditando.categoria" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Evento</option><option>Obra</option><option>Actividad</option><option>General</option></select></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Álbum</label><input v-model="fotoEditando.album" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input v-model="fotoEditando.fecha" type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="fotoEditando.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
@@ -320,7 +318,7 @@
                         <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ f.categoria }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1">{{ f.descripcion }}</p>
-                      <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><Folder :size="12" />{{ f.album }} | {{ f.fecha }}</p>
+                      <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><Calendar :size="12" />{{ f.fecha }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0">
@@ -506,7 +504,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
-import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Folder, Clock, Users, Landmark } from 'lucide-vue-next'
+import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark } from 'lucide-vue-next'
 
 
 // --- Auth ---
@@ -762,7 +760,7 @@ const fotoEditando = ref(null)
 const archivoGaleria = ref(null)
 const previstaGaleria = ref(null)
 
-const nuevaFoto = ref({ titulo: '', categoria: 'Evento', album: '', descripcion: '', fecha: '' })
+const nuevaFoto = ref({ titulo: '', categoria: 'Evento', descripcion: '', fecha: '' })
 
 const cargarGaleria = async () => {
   cargandoGaleria.value = true
@@ -788,12 +786,12 @@ const subirFoto = async () => {
   const { data: urlData } = supabase.storage.from('galeria').getPublicUrl(nombre)
   const { error } = await supabase.from('galeria').insert([{
     titulo: nuevaFoto.value.titulo, categoria: nuevaFoto.value.categoria,
-    album: nuevaFoto.value.album, descripcion: nuevaFoto.value.descripcion,
+    descripcion: nuevaFoto.value.descripcion,
     fecha: nuevaFoto.value.fecha, imagen_url: urlData.publicUrl
   }])
   if (!error) {
     exitoGaleria.value = true
-    nuevaFoto.value = { titulo: '', categoria: 'Evento', album: '', descripcion: '', fecha: '' }
+    nuevaFoto.value = { titulo: '', categoria: 'Evento', descripcion: '', fecha: '' }
     archivoGaleria.value = null; previstaGaleria.value = null
     cargarGaleria()
     setTimeout(() => exitoGaleria.value = false, 3000)
@@ -812,7 +810,7 @@ const cancelarEdicionFoto = () => { fotoEditando.value = null }
 const guardarEdicionFoto = async () => {
   const { error } = await supabase.from('galeria').update({
     titulo: fotoEditando.value.titulo, categoria: fotoEditando.value.categoria,
-    album: fotoEditando.value.album, descripcion: fotoEditando.value.descripcion, fecha: fotoEditando.value.fecha
+    descripcion: fotoEditando.value.descripcion, fecha: fotoEditando.value.fecha
   }).eq('id', fotoEditando.value.id)
   if (!error) {
     const idx = galeria.value.findIndex(f => f.id === fotoEditando.value.id)
