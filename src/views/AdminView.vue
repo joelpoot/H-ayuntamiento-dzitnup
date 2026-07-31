@@ -174,6 +174,58 @@
                       </select>
                     </template>
                   </div>
+
+                  <!-- Cierre financiero: solo aplica a reportes ya Resueltos -->
+                  <div v-if="r.moderado && r.estado === 'Resuelto'" class="border-t border-gray-100 pt-3 mt-3">
+                    <template v-if="cierreEditando && cierreEditando.id === r.id">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-[#e8dcc4]/40 border border-[#c2a878] rounded-lg p-3">
+                        <div>
+                          <label class="text-xs font-semibold text-gray-500 uppercase">Categoría de gasto</label>
+                          <input v-model="cierreEditando.categoria_gasto" type="text" placeholder="Ej. Mantenimiento vial"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+                        </div>
+                        <div>
+                          <label class="text-xs font-semibold text-gray-500 uppercase">Monto ejercido (MXN)</label>
+                          <input v-model.number="cierreEditando.monto_ejercido" type="number" min="0" step="0.01" placeholder="0.00"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+                        </div>
+                        <div>
+                          <label class="text-xs font-semibold text-gray-500 uppercase">Proveedor / responsable</label>
+                          <select v-model="cierreEditando.proveedor_id" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]">
+                            <option :value="null">Sin especificar</option>
+                            <option v-for="p in proveedores" :key="p.id" :value="p.id">{{ p.nombre }}</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="text-xs font-semibold text-gray-500 uppercase">Fecha de cierre</label>
+                          <input v-model="cierreEditando.fecha_cierre" type="date"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
+                        </div>
+                        <div class="md:col-span-2 flex gap-2 mt-1">
+                          <button @click="guardarCierreFinanciero" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar cierre</button>
+                          <button @click="cierreEditando = null" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
+                        </div>
+                      </div>
+                    </template>
+                    <template v-else-if="r.monto_ejercido != null">
+                      <div class="grid grid-cols-2 md:grid-cols-4 gap-y-2 gap-x-4 text-xs bg-[#e8dcc4]/40 border border-[#c2a878] rounded-lg p-3">
+                        <div><span class="block text-gray-500 uppercase">Categoría de gasto</span><span class="font-bold text-[#14392b]">{{ r.categoria_gasto || '—' }}</span></div>
+                        <div><span class="block text-gray-500 uppercase">Monto ejercido</span><span class="font-bold text-[#14392b]">{{ formatMonto(r.monto_ejercido) }}</span></div>
+                        <div><span class="block text-gray-500 uppercase">Proveedor</span><span class="font-bold text-[#14392b]">{{ nombreProveedor(r.proveedor_id) }}</span></div>
+                        <div class="flex items-center justify-between">
+                          <div><span class="block text-gray-500 uppercase">Fecha de cierre</span><span class="font-bold text-[#14392b]">{{ r.fecha_cierre || '—' }}</span></div>
+                          <div class="flex gap-2">
+                            <button @click="iniciarCierreFinanciero(r)" class="text-blue-700 text-xs font-semibold hover:underline">Editar</button>
+                            <button @click="eliminarCierreFinanciero(r)" class="text-red-600 text-xs font-semibold hover:underline">Eliminar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                    <button v-else @click="iniciarCierreFinanciero(r)"
+                      class="bg-[#c2a878] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#a8916a] transition-colors font-semibold flex items-center gap-1.5">
+                      <Save :size="14" />Registrar costo de cierre
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -495,6 +547,88 @@
           </div>
         </div>
 
+        <!-- Tab Proveedores -->
+        <div v-if="tabActivo === 'proveedores'">
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Agregar Proveedor</h2>
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div v-if="exitoProveedor" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Proveedor guardado correctamente
+            </div>
+            <div v-if="errorValidacionProveedor" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <AlertTriangle :size="16" class="shrink-0" />{{ errorValidacionProveedor }}
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre <span class="text-red-500">*</span></label><input v-model="nuevoProveedor.nombre" type="text" required class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Especialidad <span class="text-red-500">*</span></label><input v-model="nuevoProveedor.especialidad" type="text" required placeholder="Ej. Mantenimiento vial" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+            </div>
+            <div class="mt-6 text-center"><button @click="agregarProveedor" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Proveedor</button></div>
+          </div>
+          <div class="mt-8">
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Padrón de Proveedores</h2>
+            <p class="text-xs text-gray-400 mb-4">El total y los reportes atendidos se calculan sobre el trimestre calendario actual, a partir de los reportes ya cerrados con costo capturado.</p>
+            <div v-if="cargandoProveedores" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-else class="space-y-3">
+              <div v-for="p in proveedores" :key="p.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div v-if="proveedorEditando && proveedorEditando.id === p.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="proveedorEditando.nombre" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Especialidad</label><input v-model="proveedorEditando.especialidad" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div class="md:col-span-2 flex gap-2 mt-2">
+                    <button @click="guardarEdicionProveedor" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
+                    <button @click="proveedorEditando = null" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
+                  </div>
+                </div>
+                <div v-else class="flex justify-between items-center gap-4">
+                  <div class="flex gap-3 items-center">
+                    <div class="w-9 h-9 rounded-full bg-[#14392b] text-white flex items-center justify-center font-bold text-sm shrink-0">{{ p.nombre.slice(0,2).toUpperCase() }}</div>
+                    <div>
+                      <p class="font-bold text-gray-800 text-sm">{{ p.nombre }}</p>
+                      <p class="text-xs text-gray-400 mt-0.5">{{ p.especialidad || 'Sin especialidad registrada' }} &middot; {{ reportesDeProveedor(p.id).length }} reportes atendidos este trimestre</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3 shrink-0">
+                    <span class="text-sm font-bold text-[#14392b]">{{ formatMonto(totalProveedor(p.id)) }}</span>
+                    <button @click="proveedorEditando = { ...p }" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
+                    <button @click="eliminarProveedor(p)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Transparencia -->
+        <div v-if="tabActivo === 'transparencia'">
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Indicadores de Gasto (trimestre actual)</h2>
+          <div v-if="cargandoIndicadores" class="text-center py-6 text-gray-400">Calculando...</div>
+          <template v-else>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div class="bg-[#14392b] text-white rounded-xl p-5 text-center">
+                <p class="text-2xl font-bold text-[#e8dcc4]">{{ formatMonto(indicadores.costoPromedio) }}</p>
+                <p class="text-xs uppercase tracking-wide opacity-85 mt-1">Costo promedio / reporte</p>
+              </div>
+              <div class="bg-[#14392b] text-white rounded-xl p-5 text-center">
+                <p class="text-2xl font-bold text-[#e8dcc4]">{{ indicadores.totalResueltos }}</p>
+                <p class="text-xs uppercase tracking-wide opacity-85 mt-1">Reportes resueltos</p>
+              </div>
+              <div class="bg-[#14392b] text-white rounded-xl p-5 text-center">
+                <p class="text-2xl font-bold text-[#e8dcc4]">{{ formatMonto(indicadores.gastoTotal) }}</p>
+                <p class="text-xs uppercase tracking-wide opacity-85 mt-1">Gasto total ejercido</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 class="text-sm font-bold text-[#14392b] mb-4">Costo promedio por tipo de reporte</h3>
+              <div v-if="indicadores.porTipo.length === 0" class="text-sm text-gray-400">Aún no hay reportes cerrados con costo capturado este trimestre.</div>
+              <div v-else class="flex items-end gap-6 h-40 border-b border-gray-200 px-2">
+                <div v-for="t in indicadores.porTipo" :key="t.tipo" class="flex-1 flex flex-col items-center justify-end h-full">
+                  <span class="text-xs font-bold text-[#14392b] mb-1">{{ formatMonto(t.promedio) }}</span>
+                  <div class="w-full rounded-t" :style="{ height: t.alturaPct + '%', background: 'linear-gradient(180deg, #c2a878, #14392b)' }"></div>
+                  <span class="text-xs text-gray-500 mt-2 text-center">{{ t.tipo }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
       </div>
     </div>
   </div>
@@ -504,7 +638,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
-import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark } from 'lucide-vue-next'
+import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle } from 'lucide-vue-next'
 
 
 // --- Auth ---
@@ -547,6 +681,8 @@ const tabs = [
   { id: 'horarios', label: 'Horarios' },
   { id: 'directorio', label: 'Directorio' },
   { id: 'agenda', label: 'Agenda' },
+  { id: 'proveedores', label: 'Proveedores' },
+  { id: 'transparencia', label: 'Transparencia' },
 ]
 
 const cargarTodo = () => {
@@ -556,6 +692,8 @@ const cargarTodo = () => {
   cargarHorarios()
   cargarDirectorio()
   cargarAgenda()
+  cargarProveedores()
+  cargarIndicadores()
 }
 
 // Verifica si ya hay una sesión activa al cargar la página
@@ -636,6 +774,48 @@ const rechazarReporte = async (reporte) => {
 }
 
 const verImagen = (url) => window.open(url, '_blank')
+
+// --- Cierre financiero de reportes (categoría de gasto, monto, proveedor, fecha) ---
+const cierreEditando = ref(null)
+
+const iniciarCierreFinanciero = (reporte) => {
+  cierreEditando.value = {
+    id: reporte.id,
+    categoria_gasto: reporte.categoria_gasto || '',
+    monto_ejercido: reporte.monto_ejercido ?? null,
+    proveedor_id: reporte.proveedor_id || null,
+    fecha_cierre: reporte.fecha_cierre || new Date().toISOString().split('T')[0],
+  }
+}
+
+const guardarCierreFinanciero = async () => {
+  const c = cierreEditando.value
+  const { error } = await supabase.from('reportes').update({
+    categoria_gasto: c.categoria_gasto,
+    monto_ejercido: c.monto_ejercido,
+    proveedor_id: c.proveedor_id,
+    fecha_cierre: c.fecha_cierre,
+  }).eq('id', c.id)
+
+  if (!error) {
+    const reporte = reportes.value.find(r => r.id === c.id)
+    if (reporte) Object.assign(reporte, c)
+    cierreEditando.value = null
+    cargarIndicadores() // el cierre recién guardado puede cambiar los indicadores del trimestre
+  }
+}
+
+const eliminarCierreFinanciero = async (reporte) => {
+  if (!confirm('¿Eliminar el costo de cierre registrado para este reporte? El reporte seguirá Resuelto, solo se borra la información financiera.')) return
+
+  const vacio = { categoria_gasto: null, monto_ejercido: null, proveedor_id: null, fecha_cierre: null }
+  const { error } = await supabase.from('reportes').update(vacio).eq('id', reporte.id)
+
+  if (!error) {
+    Object.assign(reporte, vacio)
+    cargarIndicadores() // borrar un cierre también puede cambiar los indicadores del trimestre
+  }
+}
 
 // --- Avisos ---
 const avisos = ref([])
@@ -974,6 +1154,111 @@ const guardarEdicionEvento = async () => {
   }
 }
 
+// --- Proveedores (Pantalla 2 del mockup: padrón vinculado a reportes) ---
+const proveedores = ref([])
+const cargandoProveedores = ref(false)
+const exitoProveedor = ref(false)
+const errorValidacionProveedor = ref('')
+const proveedorEditando = ref(null)
+const nuevoProveedor = ref({ nombre: '', especialidad: '' })
+
+const cargarProveedores = async () => {
+  cargandoProveedores.value = true
+  const { data, error } = await supabase.from('proveedores').select('*').order('nombre', { ascending: true })
+  if (!error) proveedores.value = data
+  cargandoProveedores.value = false
+}
+
+const agregarProveedor = async () => {
+  if (!nuevoProveedor.value.nombre.trim() || !nuevoProveedor.value.especialidad.trim()) {
+    errorValidacionProveedor.value = 'Por favor llena los campos obligatorios: Nombre y Especialidad'
+    return
+  }
+  errorValidacionProveedor.value = ''
+
+  const { error } = await supabase.from('proveedores').insert([{
+    nombre: nuevoProveedor.value.nombre,
+    especialidad: nuevoProveedor.value.especialidad,
+  }])
+  if (!error) {
+    exitoProveedor.value = true
+    nuevoProveedor.value = { nombre: '', especialidad: '' }
+    cargarProveedores()
+    setTimeout(() => exitoProveedor.value = false, 3000)
+  }
+}
+
+const eliminarProveedor = async (p) => {
+  if (!confirm(`¿Eliminar al proveedor "${p.nombre}"? Los reportes que ya lo tengan asignado conservarán el registro histórico.`)) return
+  const { error } = await supabase.from('proveedores').delete().eq('id', p.id)
+  if (!error) proveedores.value = proveedores.value.filter(x => x.id !== p.id)
+}
+
+const guardarEdicionProveedor = async () => {
+  if (!proveedorEditando.value.nombre.trim() || !proveedorEditando.value.especialidad.trim()) {
+    errorValidacionProveedor.value = 'Por favor llena los campos obligatorios: Nombre y Especialidad'
+    return
+  }
+  errorValidacionProveedor.value = ''
+
+  const { error } = await supabase.from('proveedores').update({
+    nombre: proveedorEditando.value.nombre,
+    especialidad: proveedorEditando.value.especialidad,
+  }).eq('id', proveedorEditando.value.id)
+  if (!error) {
+    const idx = proveedores.value.findIndex(p => p.id === proveedorEditando.value.id)
+    if (idx !== -1) proveedores.value[idx] = { ...proveedorEditando.value }
+    proveedorEditando.value = null
+  }
+}
+
+// Reportes cerrados con costo, del trimestre calendario actual (usados por
+// Proveedores para el resumen por proveedor, y por Transparencia para los KPI)
+const reportesDelTrimestre = () => {
+  const hoy = new Date()
+  const trimestreActual = Math.floor(hoy.getMonth() / 3)
+  return reportes.value.filter((r) => {
+    if (r.monto_ejercido == null || !r.fecha_cierre) return false
+    const f = new Date(r.fecha_cierre)
+    return f.getFullYear() === hoy.getFullYear() && Math.floor(f.getMonth() / 3) === trimestreActual
+  })
+}
+
+const reportesDeProveedor = (proveedorId) => reportesDelTrimestre().filter(r => r.proveedor_id === proveedorId)
+
+const totalProveedor = (proveedorId) => reportesDeProveedor(proveedorId).reduce((sum, r) => sum + Number(r.monto_ejercido || 0), 0)
+
+const nombreProveedor = (proveedorId) => {
+  const p = proveedores.value.find(x => x.id === proveedorId)
+  return p ? p.nombre : 'Sin especificar'
+}
+
+// --- Transparencia (Pantalla 3 del mockup: indicadores del trimestre) ---
+const cargandoIndicadores = ref(false)
+const indicadores = ref({ costoPromedio: 0, totalResueltos: 0, gastoTotal: 0, porTipo: [] })
+
+const cargarIndicadores = () => {
+  cargandoIndicadores.value = true
+  const cerrados = reportesDelTrimestre()
+
+  const gastoTotal = cerrados.reduce((sum, r) => sum + Number(r.monto_ejercido || 0), 0)
+  const totalResueltos = cerrados.length
+  const costoPromedio = totalResueltos > 0 ? gastoTotal / totalResueltos : 0
+
+  const porTipoMap = {}
+  cerrados.forEach((r) => {
+    if (!porTipoMap[r.tipo]) porTipoMap[r.tipo] = { suma: 0, cantidad: 0 }
+    porTipoMap[r.tipo].suma += Number(r.monto_ejercido || 0)
+    porTipoMap[r.tipo].cantidad += 1
+  })
+  const promedios = Object.entries(porTipoMap).map(([tipo, v]) => ({ tipo, promedio: v.suma / v.cantidad }))
+  const maxPromedio = Math.max(1, ...promedios.map(p => p.promedio))
+  const porTipo = promedios.map(p => ({ ...p, alturaPct: Math.round((p.promedio / maxPromedio) * 100) }))
+
+  indicadores.value = { costoPromedio, totalResueltos, gastoTotal, porTipo }
+  cargandoIndicadores.value = false
+}
+
 // --- Helpers ---
 const estadoColor = (estado) => {
   if (estado === 'Resuelto') return 'bg-green-100 text-green-700'
@@ -996,5 +1281,10 @@ const bordeSelect = (estado) => {
 const formatFecha = (fecha) => {
   if (!fecha) return ''
   return new Date(fecha).toLocaleDateString('es-MX')
+}
+
+const formatMonto = (valor) => {
+  if (valor == null) return '—'
+  return Number(valor).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
 }
 </script>
