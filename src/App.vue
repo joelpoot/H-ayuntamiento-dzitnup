@@ -5,6 +5,7 @@
       <Navbar v-if="!adminState.autenticado" />
       <RouterView />
     </template>
+    <DialogoModal />
   </div>
 </template>
 
@@ -12,6 +13,7 @@
 import { ref } from 'vue'
 import Navbar from './components/Navbar.vue'
 import SplashScreen from './components/SplashScreen.vue'
+import DialogoModal from './components/DialogoModal.vue'
 import { adminState } from './stores/adminState.js'
 
 const cargandoApp = ref(true)

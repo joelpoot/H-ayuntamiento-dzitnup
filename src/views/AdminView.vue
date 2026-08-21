@@ -107,13 +107,13 @@
 
     <!-- Panel Admin -->
     <div v-else>
-      <div class="bg-[#14392b] px-8 py-6 flex justify-between items-center">
-        <div>
-          <h1 class="text-white text-2xl font-bold uppercase tracking-wide">Panel de Administración</h1>
+      <div class="bg-[#14392b] px-4 sm:px-8 py-6 flex flex-wrap justify-between items-center gap-3">
+        <div class="min-w-0">
+          <h1 class="text-white text-xl sm:text-2xl font-bold uppercase tracking-wide break-words">Panel de Administración</h1>
           <p class="text-green-200 text-sm mt-1">Comisaria Municipal de Dzitnup</p>
         </div>
         <button @click="cerrarSesion"
-          class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition-colors">
+          class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition-colors shrink-0">
           Cerrar Sesión
         </button>
       </div>
@@ -290,7 +290,7 @@
                     <span class="text-xs font-semibold text-gray-500 uppercase">Estado actual:</span>
                     <span :class="estadoAviso(avisoEditando).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ estadoAviso(avisoEditando).label }}</span>
                     <button v-if="!avisoVencido(avisoEditando) && avisoEditando.estado !== 'Cancelado'"
-                      type="button" @click="avisoEditando.estado = 'Cancelado'"
+                      type="button" @click="cancelarAviso(avisoEditando)"
                       class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-lg hover:bg-orange-200 transition-colors font-semibold flex items-center gap-1.5">
                       <Ban :size="14" />Cancelar aviso antes de su vigencia
                     </button>
@@ -301,21 +301,21 @@
                     <button @click="cancelarEdicion" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
-                <div v-else class="flex justify-between items-start gap-4">
-                  <div class="flex gap-3 flex-1">
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start gap-3 sm:gap-4">
+                  <div class="flex gap-3 min-w-0">
                     <img v-if="a.imagen_url" :src="a.imagen_url" class="w-16 h-16 object-contain rounded-lg border border-gray-200 shrink-0" />
                     <div v-else class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs shrink-0">Sin img</div>
-                    <div>
+                    <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
-                        <p class="font-bold text-gray-800 text-sm">{{ a.titulo }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ a.categoria }}</span>
-                        <span :class="estadoAviso(a).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ estadoAviso(a).label }}</span>
+                        <p class="font-bold text-gray-800 text-sm break-words">{{ a.titulo }}</p>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ a.categoria }}</span>
+                        <span :class="estadoAviso(a).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ estadoAviso(a).label }}</span>
                       </div>
-                      <p class="text-xs text-gray-500 mt-1">{{ a.descripcion }}</p>
-                      <p class="text-xs text-gray-400 mt-1">Área: {{ a.area }} | Vig: {{ a.fecha_vigencia }}</p>
+                      <p class="text-xs text-gray-500 mt-1 break-words">{{ a.descripcion }}</p>
+                      <p class="text-xs text-gray-400 mt-1 break-words">Área: {{ a.area }} | Vig: {{ a.fecha_vigencia }}</p>
                     </div>
                   </div>
-                  <div class="flex gap-2 shrink-0">
+                  <div class="flex gap-2 shrink-0 self-end sm:self-start">
                     <button @click="iniciarEdicion(a)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarAviso(a)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
@@ -360,20 +360,20 @@
                     <button @click="cancelarEdicionFoto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
-                <div v-else class="flex justify-between items-start gap-4">
-                  <div class="flex gap-3 flex-1">
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start gap-3 sm:gap-4">
+                  <div class="flex gap-3 min-w-0">
                     <img v-if="f.imagen_url" :src="f.imagen_url" class="w-16 h-16 object-cover rounded-lg border border-gray-200 shrink-0" />
                     <div v-else class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs shrink-0">Sin img</div>
-                    <div>
+                    <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
-                        <p class="font-bold text-gray-800 text-sm">{{ f.titulo }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ f.categoria }}</span>
+                        <p class="font-bold text-gray-800 text-sm break-words">{{ f.titulo }}</p>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ f.categoria }}</span>
                       </div>
-                      <p class="text-xs text-gray-500 mt-1">{{ f.descripcion }}</p>
+                      <p class="text-xs text-gray-500 mt-1 break-words">{{ f.descripcion }}</p>
                       <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><Calendar :size="12" />{{ f.fecha }}</p>
                     </div>
                   </div>
-                  <div class="flex gap-2 shrink-0">
+                  <div class="flex gap-2 shrink-0 self-end sm:self-start">
                     <button @click="iniciarEdicionFoto(f)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarFoto(f)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
@@ -390,11 +390,14 @@
             <div v-if="exitoHorario" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
               <CheckCircle2 :size="16" class="shrink-0" />Horario guardado correctamente
             </div>
+            <div v-if="errorValidacionHorario" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <AlertTriangle :size="16" class="shrink-0" />{{ errorValidacionHorario }}
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área / Departamento</label><input v-model="nuevoHorario.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="nuevoHorario.dias" type="text" placeholder="Ej. Lunes a Viernes" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada</label><input v-model="nuevoHorario.hora_entrada" type="text" placeholder="Ej. 8:00 AM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="nuevoHorario.hora_salida" type="text" placeholder="Ej. 3:00 PM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área / Departamento <span class="text-red-500">*</span></label><input v-model="nuevoHorario.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Días <span class="text-red-500">*</span></label><input v-model="nuevoHorario.dias" type="text" placeholder="Ej. Lunes a Viernes" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada <span class="text-red-500">*</span></label><input v-model="nuevoHorario.hora_entrada" type="text" placeholder="Ej. 8:00 AM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida <span class="text-red-500">*</span></label><input v-model="nuevoHorario.hora_salida" type="text" placeholder="Ej. 3:00 PM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones (opcional)</label><input v-model="nuevoHorario.observaciones" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
             <div class="mt-6 text-center"><button @click="agregarHorario" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Horario</button></div>
@@ -405,23 +408,26 @@
             <div v-else class="space-y-3">
               <div v-for="h in horarios" :key="h.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="horarioEditando && horarioEditando.id === h.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="horarioEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Días</label><input v-model="horarioEditando.dias" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada</label><input v-model="horarioEditando.hora_entrada" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida</label><input v-model="horarioEditando.hora_salida" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área <span class="text-red-500">*</span></label><input v-model="horarioEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Días <span class="text-red-500">*</span></label><input v-model="horarioEditando.dias" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Entrada <span class="text-red-500">*</span></label><input v-model="horarioEditando.hora_entrada" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida <span class="text-red-500">*</span></label><input v-model="horarioEditando.hora_salida" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
                   <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones</label><input v-model="horarioEditando.observaciones" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div v-if="errorValidacionHorario" class="md:col-span-2 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-2 rounded-lg text-xs flex items-center gap-2">
+                    <AlertTriangle :size="14" class="shrink-0" />{{ errorValidacionHorario }}
+                  </div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
                     <button @click="guardarEdicionHorario" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicionHorario" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
-                <div v-else class="flex justify-between items-center gap-4">
-                  <div>
-                    <p class="font-bold text-gray-800 text-sm">{{ h.area }}</p>
-                    <p class="text-xs text-gray-500 mt-1">{{ h.dias }} | {{ h.hora_entrada }} - {{ h.hora_salida }}</p>
-                    <p v-if="h.observaciones" class="text-xs text-gray-400 mt-1">{{ h.observaciones }}</p>
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 sm:gap-4">
+                  <div class="min-w-0">
+                    <p class="font-bold text-gray-800 text-sm break-words">{{ h.area }}</p>
+                    <p class="text-xs text-gray-500 mt-1 break-words">{{ h.dias }} | {{ h.hora_entrada }} - {{ h.hora_salida }}</p>
+                    <p v-if="h.observaciones" class="text-xs text-gray-400 mt-1 break-words">{{ h.observaciones }}</p>
                   </div>
-                  <div class="flex gap-2 shrink-0">
+                  <div class="flex gap-2 shrink-0 self-end sm:self-auto">
                     <button @click="iniciarEdicionHorario(h)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarHorario(h)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
@@ -438,12 +444,15 @@
             <div v-if="exitoDirectorio" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
               <CheckCircle2 :size="16" class="shrink-0" />Contacto guardado correctamente
             </div>
+            <div v-if="errorValidacionDirectorio" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <AlertTriangle :size="16" class="shrink-0" />{{ errorValidacionDirectorio }}
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="nuevoContacto.nombre" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="nuevoContacto.iniciales" type="text" placeholder="Ej. BP" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="nuevoContacto.cargo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="nuevoContacto.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-              <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="nuevoContacto.telefono" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre <span class="text-red-500">*</span></label><input v-model="nuevoContacto.nombre" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales <span class="text-red-500">*</span></label><input v-model="nuevoContacto.iniciales" type="text" placeholder="Ej. BP" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo <span class="text-red-500">*</span></label><input v-model="nuevoContacto.cargo" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área <span class="text-red-500">*</span></label><input v-model="nuevoContacto.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono <span class="text-red-500">*</span></label><input v-model="nuevoContacto.telefono" @input="nuevoContacto.telefono = nuevoContacto.telefono.replace(/\D/g, '')" type="text" inputmode="numeric" maxlength="10" placeholder="Ej. 9991234567" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
             <div class="mt-6 text-center"><button @click="agregarContacto" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Contacto</button></div>
           </div>
@@ -453,26 +462,29 @@
             <div v-else class="space-y-3">
               <div v-for="c in directorio" :key="c.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="contactoEditando && contactoEditando.id === c.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="contactoEditando.nombre" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales</label><input v-model="contactoEditando.iniciales" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo</label><input v-model="contactoEditando.cargo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="contactoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
-                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono</label><input v-model="contactoEditando.telefono" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre <span class="text-red-500">*</span></label><input v-model="contactoEditando.nombre" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Iniciales <span class="text-red-500">*</span></label><input v-model="contactoEditando.iniciales" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Cargo <span class="text-red-500">*</span></label><input v-model="contactoEditando.cargo" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Área <span class="text-red-500">*</span></label><input v-model="contactoEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono <span class="text-red-500">*</span></label><input v-model="contactoEditando.telefono" @input="contactoEditando.telefono = contactoEditando.telefono.replace(/\D/g, '')" inputmode="numeric" maxlength="10" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div v-if="errorValidacionDirectorio" class="md:col-span-2 bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-2 rounded-lg text-xs flex items-center gap-2">
+                    <AlertTriangle :size="14" class="shrink-0" />{{ errorValidacionDirectorio }}
+                  </div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
                     <button @click="guardarEdicionContacto" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
                     <button @click="cancelarEdicionContacto" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
-                <div v-else class="flex justify-between items-center gap-4">
-                  <div class="flex gap-3 items-center">
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 sm:gap-4">
+                  <div class="flex gap-3 items-center min-w-0">
                     <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 shrink-0">{{ c.iniciales }}</div>
-                    <div>
-                      <p class="font-bold text-gray-800 text-sm">{{ c.nombre }}</p>
+                    <div class="min-w-0">
+                      <p class="font-bold text-gray-800 text-sm break-words">{{ c.nombre }}</p>
                       <p class="text-xs text-[#c2a878] font-semibold uppercase">{{ c.cargo }}</p>
                       <p class="text-xs text-gray-400 mt-0.5 flex items-center gap-1"><Phone :size="12" />{{ c.telefono }} | {{ c.area }}</p>
                     </div>
                   </div>
-                  <div class="flex gap-2 shrink-0">
+                  <div class="flex gap-2 shrink-0 self-end sm:self-auto">
                     <button @click="iniciarEdicionContacto(c)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarContacto(c)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
@@ -518,26 +530,26 @@
                     <button @click="cancelarEdicionEvento" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
-                <div v-else class="flex justify-between items-start gap-4">
-                  <div class="flex gap-3 items-start">
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start gap-3 sm:gap-4">
+                  <div class="flex gap-3 items-start min-w-0">
                     <div class="bg-[#14392b] text-white rounded-lg px-3 py-2 text-center shrink-0">
-                      <p class="text-lg font-bold">{{ e.fecha ? new Date(e.fecha).getUTCDate().toString().padStart(2,'0') : '' }}</p>
-                      <p class="text-xs uppercase">{{ e.fecha ? new Date(e.fecha).toLocaleDateString('es-MX', {month:'short'}).toUpperCase() : '' }}</p>
+                      <p class="text-lg font-bold">{{ diaEvento(e.fecha) }}</p>
+                      <p class="text-xs uppercase">{{ mesEvento(e.fecha) }}</p>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
-                        <p class="font-bold text-gray-800 text-sm">{{ e.titulo }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold">{{ e.tipo }}</span>
+                        <p class="font-bold text-gray-800 text-sm break-words">{{ e.titulo }}</p>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ e.tipo }}</span>
                       </div>
-                      <p class="text-xs text-gray-500 mt-1">{{ e.descripcion }}</p>
-                      <div class="flex gap-3 mt-1 text-xs text-gray-400">
+                      <p class="text-xs text-gray-500 mt-1 break-words">{{ e.descripcion }}</p>
+                      <div class="flex gap-3 mt-1 text-xs text-gray-400 flex-wrap">
                         <span class="flex items-center gap-1"><MapPin :size="12" />{{ e.lugar }}</span>
                         <span class="flex items-center gap-1"><Clock :size="12" />{{ e.hora }}</span>
                         <span class="flex items-center gap-1"><Users :size="12" />{{ e.dirigido }}</span>
                       </div>
                     </div>
                   </div>
-                  <div class="flex gap-2 shrink-0">
+                  <div class="flex gap-2 shrink-0 self-end sm:self-start">
                     <button @click="iniciarEdicionEvento(e)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarEvento(e)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
                   </div>
@@ -577,15 +589,15 @@
                     <button @click="proveedorEditando = null" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
                   </div>
                 </div>
-                <div v-else class="flex justify-between items-center gap-4">
-                  <div class="flex gap-3 items-center">
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 sm:gap-4">
+                  <div class="flex gap-3 items-center min-w-0">
                     <div class="w-9 h-9 rounded-full bg-[#14392b] text-white flex items-center justify-center font-bold text-sm shrink-0">{{ p.nombre.slice(0,2).toUpperCase() }}</div>
-                    <div>
-                      <p class="font-bold text-gray-800 text-sm">{{ p.nombre }}</p>
-                      <p class="text-xs text-gray-400 mt-0.5">{{ p.especialidad || 'Sin especialidad registrada' }} &middot; {{ reportesDeProveedor(p.id).length }} reportes atendidos este trimestre</p>
+                    <div class="min-w-0">
+                      <p class="font-bold text-gray-800 text-sm break-words">{{ p.nombre }}</p>
+                      <p class="text-xs text-gray-400 mt-0.5 break-words">{{ p.especialidad || 'Sin especialidad registrada' }} &middot; {{ reportesDeProveedor(p.id).length }} reportes atendidos este trimestre</p>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3 shrink-0">
+                  <div class="flex items-center gap-3 shrink-0 flex-wrap self-end sm:self-auto">
                     <span class="text-sm font-bold text-[#14392b]">{{ formatMonto(totalProveedor(p.id)) }}</span>
                     <button @click="proveedorEditando = { ...p }" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
                     <button @click="eliminarProveedor(p)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
@@ -638,6 +650,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
+import { confirmar, avisar } from '../composables/useDialogo.js'
 import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle } from 'lucide-vue-next'
 
 
@@ -759,17 +772,20 @@ const cargarReportes = async () => {
 const cambiarEstado = async (reporte, nuevoEstado) => {
   const { error } = await supabase.from('reportes').update({ estado: nuevoEstado }).eq('id', reporte.id)
   if (!error) reporte.estado = nuevoEstado
+  else avisar('No se pudo actualizar el estado del reporte. Intenta de nuevo.')
 }
 
 const aprobarReporte = async (reporte) => {
   const { error } = await supabase.from('reportes').update({ moderado: true, estado: 'Pendiente' }).eq('id', reporte.id)
   if (!error) { reporte.moderado = true; reporte.estado = 'Pendiente' }
+  else avisar('No se pudo aprobar el reporte. Intenta de nuevo.')
 }
 
 const rechazarReporte = async (reporte) => {
-  if (confirm('¿Estás seguro de rechazar y eliminar este reporte?')) {
+  if (await confirmar('¿Estás seguro de rechazar y eliminar este reporte?', { tipo: 'danger', titulo: 'Rechazar reporte', textoConfirmar: 'Rechazar' })) {
     const { error } = await supabase.from('reportes').delete().eq('id', reporte.id)
     if (!error) reportes.value = reportes.value.filter(r => r.id !== reporte.id)
+    else avisar('No se pudo rechazar el reporte. Intenta de nuevo.')
   }
 }
 
@@ -802,11 +818,13 @@ const guardarCierreFinanciero = async () => {
     if (reporte) Object.assign(reporte, c)
     cierreEditando.value = null
     cargarIndicadores() // el cierre recién guardado puede cambiar los indicadores del trimestre
+  } else {
+    avisar('No se pudo guardar el cierre financiero. Intenta de nuevo.')
   }
 }
 
 const eliminarCierreFinanciero = async (reporte) => {
-  if (!confirm('¿Eliminar el costo de cierre registrado para este reporte? El reporte seguirá Resuelto, solo se borra la información financiera.')) return
+  if (!(await confirmar('¿Eliminar el costo de cierre registrado para este reporte? El reporte seguirá Resuelto, solo se borra la información financiera.', { tipo: 'danger', titulo: 'Eliminar cierre financiero', textoConfirmar: 'Eliminar' }))) return
 
   const vacio = { categoria_gasto: null, monto_ejercido: null, proveedor_id: null, fecha_cierre: null }
   const { error } = await supabase.from('reportes').update(vacio).eq('id', reporte.id)
@@ -814,6 +832,8 @@ const eliminarCierreFinanciero = async (reporte) => {
   if (!error) {
     Object.assign(reporte, vacio)
     cargarIndicadores() // borrar un cierre también puede cambiar los indicadores del trimestre
+  } else {
+    avisar('No se pudo eliminar el cierre financiero. Intenta de nuevo.')
   }
 }
 
@@ -850,12 +870,12 @@ const estadoAviso = (aviso) => {
 }
 
 const cancelarAviso = async (aviso) => {
-  if (!confirm(`¿Cancelar el aviso "${aviso.titulo}" antes de que llegue su fecha de vigencia? Esta acción no se puede revertir desde el panel.`)) return
+  if (!(await confirmar(`¿Cancelar el aviso "${aviso.titulo}" antes de que llegue su fecha de vigencia? Esta acción no se puede revertir desde el panel.`, { titulo: 'Cancelar aviso', textoConfirmar: 'Cancelar aviso' }))) return
   const { error } = await supabase.from('avisos').update({ estado: 'Cancelado' }).eq('id', aviso.id)
-  if (!error) {
-    const idx = avisos.value.findIndex(a => a.id === aviso.id)
-    if (idx !== -1) avisos.value[idx].estado = 'Cancelado'
-  }
+  if (error) { avisar('No se pudo cancelar el aviso. Intenta de nuevo.'); return }
+  const idx = avisos.value.findIndex(a => a.id === aviso.id)
+  if (idx !== -1) avisos.value[idx].estado = 'Cancelado'
+  if (avisoEditando.value && avisoEditando.value.id === aviso.id) avisoEditando.value = null
 }
 
 const comprimirImagen = (file, maxWidth = 800, quality = 0.7) => {
@@ -892,7 +912,7 @@ const publicarAviso = async () => {
     const archivo = archivoImagen.value
     const nombre = `${Date.now()}.${archivo.name.split('.').pop()}`
     const { error: uploadError } = await supabase.storage.from('avisos').upload(nombre, archivo)
-    if (uploadError) { alert('Error al subir la imagen'); return }
+    if (uploadError) { avisar('Error al subir la imagen'); return }
     const { data: urlData } = supabase.storage.from('avisos').getPublicUrl(nombre)
     imagen_url = urlData.publicUrl
   }
@@ -907,13 +927,16 @@ const publicarAviso = async () => {
     archivoImagen.value = null; previstaImagen.value = null
     cargarAvisos()
     setTimeout(() => exitoAviso.value = false, 3000)
+  } else {
+    avisar('No se pudo publicar el aviso. Intenta de nuevo.')
   }
 }
 
 const eliminarAviso = async (aviso) => {
-  if (!confirm(`¿Eliminar el aviso "${aviso.titulo}"?`)) return
+  if (!(await confirmar(`¿Eliminar el aviso "${aviso.titulo}"?`, { tipo: 'danger', titulo: 'Eliminar aviso', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('avisos').delete().eq('id', aviso.id)
   if (!error) avisos.value = avisos.value.filter(a => a.id !== aviso.id)
+  else avisar('No se pudo eliminar el aviso. Intenta de nuevo.')
 }
 
 const iniciarEdicion = (aviso) => { avisoEditando.value = { ...aviso } }
@@ -929,6 +952,8 @@ const guardarEdicion = async () => {
     const idx = avisos.value.findIndex(a => a.id === avisoEditando.value.id)
     if (idx !== -1) avisos.value[idx] = { ...avisoEditando.value }
     avisoEditando.value = null
+  } else {
+    avisar('No se pudo guardar el aviso. Intenta de nuevo.')
   }
 }
 
@@ -958,11 +983,11 @@ const seleccionarImagenGaleria = async (e) => {
 }
 
 const subirFoto = async () => {
-  if (!archivoGaleria.value) { alert('Selecciona una imagen'); return }
+  if (!archivoGaleria.value) { avisar('Selecciona una imagen'); return }
   const archivo = archivoGaleria.value
   const nombre = `${Date.now()}.${archivo.name.split('.').pop()}`
   const { error: uploadError } = await supabase.storage.from('galeria').upload(nombre, archivo)
-  if (uploadError) { alert('Error al subir la imagen'); return }
+  if (uploadError) { avisar('Error al subir la imagen'); return }
   const { data: urlData } = supabase.storage.from('galeria').getPublicUrl(nombre)
   const { error } = await supabase.from('galeria').insert([{
     titulo: nuevaFoto.value.titulo, categoria: nuevaFoto.value.categoria,
@@ -975,13 +1000,16 @@ const subirFoto = async () => {
     archivoGaleria.value = null; previstaGaleria.value = null
     cargarGaleria()
     setTimeout(() => exitoGaleria.value = false, 3000)
+  } else {
+    avisar('No se pudo subir la foto. Intenta de nuevo.')
   }
 }
 
 const eliminarFoto = async (foto) => {
-  if (!confirm(`¿Eliminar la foto "${foto.titulo}"?`)) return
+  if (!(await confirmar(`¿Eliminar la foto "${foto.titulo}"?`, { tipo: 'danger', titulo: 'Eliminar foto', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('galeria').delete().eq('id', foto.id)
   if (!error) galeria.value = galeria.value.filter(f => f.id !== foto.id)
+  else avisar('No se pudo eliminar la foto. Intenta de nuevo.')
 }
 
 const iniciarEdicionFoto = (foto) => { fotoEditando.value = { ...foto } }
@@ -996,6 +1024,8 @@ const guardarEdicionFoto = async () => {
     const idx = galeria.value.findIndex(f => f.id === fotoEditando.value.id)
     if (idx !== -1) galeria.value[idx] = { ...fotoEditando.value }
     fotoEditando.value = null
+  } else {
+    avisar('No se pudo guardar la foto. Intenta de nuevo.')
   }
 }
 
@@ -1004,6 +1034,7 @@ const horarios = ref([])
 const cargandoHorarios = ref(false)
 const exitoHorario = ref(false)
 const horarioEditando = ref(null)
+const errorValidacionHorario = ref('')
 
 const nuevoHorario = ref({ area: '', dias: '', hora_entrada: '', hora_salida: '', observaciones: '' })
 
@@ -1014,7 +1045,15 @@ const cargarHorarios = async () => {
   cargandoHorarios.value = false
 }
 
+const horarioValido = (h) => h.area.trim() && h.dias.trim() && h.hora_entrada.trim() && h.hora_salida.trim()
+
 const agregarHorario = async () => {
+  if (!horarioValido(nuevoHorario.value)) {
+    errorValidacionHorario.value = 'Por favor llena los campos obligatorios: Área, Días, Hora Entrada y Hora Salida'
+    return
+  }
+  errorValidacionHorario.value = ''
+
   const { error } = await supabase.from('horarios').insert([{
     area: nuevoHorario.value.area, dias: nuevoHorario.value.dias,
     hora_entrada: nuevoHorario.value.hora_entrada, hora_salida: nuevoHorario.value.hora_salida,
@@ -1025,19 +1064,28 @@ const agregarHorario = async () => {
     nuevoHorario.value = { area: '', dias: '', hora_entrada: '', hora_salida: '', observaciones: '' }
     cargarHorarios()
     setTimeout(() => exitoHorario.value = false, 3000)
+  } else {
+    avisar('No se pudo guardar el horario. Intenta de nuevo.')
   }
 }
 
 const eliminarHorario = async (h) => {
-  if (!confirm(`¿Eliminar el horario de "${h.area}"?`)) return
+  if (!(await confirmar(`¿Eliminar el horario de "${h.area}"?`, { tipo: 'danger', titulo: 'Eliminar horario', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('horarios').delete().eq('id', h.id)
   if (!error) horarios.value = horarios.value.filter(x => x.id !== h.id)
+  else avisar('No se pudo eliminar el horario. Intenta de nuevo.')
 }
 
-const iniciarEdicionHorario = (h) => { horarioEditando.value = { ...h } }
-const cancelarEdicionHorario = () => { horarioEditando.value = null }
+const iniciarEdicionHorario = (h) => { horarioEditando.value = { ...h }; errorValidacionHorario.value = '' }
+const cancelarEdicionHorario = () => { horarioEditando.value = null; errorValidacionHorario.value = '' }
 
 const guardarEdicionHorario = async () => {
+  if (!horarioValido(horarioEditando.value)) {
+    errorValidacionHorario.value = 'Por favor llena los campos obligatorios: Área, Días, Hora Entrada y Hora Salida'
+    return
+  }
+  errorValidacionHorario.value = ''
+
   const { error } = await supabase.from('horarios').update({
     area: horarioEditando.value.area, dias: horarioEditando.value.dias,
     hora_entrada: horarioEditando.value.hora_entrada, hora_salida: horarioEditando.value.hora_salida,
@@ -1047,6 +1095,8 @@ const guardarEdicionHorario = async () => {
     const idx = horarios.value.findIndex(h => h.id === horarioEditando.value.id)
     if (idx !== -1) horarios.value[idx] = { ...horarioEditando.value }
     horarioEditando.value = null
+  } else {
+    avisar('No se pudo guardar el horario. Intenta de nuevo.')
   }
 }
 
@@ -1055,6 +1105,7 @@ const directorio = ref([])
 const cargandoDirectorio = ref(false)
 const exitoDirectorio = ref(false)
 const contactoEditando = ref(null)
+const errorValidacionDirectorio = ref('')
 
 const nuevoContacto = ref({ nombre: '', iniciales: '', cargo: '', area: '', telefono: '' })
 
@@ -1065,39 +1116,62 @@ const cargarDirectorio = async () => {
   cargandoDirectorio.value = false
 }
 
+const contactoValido = (c) => {
+  if (!c.nombre.trim() || !c.iniciales.trim() || !c.cargo.trim() || !c.area.trim() || !c.telefono.trim()) {
+    return 'Por favor llena todos los campos obligatorios'
+  }
+  if (!/^\d+$/.test(c.telefono.trim())) {
+    return 'El teléfono solo debe contener números'
+  }
+  return ''
+}
+
 const agregarContacto = async () => {
-  const { error } = await supabase.from('directorio').insert([{
+  const error = contactoValido(nuevoContacto.value)
+  if (error) { errorValidacionDirectorio.value = error; return }
+  errorValidacionDirectorio.value = ''
+
+  const { error: dbError } = await supabase.from('directorio').insert([{
     nombre: nuevoContacto.value.nombre, iniciales: nuevoContacto.value.iniciales,
     cargo: nuevoContacto.value.cargo, area: nuevoContacto.value.area,
     telefono: nuevoContacto.value.telefono
   }])
-  if (!error) {
+  if (!dbError) {
     exitoDirectorio.value = true
     nuevoContacto.value = { nombre: '', iniciales: '', cargo: '', area: '', telefono: '' }
     cargarDirectorio()
     setTimeout(() => exitoDirectorio.value = false, 3000)
+  } else {
+    avisar('No se pudo guardar el contacto. Intenta de nuevo.')
   }
 }
 
 const eliminarContacto = async (c) => {
-  if (!confirm(`¿Eliminar el contacto "${c.nombre}"?`)) return
+  if (!(await confirmar(`¿Eliminar el contacto "${c.nombre}"?`, { tipo: 'danger', titulo: 'Eliminar contacto', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('directorio').delete().eq('id', c.id)
   if (!error) directorio.value = directorio.value.filter(x => x.id !== c.id)
+  else avisar('No se pudo eliminar el contacto. Intenta de nuevo.')
 }
 
-const iniciarEdicionContacto = (c) => { contactoEditando.value = { ...c } }
-const cancelarEdicionContacto = () => { contactoEditando.value = null }
+const iniciarEdicionContacto = (c) => { contactoEditando.value = { ...c }; errorValidacionDirectorio.value = '' }
+const cancelarEdicionContacto = () => { contactoEditando.value = null; errorValidacionDirectorio.value = '' }
 
 const guardarEdicionContacto = async () => {
-  const { error } = await supabase.from('directorio').update({
+  const error = contactoValido(contactoEditando.value)
+  if (error) { errorValidacionDirectorio.value = error; return }
+  errorValidacionDirectorio.value = ''
+
+  const { error: dbError } = await supabase.from('directorio').update({
     nombre: contactoEditando.value.nombre, iniciales: contactoEditando.value.iniciales,
     cargo: contactoEditando.value.cargo, area: contactoEditando.value.area,
     telefono: contactoEditando.value.telefono
   }).eq('id', contactoEditando.value.id)
-  if (!error) {
+  if (!dbError) {
     const idx = directorio.value.findIndex(c => c.id === contactoEditando.value.id)
     if (idx !== -1) directorio.value[idx] = { ...contactoEditando.value }
     contactoEditando.value = null
+  } else {
+    avisar('No se pudo guardar el contacto. Intenta de nuevo.')
   }
 }
 
@@ -1128,13 +1202,16 @@ const agregarEvento = async () => {
     nuevoEvento.value = { titulo: '', tipo: 'Cabildo', fecha: '', hora: '', lugar: '', dirigido: '', descripcion: '' }
     cargarAgenda()
     setTimeout(() => exitoAgenda.value = false, 3000)
+  } else {
+    avisar('No se pudo guardar el evento. Intenta de nuevo.')
   }
 }
 
 const eliminarEvento = async (e) => {
-  if (!confirm(`¿Eliminar el evento "${e.titulo}"?`)) return
+  if (!(await confirmar(`¿Eliminar el evento "${e.titulo}"?`, { tipo: 'danger', titulo: 'Eliminar evento', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('agenda').delete().eq('id', e.id)
   if (!error) agenda.value = agenda.value.filter(x => x.id !== e.id)
+  else avisar('No se pudo eliminar el evento. Intenta de nuevo.')
 }
 
 const iniciarEdicionEvento = (e) => { eventoEditando.value = { ...e } }
@@ -1151,6 +1228,8 @@ const guardarEdicionEvento = async () => {
     const idx = agenda.value.findIndex(e => e.id === eventoEditando.value.id)
     if (idx !== -1) agenda.value[idx] = { ...eventoEditando.value }
     eventoEditando.value = null
+  } else {
+    avisar('No se pudo guardar el evento. Intenta de nuevo.')
   }
 }
 
@@ -1185,13 +1264,16 @@ const agregarProveedor = async () => {
     nuevoProveedor.value = { nombre: '', especialidad: '' }
     cargarProveedores()
     setTimeout(() => exitoProveedor.value = false, 3000)
+  } else {
+    avisar('No se pudo guardar el proveedor. Intenta de nuevo.')
   }
 }
 
 const eliminarProveedor = async (p) => {
-  if (!confirm(`¿Eliminar al proveedor "${p.nombre}"? Los reportes que ya lo tengan asignado conservarán el registro histórico.`)) return
+  if (!(await confirmar(`¿Eliminar al proveedor "${p.nombre}"? Los reportes que ya lo tengan asignado conservarán el registro histórico.`, { tipo: 'danger', titulo: 'Eliminar proveedor', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('proveedores').delete().eq('id', p.id)
   if (!error) proveedores.value = proveedores.value.filter(x => x.id !== p.id)
+  else avisar('No se pudo eliminar el proveedor. Intenta de nuevo.')
 }
 
 const guardarEdicionProveedor = async () => {
@@ -1209,6 +1291,8 @@ const guardarEdicionProveedor = async () => {
     const idx = proveedores.value.findIndex(p => p.id === proveedorEditando.value.id)
     if (idx !== -1) proveedores.value[idx] = { ...proveedorEditando.value }
     proveedorEditando.value = null
+  } else {
+    avisar('No se pudo guardar el proveedor. Intenta de nuevo.')
   }
 }
 
@@ -1282,6 +1366,12 @@ const formatFecha = (fecha) => {
   if (!fecha) return ''
   return new Date(fecha).toLocaleDateString('es-MX')
 }
+
+// Lee día/mes directamente del string 'YYYY-MM-DD' para evitar el corrimiento
+// de un día que causa new Date(fecha) al convertir de UTC a hora local.
+const mesesCortos = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
+const diaEvento = (fecha) => fecha ? fecha.split('-')[2] : ''
+const mesEvento = (fecha) => fecha ? mesesCortos[Number(fecha.split('-')[1]) - 1] : ''
 
 const formatMonto = (valor) => {
   if (valor == null) return '—'

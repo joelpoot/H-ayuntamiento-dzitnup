@@ -89,27 +89,20 @@
 
             <!-- Localización -->
             <div class="mt-6">
-              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Localización</label>
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Punto de Referencia del Lugar</label>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
-                <div class="flex gap-2">
-                  <input v-model="direccionBusqueda" @keyup.enter="buscarDireccion" type="text"
-                    placeholder="Escribe la calle o referencia y presiona Buscar"
-                    class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
-                  <button @click="buscarDireccion" :disabled="buscando" type="button"
-                    class="bg-[#14392b] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors disabled:opacity-50 shrink-0">
-                    {{ buscando ? 'Buscando...' : 'Buscar' }}
-                  </button>
-                </div>
+                <input v-model="form.ubicacion" type="text"
+                  placeholder="Ej. Frente a la escuela, cerca de la iglesia ..."
+                  class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
                 <input :value="form.latitud ? `${form.latitud}, ${form.longitud}` : ''" disabled placeholder="Coordenadas seleccionadas"
                   class="border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-500" />
               </div>
 
-              <p v-if="errorBusqueda" class="text-xs text-red-500 mt-1">{{ errorBusqueda }}</p>
               <p v-if="errorArea" class="text-xs text-red-600 font-semibold mt-1 flex items-center gap-1">
                 <AlertTriangle :size="14" class="shrink-0" />{{ errorArea }}
               </p>
-              <p class="text-xs text-gray-400 mt-1 italic">Puedes arrastrar el pin en el mapa para ajustar la ubicación exacta. Tu ubicación no será compartida públicamente.</p>
+              <p class="text-xs text-gray-400 mt-1 italic">Describe el lugar con una referencia conocida (una casa, negocio, escuela, etc.) y marca el punto exacto tocando el mapa. Tu ubicación no será compartida públicamente.</p>
 
               <div id="mapaReporte" class="mt-3 h-64 w-full rounded-lg border border-gray-300 z-0"></div>
 
@@ -117,6 +110,7 @@
                 class="mt-3 bg-[#c2a878] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#a8916a] transition-colors flex items-center gap-1.5">
                 <LocateFixed :size="14" />Usar mi ubicación actual
               </button>
+              <p class="text-xs text-gray-400 mt-2 italic">Usa este botón si estás en el lugar del reporte; así el mapa marcará tu ubicación exacta automáticamente.</p>
             </div>
 
             <!-- Foto -->
@@ -189,9 +183,6 @@ const form = ref({
 // --- Mapa ---
 let map = null
 let marker = null
-const direccionBusqueda = ref('')
-const buscando = ref(false)
-const errorBusqueda = ref('')
 
 const CENTRO_DZITNUP = [20.6471, -88.2448]
 const errorArea = ref('')
@@ -234,40 +225,6 @@ const colocarPin = (lat, lng) => {
     })
   }
   map.setView([lat, lng], 16)
-}
-
-const buscarDireccion = async () => {
-  if (!direccionBusqueda.value.trim()) return
-  errorBusqueda.value = ''
-  buscando.value = true
-  form.value.ubicacion = direccionBusqueda.value
-
-  try {
-    const query = `${direccionBusqueda.value}, Dzitnup, Valladolid, Yucatán, México`
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
-    const res = await fetch(url, { headers: { 'Accept-Language': 'es' } })
-    const data = await res.json()
-
-    if (data && data.length > 0) {
-      const lat = parseFloat(data[0].lat)
-      const lng = parseFloat(data[0].lon)
-      if (!dentroDelArea(lat, lng)) {
-        map.setView(CENTRO_DZITNUP, 17)
-        errorBusqueda.value = 'Esa dirección parece estar fuera de Dzitnup. Toca el punto exacto dentro de la comunidad para marcarlo.'
-        return
-      }
-      colocarPin(lat, lng)
-    } else {
-      // No se encontró la dirección exacta: centramos en Dzitnup con buen zoom
-      // para que el usuario marque el punto manualmente.
-      map.setView(CENTRO_DZITNUP, 17)
-      errorBusqueda.value = 'No encontramos esa calle en el mapa (es normal en comunidades pequeñas). Tu descripción ya quedó guardada — ahora toca el punto exacto en el mapa para marcarlo.'
-    }
-  } catch (e) {
-    errorBusqueda.value = 'Error al buscar la dirección. Intenta de nuevo o marca el punto directamente en el mapa.'
-  } finally {
-    buscando.value = false
-  }
 }
 
 const obtenerUbicacion = () => {
@@ -368,7 +325,6 @@ const guardarReporte = async () => {
     form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
     fotoPreview.value = null
     fotoArchivo.value = null
-    direccionBusqueda.value = ''
     if (marker) { map.removeLayer(marker); marker = null }
     setTimeout(() => {
       router.push('/')
