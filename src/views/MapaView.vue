@@ -110,11 +110,21 @@ const pinColor = (estado) => {
   return '#c2a878'
 }
 
+// Solo la vista pública (sin nombre/teléfono del reportante) es legible sin sesión.
+const escapeHtml = (valor) => {
+  if (valor == null) return ''
+  return String(valor)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 onMounted(async () => {
   const { data, error } = await supabase
-    .from('reportes')
+    .from('reportes_publicos')
     .select('*')
-    .eq('moderado', true)
     .order('fecha_registro', { ascending: false })
     .limit(10)
 
@@ -141,10 +151,10 @@ onMounted(async () => {
 
         icono.bindPopup(`
           <div style="font-family:sans-serif;min-width:160px">
-            <strong style="color:#14392b">${r.tipo}</strong><br/>
-            <span style="font-size:12px;color:#666">${r.ubicacion}</span><br/>
+            <strong style="color:#14392b">${escapeHtml(r.tipo)}</strong><br/>
+            <span style="font-size:12px;color:#666">${escapeHtml(r.ubicacion)}</span><br/>
             <span style="font-size:12px;font-weight:bold;color:${pinColor(r.estado)}">
-              ● ${r.estado}
+              ● ${escapeHtml(r.estado)}
             </span>
           </div>
         `)

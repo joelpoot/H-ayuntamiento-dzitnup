@@ -129,7 +129,84 @@
 
         <!-- Tab Reportes -->
         <div v-if="tabActivo === 'reportes'">
-          <h2 class="text-[#14392b] font-bold text-lg mb-4">Gestión de Reportes</h2>
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+            <h2 class="text-[#14392b] font-bold text-lg">Gestión de Reportes</h2>
+            <button @click="mostrarEstadisticas = !mostrarEstadisticas"
+              class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#14392b] text-[#14392b] hover:bg-[#14392b] hover:text-white transition-colors flex items-center gap-1.5">
+              <BarChart3 :size="14" />{{ mostrarEstadisticas ? 'Ocultar estadísticas' : 'Ver estadísticas' }}
+            </button>
+          </div>
+
+          <div v-if="mostrarEstadisticas" class="mb-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Reportes totales</p>
+                <p class="text-3xl font-extrabold text-[#14392b] mt-1">{{ estadisticas.total }}</p>
+              </div>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tiempo prom. de resolución</p>
+                <p class="text-3xl font-extrabold text-[#14392b] mt-1">
+                  <template v-if="estadisticas.tiempoPromedio != null">{{ estadisticas.tiempoPromedio.toFixed(1) }} <span class="text-base font-semibold">días</span></template>
+                  <template v-else>—</template>
+                </p>
+              </div>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pendientes activos</p>
+                <p class="text-3xl font-extrabold text-[#14392b] mt-1">{{ estadisticas.pendientesActivos }}</p>
+              </div>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tasa de resolución</p>
+                <p class="text-3xl font-extrabold text-[#14392b] mt-1">{{ estadisticas.tasaResolucion }}%</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-sm font-bold text-[#14392b] mb-1">Reportes por mes</h3>
+                <p class="text-xs text-gray-400 mb-4">Últimos 6 meses, por fecha de registro</p>
+                <div v-if="estadisticas.total === 0" class="text-sm text-gray-400">Aún no hay reportes registrados.</div>
+                <div v-else class="flex items-end gap-3 h-40 border-b border-gray-200 px-1">
+                  <div v-for="m in estadisticas.porMes" :key="m.label + m.anio" class="flex-1 flex flex-col items-center justify-end h-full">
+                    <span class="text-xs font-bold text-[#14392b] mb-1">{{ m.cantidad }}</span>
+                    <div class="w-full rounded-t" :style="{ height: Math.max(m.alturaPct, m.cantidad > 0 ? 4 : 0) + '%', background: 'linear-gradient(180deg, #c2a878, #14392b)' }"></div>
+                    <span class="text-xs text-gray-500 mt-2">{{ m.label }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-sm font-bold text-[#14392b] mb-1">Distribución por estado</h3>
+                <p class="text-xs text-gray-400 mb-4">Proporción sobre el total de reportes</p>
+                <div v-if="estadisticas.total === 0" class="text-sm text-gray-400">Aún no hay reportes registrados.</div>
+                <div v-else class="space-y-3">
+                  <div v-for="e in estadisticas.porEstado" :key="e.estado">
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="font-semibold text-gray-600 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" :class="colorBarra(e.estado)"></span>{{ e.estado }}</span>
+                      <span class="text-gray-400">{{ e.cantidad }} · {{ e.pct }}%</span>
+                    </div>
+                    <div class="h-2 rounded-full bg-gray-100 overflow-hidden">
+                      <div class="h-full rounded-full" :class="colorBarra(e.estado)" :style="{ width: e.pct + '%' }"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 class="text-sm font-bold text-[#14392b] mb-1">Tipos con más incidencias</h3>
+              <p class="text-xs text-gray-400 mb-4">Ranking acumulado sobre el total de reportes</p>
+              <div v-if="estadisticas.porTipo.length === 0" class="text-sm text-gray-400">Aún no hay reportes registrados.</div>
+              <div v-else class="space-y-2">
+                <div v-for="t in estadisticas.porTipo" :key="t.tipo" class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                  <span class="text-sm text-gray-700">{{ t.tipo }}</span>
+                  <span class="text-sm font-bold text-[#14392b]">{{ t.cantidad }} {{ t.cantidad === 1 ? 'reporte' : 'reportes' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="text-xs text-gray-400 mt-3">El tiempo de resolución solo considera reportes Resueltos con fecha de cierre capturada más abajo.</p>
+          </div>
+
           <div v-if="cargandoReportes" class="text-center py-6 text-gray-400">Cargando...</div>
           <div v-else class="space-y-3">
             <div v-for="r in reportes" :key="r.id"
@@ -647,11 +724,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
 import { confirmar, avisar } from '../composables/useDialogo.js'
-import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle } from 'lucide-vue-next'
+import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle, BarChart3 } from 'lucide-vue-next'
 
 
 // --- Auth ---
@@ -750,6 +827,7 @@ const cerrarSesion = async () => {
 // --- Reportes ---
 const reportes = ref([])
 const cargandoReportes = ref(true)
+const mostrarEstadisticas = ref(false)
 
 const cargarReportes = async () => {
   cargandoReportes.value = true
@@ -760,7 +838,9 @@ const cargarReportes = async () => {
         const { data: signedData } = await supabase.storage
           .from('reportes')
           .createSignedUrl(r.foto_url, 3600)
-        return { ...r, foto_url: signedData?.signedUrl || null }
+        // foto_path conserva la ruta real en Storage (necesaria para poder borrar el archivo);
+        // foto_url se sobrescribe con la URL firmada, solo sirve para mostrar la imagen.
+        return { ...r, foto_path: r.foto_url, foto_url: signedData?.signedUrl || null }
       }
       return r
     }))
@@ -784,8 +864,12 @@ const aprobarReporte = async (reporte) => {
 const rechazarReporte = async (reporte) => {
   if (await confirmar('¿Estás seguro de rechazar y eliminar este reporte?', { tipo: 'danger', titulo: 'Rechazar reporte', textoConfirmar: 'Rechazar' })) {
     const { error } = await supabase.from('reportes').delete().eq('id', reporte.id)
-    if (!error) reportes.value = reportes.value.filter(r => r.id !== reporte.id)
-    else avisar('No se pudo rechazar el reporte. Intenta de nuevo.')
+    if (!error) {
+      reportes.value = reportes.value.filter(r => r.id !== reporte.id)
+      if (reporte.foto_path) await supabase.storage.from('reportes').remove([reporte.foto_path])
+    } else {
+      avisar('No se pudo rechazar el reporte. Intenta de nuevo.')
+    }
   }
 }
 
@@ -935,8 +1019,12 @@ const publicarAviso = async () => {
 const eliminarAviso = async (aviso) => {
   if (!(await confirmar(`¿Eliminar el aviso "${aviso.titulo}"?`, { tipo: 'danger', titulo: 'Eliminar aviso', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('avisos').delete().eq('id', aviso.id)
-  if (!error) avisos.value = avisos.value.filter(a => a.id !== aviso.id)
-  else avisar('No se pudo eliminar el aviso. Intenta de nuevo.')
+  if (!error) {
+    avisos.value = avisos.value.filter(a => a.id !== aviso.id)
+    if (aviso.imagen_url) await supabase.storage.from('avisos').remove([nombreDesdeUrl(aviso.imagen_url)])
+  } else {
+    avisar('No se pudo eliminar el aviso. Intenta de nuevo.')
+  }
 }
 
 const iniciarEdicion = (aviso) => { avisoEditando.value = { ...aviso } }
@@ -1008,8 +1096,12 @@ const subirFoto = async () => {
 const eliminarFoto = async (foto) => {
   if (!(await confirmar(`¿Eliminar la foto "${foto.titulo}"?`, { tipo: 'danger', titulo: 'Eliminar foto', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('galeria').delete().eq('id', foto.id)
-  if (!error) galeria.value = galeria.value.filter(f => f.id !== foto.id)
-  else avisar('No se pudo eliminar la foto. Intenta de nuevo.')
+  if (!error) {
+    galeria.value = galeria.value.filter(f => f.id !== foto.id)
+    if (foto.imagen_url) await supabase.storage.from('galeria').remove([nombreDesdeUrl(foto.imagen_url)])
+  } else {
+    avisar('No se pudo eliminar la foto. Intenta de nuevo.')
+  }
 }
 
 const iniciarEdicionFoto = (foto) => { fotoEditando.value = { ...foto } }
@@ -1317,6 +1409,65 @@ const nombreProveedor = (proveedorId) => {
   return p ? p.nombre : 'Sin especificar'
 }
 
+// --- Estadísticas (dashboard operativo de reportes, sobre los datos ya cargados) ---
+const mesesLargos = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+
+const estadisticas = computed(() => {
+  const total = reportes.value.length
+  const resueltos = reportes.value.filter(r => r.estado === 'Resuelto')
+  const pendientesActivos = total - resueltos.length
+  const tasaResolucion = total > 0 ? Math.round((resueltos.length / total) * 100) : 0
+
+  const conCierre = resueltos.filter(r => r.fecha_cierre && r.fecha_registro)
+  let tiempoPromedio = null
+  if (conCierre.length > 0) {
+    const totalDias = conCierre.reduce((sum, r) => {
+      const dias = (new Date(r.fecha_cierre) - new Date(r.fecha_registro)) / 86400000
+      return sum + Math.max(0, dias)
+    }, 0)
+    tiempoPromedio = totalDias / conCierre.length
+  }
+
+  // Reportes por mes, últimos 6 meses (incluyendo el actual)
+  const hoy = new Date()
+  const meses = []
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1)
+    meses.push({ anio: d.getFullYear(), mesIdx: d.getMonth(), label: mesesLargos[d.getMonth()], cantidad: 0 })
+  }
+  reportes.value.forEach(r => {
+    if (!r.fecha_registro) return
+    const f = new Date(r.fecha_registro)
+    const m = meses.find(x => x.anio === f.getFullYear() && x.mesIdx === f.getMonth())
+    if (m) m.cantidad++
+  })
+  const maxMes = Math.max(1, ...meses.map(m => m.cantidad))
+  const porMes = meses.map(m => ({ ...m, alturaPct: Math.round((m.cantidad / maxMes) * 100) }))
+
+  // Distribución por estado
+  const conteoEstados = {}
+  reportes.value.forEach(r => {
+    const key = r.estado || 'Sin estado'
+    conteoEstados[key] = (conteoEstados[key] || 0) + 1
+  })
+  const porEstado = Object.entries(conteoEstados)
+    .map(([estado, cantidad]) => ({ estado, cantidad, pct: total > 0 ? Math.round((cantidad / total) * 100) : 0 }))
+    .sort((a, b) => b.cantidad - a.cantidad)
+
+  // Tipos con más incidencias
+  const conteoTipos = {}
+  reportes.value.forEach(r => {
+    const key = r.tipo || 'Sin especificar'
+    conteoTipos[key] = (conteoTipos[key] || 0) + 1
+  })
+  const porTipo = Object.entries(conteoTipos)
+    .map(([tipo, cantidad]) => ({ tipo, cantidad }))
+    .sort((a, b) => b.cantidad - a.cantidad)
+    .slice(0, 5)
+
+  return { total, pendientesActivos, tasaResolucion, tiempoPromedio, porMes, porEstado, porTipo }
+})
+
 // --- Transparencia (Pantalla 3 del mockup: indicadores del trimestre) ---
 const cargandoIndicadores = ref(false)
 const indicadores = ref({ costoPromedio: 0, totalResueltos: 0, gastoTotal: 0, porTipo: [] })
@@ -1344,6 +1495,9 @@ const cargarIndicadores = () => {
 }
 
 // --- Helpers ---
+// avisos/galeria guardan imagen_url como URL pública completa; Storage necesita solo el nombre del archivo para borrarlo.
+const nombreDesdeUrl = (url) => url.split('/').pop().split('?')[0]
+
 const estadoColor = (estado) => {
   if (estado === 'Resuelto') return 'bg-green-100 text-green-700'
   if (estado === 'En Proceso') return 'bg-blue-100 text-blue-700'
