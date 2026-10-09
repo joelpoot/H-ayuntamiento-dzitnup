@@ -45,6 +45,7 @@ function onKeydown(e) {
         <RouterLink to="/" class="nav-link">Inicio</RouterLink>
         <RouterLink to="/avisos" class="nav-link">Avisos</RouterLink>
         <RouterLink to="/reportes" class="nav-link">Reportes</RouterLink>
+        <RouterLink to="/seguimiento" class="nav-link">Seguimiento</RouterLink>
         <RouterLink to="/horarios" class="nav-link">Horarios</RouterLink>
         <RouterLink to="/directorio" class="nav-link">Directorio</RouterLink>
         <RouterLink to="/agenda" class="nav-link">Agenda</RouterLink>
@@ -105,6 +106,7 @@ function onKeydown(e) {
           <RouterLink to="/" class="mobile-link">Inicio</RouterLink>
           <RouterLink to="/avisos" class="mobile-link">Avisos</RouterLink>
           <RouterLink to="/reportes" class="mobile-link">Reportes</RouterLink>
+          <RouterLink to="/seguimiento" class="mobile-link">Seguimiento</RouterLink>
           <RouterLink to="/horarios" class="mobile-link">Horarios</RouterLink>
           <RouterLink to="/directorio" class="mobile-link">Directorio</RouterLink>
           <RouterLink to="/agenda" class="mobile-link">Agenda</RouterLink>

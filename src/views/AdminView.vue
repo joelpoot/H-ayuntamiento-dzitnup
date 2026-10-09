@@ -14,7 +14,7 @@
 
             <div v-if="errorLogin" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
               <XCircle :size="16" class="shrink-0" />
-              Credenciales incorrectas
+              {{ mensajeErrorLogin }}
             </div>
 
             <div class="space-y-4">
@@ -718,6 +718,120 @@
           </template>
         </div>
 
+        <!-- Tab Bitácora -->
+        <div v-if="tabActivo === 'bitacora'">
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+            <h2 class="text-[#14392b] font-bold text-lg">Bitácora de Auditoría</h2>
+            <p class="text-xs text-gray-400">Registro de solo lectura: últimas 200 acciones del panel</p>
+          </div>
+
+          <div class="flex gap-3 flex-wrap mb-4">
+            <select v-model="filtroModuloBitacora" class="text-xs px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:border-[#14392b]">
+              <option value="">Todos los módulos</option>
+              <option v-for="m in modulosBitacora" :key="m" :value="m">{{ m }}</option>
+            </select>
+            <select v-model="filtroAccionBitacora" class="text-xs px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:border-[#14392b]">
+              <option value="">Todas las acciones</option>
+              <option v-for="a in accionesBitacora" :key="a" :value="a">{{ a }}</option>
+            </select>
+          </div>
+
+          <div v-if="cargandoBitacora" class="text-center py-6 text-gray-400">Cargando...</div>
+          <div v-else-if="bitacoraFiltrada.length === 0" class="text-center py-10 text-gray-400 text-sm bg-white rounded-xl border border-gray-100">
+            No hay movimientos registrados todavía.
+          </div>
+          <div v-else class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="bg-[#14392b] text-white text-xs uppercase">
+                  <tr>
+                    <th class="text-left px-4 py-3">Fecha</th>
+                    <th class="text-left px-4 py-3">Usuario</th>
+                    <th class="text-left px-4 py-3">Acción</th>
+                    <th class="text-left px-4 py-3">Módulo</th>
+                    <th class="text-left px-4 py-3">Detalle</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr v-for="b in bitacoraFiltrada" :key="b.id">
+                    <td class="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{{ formatFechaHora(b.fecha) }}</td>
+                    <td class="px-4 py-3 text-xs text-gray-700 whitespace-nowrap">{{ b.usuario_correo }}</td>
+                    <td class="px-4 py-3"><span :class="colorAccion(b.accion)" class="text-xs px-2 py-0.5 rounded-full font-semibold">{{ b.accion }}</span></td>
+                    <td class="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">{{ b.modulo }}</td>
+                    <td class="px-4 py-3 text-xs text-gray-500 break-words">{{ b.detalle }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Usuarios -->
+        <div v-if="tabActivo === 'usuarios'">
+          <h2 class="text-[#14392b] font-bold text-lg mb-4">Dar de Alta Operador</h2>
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div v-if="exitoUsuario" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <CheckCircle2 :size="16" class="shrink-0" />Cuenta creada. Se envió un correo al operador para que defina su contraseña.
+            </div>
+            <div v-if="errorValidacionUsuario" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
+              <AlertTriangle :size="16" class="shrink-0" />{{ errorValidacionUsuario }}
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre <span class="text-red-500">*</span></label><input v-model="nuevoUsuario.nombre" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Correo <span class="text-red-500">*</span></label><input v-model="nuevoUsuario.correo" type="email" placeholder="operador@dzitnup.gob.mx" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Rol</label><select v-model="nuevoUsuario.rol" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Operador</option><option>Administrador</option></select></div>
+              <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="nuevoUsuario.area" type="text" placeholder="Ej. Obras Públicas" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+            </div>
+            <div class="mt-6 text-center">
+              <button @click="agregarUsuario" :disabled="cargandoAltaUsuario" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase disabled:opacity-50 flex items-center gap-2 mx-auto">
+                <UserPlus :size="16" />{{ cargandoAltaUsuario ? 'Creando...' : 'Dar de Alta' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-8">
+            <h2 class="text-[#14392b] font-bold text-lg mb-4">Cuentas Registradas</h2>
+            <div v-if="cargandoUsuarios" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-else-if="usuarios.length === 0" class="text-center py-10 text-gray-400 text-sm bg-white rounded-xl border border-gray-100">
+              Aún no se ha dado de alta ningún operador.
+            </div>
+            <div v-else class="space-y-3">
+              <div v-for="u in usuarios" :key="u.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div v-if="usuarioEditando && usuarioEditando.id === u.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre</label><input v-model="usuarioEditando.nombre" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div><label class="text-xs font-semibold text-gray-500 uppercase">Rol</label><select v-model="usuarioEditando.rol" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"><option>Operador</option><option>Administrador</option></select></div>
+                  <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="usuarioEditando.area" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
+                  <div class="md:col-span-2 flex gap-2 mt-2">
+                    <button @click="guardarEdicionUsuario" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
+                    <button @click="cancelarEdicionUsuario" class="bg-gray-200 text-gray-700 text-xs px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold">Cancelar</button>
+                  </div>
+                </div>
+                <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 sm:gap-4">
+                  <div class="flex gap-3 items-center min-w-0">
+                    <div class="w-10 h-10 rounded-full bg-[#14392b] text-white flex items-center justify-center font-bold text-sm shrink-0">{{ u.nombre.slice(0,2).toUpperCase() }}</div>
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <p class="font-bold text-gray-800 text-sm break-words">{{ u.nombre }}</p>
+                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ u.rol }}</span>
+                        <span :class="u.estado ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'" class="text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ u.estado ? 'Activo' : 'Inactivo' }}</span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-0.5 break-words">{{ u.correo }}</p>
+                      <p v-if="u.area" class="text-xs text-gray-400 mt-0.5 break-words">Área: {{ u.area }}</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2 shrink-0 self-end sm:self-auto flex-wrap">
+                    <button @click="toggleEstadoUsuario(u)" :class="u.estado ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' : 'bg-green-100 text-green-700 hover:bg-green-200'" class="text-xs px-3 py-1.5 rounded-lg transition-colors font-semibold flex items-center gap-1.5">
+                      <component :is="u.estado ? UserX : UserCheck" :size="14" />{{ u.estado ? 'Desactivar' : 'Activar' }}
+                    </button>
+                    <button @click="iniciarEdicionUsuario(u)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
+                    <button @click="eliminarUsuario(u)" class="bg-red-100 text-red-700 text-xs px-3 py-1.5 rounded-lg hover:bg-red-200 transition-colors font-semibold">Eliminar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -725,19 +839,21 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { supabase } from '../supabase.js'
+import { supabase, crearClienteSinSesion } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
 import { confirmar, avisar } from '../composables/useDialogo.js'
-import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle, BarChart3 } from 'lucide-vue-next'
+import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle, BarChart3, UserPlus, UserX, UserCheck } from 'lucide-vue-next'
 
 
 // --- Auth ---
 const autenticado = ref(false)
 const errorLogin = ref(false)
+const mensajeErrorLogin = ref('Credenciales incorrectas')
 const cargandoLogin = ref(false)
 const tabActivo = ref('reportes')
 const loginForm = ref({ email: '', password: '' })
 const mostrarPassword = ref(false)
+const usuarioActual = ref('')
 
 const vistaLogin = ref('login') // 'login' | 'recuperar'
 const recuperarForm = ref({ email: '' })
@@ -773,6 +889,8 @@ const tabs = [
   { id: 'agenda', label: 'Agenda' },
   { id: 'proveedores', label: 'Proveedores' },
   { id: 'transparencia', label: 'Transparencia' },
+  { id: 'bitacora', label: 'Bitácora' },
+  { id: 'usuarios', label: 'Usuarios' },
 ]
 
 const cargarTodo = () => {
@@ -784,6 +902,8 @@ const cargarTodo = () => {
   cargarAgenda()
   cargarProveedores()
   cargarIndicadores()
+  cargarBitacora()
+  cargarUsuarios()
 }
 
 // Verifica si ya hay una sesión activa al cargar la página
@@ -792,6 +912,7 @@ onMounted(async () => {
   if (data.session) {
     autenticado.value = true
     adminState.autenticado = true
+    usuarioActual.value = data.session.user?.email || ''
     cargarTodo()
   }
 })
@@ -799,22 +920,38 @@ onMounted(async () => {
 const iniciarSesion = async () => {
   cargandoLogin.value = true
   errorLogin.value = false
+  mensajeErrorLogin.value = 'Credenciales incorrectas'
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: loginForm.value.email,
     password: loginForm.value.password
   })
 
-  cargandoLogin.value = false
-
   if (error) {
+    cargandoLogin.value = false
     errorLogin.value = true
-  } else {
-    autenticado.value = true
-    adminState.autenticado = true
-    loginForm.value = { email: '', password: '' }
-    cargarTodo()
+    return
   }
+
+  // Si esta cuenta fue dada de baja desde Usuarios y Roles, se cierra la
+  // sesión de inmediato. Si la tabla "usuarios" no existe aún o la cuenta
+  // no tiene perfil registrado ahí, se deja pasar (no bloquea por accidente
+  // al administrador original).
+  const { data: perfil } = await supabase.from('usuarios').select('estado').eq('correo', data.user.email).maybeSingle()
+  if (perfil && perfil.estado === false) {
+    await supabase.auth.signOut()
+    cargandoLogin.value = false
+    errorLogin.value = true
+    mensajeErrorLogin.value = 'Esta cuenta fue desactivada por un administrador.'
+    return
+  }
+
+  cargandoLogin.value = false
+  usuarioActual.value = data.user.email
+  autenticado.value = true
+  adminState.autenticado = true
+  loginForm.value = { email: '', password: '' }
+  cargarTodo()
 }
 
 const cerrarSesion = async () => {
@@ -822,6 +959,17 @@ const cerrarSesion = async () => {
   autenticado.value = false
   adminState.autenticado = false
   loginForm.value = { email: '', password: '' }
+  usuarioActual.value = ''
+}
+
+// --- Bitácora de auditoría: registro best-effort (no bloquea la acción principal) ---
+const registrarBitacora = (accion, modulo, registro_id, detalle) => {
+  supabase.from('bitacora').insert([{
+    usuario_correo: usuarioActual.value || 'desconocido',
+    accion, modulo,
+    registro_id: registro_id != null ? String(registro_id) : null,
+    detalle,
+  }]).then(({ error }) => { if (error) console.log('No se pudo registrar en bitácora:', error.message) })
 }
 
 // --- Reportes ---
@@ -851,14 +999,18 @@ const cargarReportes = async () => {
 
 const cambiarEstado = async (reporte, nuevoEstado) => {
   const { error } = await supabase.from('reportes').update({ estado: nuevoEstado }).eq('id', reporte.id)
-  if (!error) reporte.estado = nuevoEstado
-  else avisar('No se pudo actualizar el estado del reporte. Intenta de nuevo.')
+  if (!error) {
+    reporte.estado = nuevoEstado
+    registrarBitacora('cambiar_estado', 'reportes', reporte.id, `Estado cambiado a "${nuevoEstado}"`)
+  } else avisar('No se pudo actualizar el estado del reporte. Intenta de nuevo.')
 }
 
 const aprobarReporte = async (reporte) => {
   const { error } = await supabase.from('reportes').update({ moderado: true, estado: 'Pendiente' }).eq('id', reporte.id)
-  if (!error) { reporte.moderado = true; reporte.estado = 'Pendiente' }
-  else avisar('No se pudo aprobar el reporte. Intenta de nuevo.')
+  if (!error) {
+    reporte.moderado = true; reporte.estado = 'Pendiente'
+    registrarBitacora('aprobar', 'reportes', reporte.id, `Reporte "${reporte.tipo}" aprobado`)
+  } else avisar('No se pudo aprobar el reporte. Intenta de nuevo.')
 }
 
 const rechazarReporte = async (reporte) => {
@@ -867,6 +1019,7 @@ const rechazarReporte = async (reporte) => {
     if (!error) {
       reportes.value = reportes.value.filter(r => r.id !== reporte.id)
       if (reporte.foto_path) await supabase.storage.from('reportes').remove([reporte.foto_path])
+      registrarBitacora('rechazar', 'reportes', reporte.id, `Reporte "${reporte.tipo}" rechazado y eliminado`)
     } else {
       avisar('No se pudo rechazar el reporte. Intenta de nuevo.')
     }
@@ -900,6 +1053,7 @@ const guardarCierreFinanciero = async () => {
   if (!error) {
     const reporte = reportes.value.find(r => r.id === c.id)
     if (reporte) Object.assign(reporte, c)
+    registrarBitacora('editar', 'reportes', c.id, 'Cierre financiero registrado')
     cierreEditando.value = null
     cargarIndicadores() // el cierre recién guardado puede cambiar los indicadores del trimestre
   } else {
@@ -959,6 +1113,7 @@ const cancelarAviso = async (aviso) => {
   if (error) { avisar('No se pudo cancelar el aviso. Intenta de nuevo.'); return }
   const idx = avisos.value.findIndex(a => a.id === aviso.id)
   if (idx !== -1) avisos.value[idx].estado = 'Cancelado'
+  registrarBitacora('editar', 'avisos', aviso.id, `Aviso "${aviso.titulo}" cancelado anticipadamente`)
   if (avisoEditando.value && avisoEditando.value.id === aviso.id) avisoEditando.value = null
 }
 
@@ -1007,6 +1162,7 @@ const publicarAviso = async () => {
   }])
   if (!error) {
     exitoAviso.value = true
+    registrarBitacora('crear', 'avisos', null, `Aviso "${nuevoAviso.value.titulo}" publicado`)
     nuevoAviso.value = { titulo: '', categoria: 'General', descripcion: '', area: '', fecha_vigencia: '', estado: 'Activo' }
     archivoImagen.value = null; previstaImagen.value = null
     cargarAvisos()
@@ -1022,6 +1178,7 @@ const eliminarAviso = async (aviso) => {
   if (!error) {
     avisos.value = avisos.value.filter(a => a.id !== aviso.id)
     if (aviso.imagen_url) await supabase.storage.from('avisos').remove([nombreDesdeUrl(aviso.imagen_url)])
+    registrarBitacora('eliminar', 'avisos', aviso.id, `Aviso "${aviso.titulo}" eliminado`)
   } else {
     avisar('No se pudo eliminar el aviso. Intenta de nuevo.')
   }
@@ -1039,6 +1196,7 @@ const guardarEdicion = async () => {
   if (!error) {
     const idx = avisos.value.findIndex(a => a.id === avisoEditando.value.id)
     if (idx !== -1) avisos.value[idx] = { ...avisoEditando.value }
+    registrarBitacora('editar', 'avisos', avisoEditando.value.id, `Aviso "${avisoEditando.value.titulo}" actualizado`)
     avisoEditando.value = null
   } else {
     avisar('No se pudo guardar el aviso. Intenta de nuevo.')
@@ -1084,6 +1242,7 @@ const subirFoto = async () => {
   }])
   if (!error) {
     exitoGaleria.value = true
+    registrarBitacora('crear', 'galeria', null, `Foto "${nuevaFoto.value.titulo}" subida`)
     nuevaFoto.value = { titulo: '', categoria: 'Evento', descripcion: '', fecha: '' }
     archivoGaleria.value = null; previstaGaleria.value = null
     cargarGaleria()
@@ -1099,6 +1258,7 @@ const eliminarFoto = async (foto) => {
   if (!error) {
     galeria.value = galeria.value.filter(f => f.id !== foto.id)
     if (foto.imagen_url) await supabase.storage.from('galeria').remove([nombreDesdeUrl(foto.imagen_url)])
+    registrarBitacora('eliminar', 'galeria', foto.id, `Foto "${foto.titulo}" eliminada`)
   } else {
     avisar('No se pudo eliminar la foto. Intenta de nuevo.')
   }
@@ -1115,6 +1275,7 @@ const guardarEdicionFoto = async () => {
   if (!error) {
     const idx = galeria.value.findIndex(f => f.id === fotoEditando.value.id)
     if (idx !== -1) galeria.value[idx] = { ...fotoEditando.value }
+    registrarBitacora('editar', 'galeria', fotoEditando.value.id, `Foto "${fotoEditando.value.titulo}" actualizada`)
     fotoEditando.value = null
   } else {
     avisar('No se pudo guardar la foto. Intenta de nuevo.')
@@ -1153,6 +1314,7 @@ const agregarHorario = async () => {
   }])
   if (!error) {
     exitoHorario.value = true
+    registrarBitacora('crear', 'horarios', null, `Horario de "${nuevoHorario.value.area}" agregado`)
     nuevoHorario.value = { area: '', dias: '', hora_entrada: '', hora_salida: '', observaciones: '' }
     cargarHorarios()
     setTimeout(() => exitoHorario.value = false, 3000)
@@ -1164,7 +1326,10 @@ const agregarHorario = async () => {
 const eliminarHorario = async (h) => {
   if (!(await confirmar(`¿Eliminar el horario de "${h.area}"?`, { tipo: 'danger', titulo: 'Eliminar horario', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('horarios').delete().eq('id', h.id)
-  if (!error) horarios.value = horarios.value.filter(x => x.id !== h.id)
+  if (!error) {
+    horarios.value = horarios.value.filter(x => x.id !== h.id)
+    registrarBitacora('eliminar', 'horarios', h.id, `Horario de "${h.area}" eliminado`)
+  }
   else avisar('No se pudo eliminar el horario. Intenta de nuevo.')
 }
 
@@ -1186,6 +1351,7 @@ const guardarEdicionHorario = async () => {
   if (!error) {
     const idx = horarios.value.findIndex(h => h.id === horarioEditando.value.id)
     if (idx !== -1) horarios.value[idx] = { ...horarioEditando.value }
+    registrarBitacora('editar', 'horarios', horarioEditando.value.id, `Horario de "${horarioEditando.value.area}" actualizado`)
     horarioEditando.value = null
   } else {
     avisar('No se pudo guardar el horario. Intenta de nuevo.')
@@ -1230,6 +1396,7 @@ const agregarContacto = async () => {
   }])
   if (!dbError) {
     exitoDirectorio.value = true
+    registrarBitacora('crear', 'directorio', null, `Contacto "${nuevoContacto.value.nombre}" agregado`)
     nuevoContacto.value = { nombre: '', iniciales: '', cargo: '', area: '', telefono: '' }
     cargarDirectorio()
     setTimeout(() => exitoDirectorio.value = false, 3000)
@@ -1241,7 +1408,10 @@ const agregarContacto = async () => {
 const eliminarContacto = async (c) => {
   if (!(await confirmar(`¿Eliminar el contacto "${c.nombre}"?`, { tipo: 'danger', titulo: 'Eliminar contacto', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('directorio').delete().eq('id', c.id)
-  if (!error) directorio.value = directorio.value.filter(x => x.id !== c.id)
+  if (!error) {
+    directorio.value = directorio.value.filter(x => x.id !== c.id)
+    registrarBitacora('eliminar', 'directorio', c.id, `Contacto "${c.nombre}" eliminado`)
+  }
   else avisar('No se pudo eliminar el contacto. Intenta de nuevo.')
 }
 
@@ -1261,6 +1431,7 @@ const guardarEdicionContacto = async () => {
   if (!dbError) {
     const idx = directorio.value.findIndex(c => c.id === contactoEditando.value.id)
     if (idx !== -1) directorio.value[idx] = { ...contactoEditando.value }
+    registrarBitacora('editar', 'directorio', contactoEditando.value.id, `Contacto "${contactoEditando.value.nombre}" actualizado`)
     contactoEditando.value = null
   } else {
     avisar('No se pudo guardar el contacto. Intenta de nuevo.')
@@ -1291,6 +1462,7 @@ const agregarEvento = async () => {
   }])
   if (!error) {
     exitoAgenda.value = true
+    registrarBitacora('crear', 'agenda', null, `Evento "${nuevoEvento.value.titulo}" agregado`)
     nuevoEvento.value = { titulo: '', tipo: 'Cabildo', fecha: '', hora: '', lugar: '', dirigido: '', descripcion: '' }
     cargarAgenda()
     setTimeout(() => exitoAgenda.value = false, 3000)
@@ -1302,7 +1474,10 @@ const agregarEvento = async () => {
 const eliminarEvento = async (e) => {
   if (!(await confirmar(`¿Eliminar el evento "${e.titulo}"?`, { tipo: 'danger', titulo: 'Eliminar evento', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('agenda').delete().eq('id', e.id)
-  if (!error) agenda.value = agenda.value.filter(x => x.id !== e.id)
+  if (!error) {
+    agenda.value = agenda.value.filter(x => x.id !== e.id)
+    registrarBitacora('eliminar', 'agenda', e.id, `Evento "${e.titulo}" eliminado`)
+  }
   else avisar('No se pudo eliminar el evento. Intenta de nuevo.')
 }
 
@@ -1319,6 +1494,7 @@ const guardarEdicionEvento = async () => {
   if (!error) {
     const idx = agenda.value.findIndex(e => e.id === eventoEditando.value.id)
     if (idx !== -1) agenda.value[idx] = { ...eventoEditando.value }
+    registrarBitacora('editar', 'agenda', eventoEditando.value.id, `Evento "${eventoEditando.value.titulo}" actualizado`)
     eventoEditando.value = null
   } else {
     avisar('No se pudo guardar el evento. Intenta de nuevo.')
@@ -1353,6 +1529,7 @@ const agregarProveedor = async () => {
   }])
   if (!error) {
     exitoProveedor.value = true
+    registrarBitacora('crear', 'proveedores', null, `Proveedor "${nuevoProveedor.value.nombre}" agregado`)
     nuevoProveedor.value = { nombre: '', especialidad: '' }
     cargarProveedores()
     setTimeout(() => exitoProveedor.value = false, 3000)
@@ -1364,7 +1541,10 @@ const agregarProveedor = async () => {
 const eliminarProveedor = async (p) => {
   if (!(await confirmar(`¿Eliminar al proveedor "${p.nombre}"? Los reportes que ya lo tengan asignado conservarán el registro histórico.`, { tipo: 'danger', titulo: 'Eliminar proveedor', textoConfirmar: 'Eliminar' }))) return
   const { error } = await supabase.from('proveedores').delete().eq('id', p.id)
-  if (!error) proveedores.value = proveedores.value.filter(x => x.id !== p.id)
+  if (!error) {
+    proveedores.value = proveedores.value.filter(x => x.id !== p.id)
+    registrarBitacora('eliminar', 'proveedores', p.id, `Proveedor "${p.nombre}" eliminado`)
+  }
   else avisar('No se pudo eliminar el proveedor. Intenta de nuevo.')
 }
 
@@ -1382,6 +1562,7 @@ const guardarEdicionProveedor = async () => {
   if (!error) {
     const idx = proveedores.value.findIndex(p => p.id === proveedorEditando.value.id)
     if (idx !== -1) proveedores.value[idx] = { ...proveedorEditando.value }
+    registrarBitacora('editar', 'proveedores', proveedorEditando.value.id, `Proveedor "${proveedorEditando.value.nombre}" actualizado`)
     proveedorEditando.value = null
   } else {
     avisar('No se pudo guardar el proveedor. Intenta de nuevo.')
@@ -1530,5 +1711,178 @@ const mesEvento = (fecha) => fecha ? mesesCortos[Number(fecha.split('-')[1]) - 1
 const formatMonto = (valor) => {
   if (valor == null) return '—'
   return Number(valor).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
+}
+
+const formatFechaHora = (fecha) => {
+  if (!fecha) return ''
+  return new Date(fecha).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })
+}
+
+// --- Bitácora de auditoría ---
+const bitacora = ref([])
+const cargandoBitacora = ref(false)
+const filtroModuloBitacora = ref('')
+const filtroAccionBitacora = ref('')
+
+const cargarBitacora = async () => {
+  cargandoBitacora.value = true
+  const { data, error } = await supabase.from('bitacora').select('*').order('fecha', { ascending: false }).limit(200)
+  if (!error) bitacora.value = data
+  cargandoBitacora.value = false
+}
+
+const modulosBitacora = computed(() => [...new Set(bitacora.value.map(b => b.modulo))].sort())
+const accionesBitacora = computed(() => [...new Set(bitacora.value.map(b => b.accion))].sort())
+
+const bitacoraFiltrada = computed(() => bitacora.value.filter(b => {
+  if (filtroModuloBitacora.value && b.modulo !== filtroModuloBitacora.value) return false
+  if (filtroAccionBitacora.value && b.accion !== filtroAccionBitacora.value) return false
+  return true
+}))
+
+const colorAccion = (accion) => {
+  if (accion === 'crear') return 'bg-green-100 text-green-700'
+  if (accion === 'eliminar' || accion === 'rechazar') return 'bg-red-100 text-red-700'
+  if (accion === 'aprobar') return 'bg-[#c2a878]/20 text-[#8a7249]'
+  return 'bg-blue-100 text-blue-700'
+}
+
+// --- Usuarios y Roles ---
+const usuarios = ref([])
+const cargandoUsuarios = ref(false)
+const cargandoAltaUsuario = ref(false)
+const exitoUsuario = ref(false)
+const errorValidacionUsuario = ref('')
+const usuarioEditando = ref(null)
+const nuevoUsuario = ref({ nombre: '', correo: '', rol: 'Operador', area: '' })
+
+const cargarUsuarios = async () => {
+  cargandoUsuarios.value = true
+  const { data, error } = await supabase.from('usuarios').select('*').order('created_at', { ascending: false })
+  if (!error) usuarios.value = data
+  cargandoUsuarios.value = false
+}
+
+const agregarUsuario = async () => {
+  errorValidacionUsuario.value = ''
+  if (!nuevoUsuario.value.nombre.trim() || !nuevoUsuario.value.correo.trim()) {
+    errorValidacionUsuario.value = 'Por favor llena los campos obligatorios: Nombre y Correo'
+    return
+  }
+
+  cargandoAltaUsuario.value = true
+
+  // Se usa un cliente aislado (sin persistir sesión) para no reemplazar la
+  // sesión del administrador que está actualmente autenticado en el panel.
+  const clienteTemp = crearClienteSinSesion()
+  const passwordTemporal = crypto.randomUUID()
+
+  const { data: signUpData, error: signUpError } = await clienteTemp.auth.signUp({
+    email: nuevoUsuario.value.correo,
+    password: passwordTemporal,
+  })
+
+  if (signUpError) {
+    cargandoAltaUsuario.value = false
+    errorValidacionUsuario.value = 'No se pudo crear la cuenta de acceso: ' + signUpError.message
+    return
+  }
+
+  // Envía al operador un enlace para que defina su propia contraseña,
+  // reutilizando el mismo flujo de "Olvidaste tu contraseña".
+  await clienteTemp.auth.resetPasswordForEmail(nuevoUsuario.value.correo, {
+    redirectTo: `${window.location.origin}/admin/restablecer`
+  })
+
+  const { error: dbError } = await supabase.from('usuarios').insert([{
+    auth_user_id: signUpData.user?.id || null,
+    nombre: nuevoUsuario.value.nombre,
+    correo: nuevoUsuario.value.correo,
+    rol: nuevoUsuario.value.rol,
+    area: nuevoUsuario.value.area,
+    estado: true,
+  }])
+
+  if (dbError) {
+    cargandoAltaUsuario.value = false
+    errorValidacionUsuario.value = 'La cuenta de acceso se creó, pero no se pudo guardar su perfil: ' + dbError.message
+    return
+  }
+
+  // Sin esto, el operador podría iniciar sesión pero no tendría permiso real
+  // para hacer nada en el panel (todas las escrituras dependen de is_admin(),
+  // que revisa la tabla "admins").
+  const { error: adminError } = await supabase.rpc('alta_operador_admin', {
+    p_auth_user_id: signUpData.user?.id,
+    p_correo: nuevoUsuario.value.correo,
+  })
+
+  cargandoAltaUsuario.value = false
+
+  if (adminError) {
+    errorValidacionUsuario.value = 'La cuenta se creó, pero no se le pudo otorgar acceso de administrador: ' + adminError.message
+    return
+  }
+
+  registrarBitacora('crear', 'usuarios', signUpData.user?.id, `Operador "${nuevoUsuario.value.nombre}" (${nuevoUsuario.value.correo}) dado de alta`)
+  exitoUsuario.value = true
+  nuevoUsuario.value = { nombre: '', correo: '', rol: 'Operador', area: '' }
+  cargarUsuarios()
+  setTimeout(() => exitoUsuario.value = false, 5000)
+}
+
+const iniciarEdicionUsuario = (u) => { usuarioEditando.value = { ...u } }
+const cancelarEdicionUsuario = () => { usuarioEditando.value = null }
+
+const guardarEdicionUsuario = async () => {
+  const { error } = await supabase.from('usuarios').update({
+    nombre: usuarioEditando.value.nombre,
+    rol: usuarioEditando.value.rol,
+    area: usuarioEditando.value.area,
+  }).eq('id', usuarioEditando.value.id)
+
+  if (!error) {
+    const idx = usuarios.value.findIndex(u => u.id === usuarioEditando.value.id)
+    if (idx !== -1) usuarios.value[idx] = { ...usuarioEditando.value }
+    registrarBitacora('editar', 'usuarios', usuarioEditando.value.id, `Perfil de "${usuarioEditando.value.correo}" actualizado`)
+    usuarioEditando.value = null
+  } else {
+    avisar('No se pudo guardar el usuario. Intenta de nuevo.')
+  }
+}
+
+const toggleEstadoUsuario = async (u) => {
+  const nuevoEstado = !u.estado
+  const verbo = nuevoEstado ? 'activar' : 'desactivar'
+  if (!(await confirmar(`¿Deseas ${verbo} la cuenta de "${u.nombre}"? ${nuevoEstado ? 'Recuperará' : 'Perderá'} permiso real para hacer cambios en el panel.`, { titulo: 'Cambiar estado de cuenta', textoConfirmar: nuevoEstado ? 'Activar' : 'Desactivar' }))) return
+
+  const { error } = await supabase.from('usuarios').update({ estado: nuevoEstado }).eq('id', u.id)
+  if (error) { avisar('No se pudo actualizar el estado de la cuenta. Intenta de nuevo.'); return }
+
+  // Revoca o restaura el acceso real de escritura (tabla "admins"), no solo la bandera visual.
+  if (u.auth_user_id) {
+    const { error: adminError } = nuevoEstado
+      ? await supabase.rpc('alta_operador_admin', { p_auth_user_id: u.auth_user_id, p_correo: u.correo })
+      : await supabase.rpc('baja_operador_admin', { p_auth_user_id: u.auth_user_id })
+    if (adminError) avisar(`El estado se guardó, pero no se pudo ${nuevoEstado ? 'restaurar' : 'revocar'} el acceso real: ` + adminError.message)
+  }
+
+  u.estado = nuevoEstado
+  registrarBitacora('editar', 'usuarios', u.id, `Cuenta de "${u.correo}" ${nuevoEstado ? 'activada' : 'desactivada'}`)
+}
+
+const eliminarUsuario = async (u) => {
+  if (!(await confirmar(`¿Eliminar el perfil de "${u.nombre}" (${u.correo})? Se le revocará el acceso de escritura en el panel. Su cuenta de inicio de sesión seguirá existiendo; para eliminarla por completo hazlo desde Supabase (Authentication > Users).`, { tipo: 'danger', titulo: 'Eliminar usuario', textoConfirmar: 'Eliminar' }))) return
+
+  const { error } = await supabase.from('usuarios').delete().eq('id', u.id)
+  if (error) { avisar('No se pudo eliminar el usuario. Intenta de nuevo.'); return }
+
+  if (u.auth_user_id) {
+    const { error: adminError } = await supabase.rpc('baja_operador_admin', { p_auth_user_id: u.auth_user_id })
+    if (adminError) avisar('El perfil se eliminó, pero no se pudo revocar su acceso real: ' + adminError.message)
+  }
+
+  usuarios.value = usuarios.value.filter(x => x.id !== u.id)
+  registrarBitacora('eliminar', 'usuarios', u.id, `Perfil de "${u.correo}" eliminado`)
 }
 </script>

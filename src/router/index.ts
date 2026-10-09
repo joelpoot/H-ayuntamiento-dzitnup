@@ -7,6 +7,7 @@ import DirectorioView from '../views/DirectorioView.vue'
 import AgendaView from '../views/AgendaView.vue'
 import GaleriaView from '../views/GaleriaView.vue'
 import MapaView from '../views/MapaView.vue'
+import SeguimientoView from '../views/SeguimientoView.vue'
 
 
 const router = createRouter({
@@ -15,6 +16,7 @@ const router = createRouter({
     { path: '/', component: InicioView },
     { path: '/avisos', component: AvisosView },
     { path: '/reportes', component: ReportesView },
+    { path: '/seguimiento', component: SeguimientoView },
     { path: '/horarios', component: HorariosView },
     { path: '/directorio', component: DirectorioView },
     { path: '/agenda', component: AgendaView },

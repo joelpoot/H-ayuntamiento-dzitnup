@@ -123,8 +123,7 @@ const escapeHtml = (valor) => {
 
 onMounted(async () => {
   const { data, error } = await supabase
-    .from('reportes_publicos')
-    .select('*')
+    .rpc('listar_reportes_publicos')
     .order('fecha_registro', { ascending: false })
     .limit(10)
 

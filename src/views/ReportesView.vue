@@ -23,9 +23,15 @@
             <h2 class="text-[#14392b] font-bold text-lg mb-6">Formulario de Reporte</h2>
 
             <!-- Mensaje de éxito -->
-            <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center gap-2">
-              <CheckCircle2 :size="18" class="shrink-0" />
-              Reporte enviado correctamente. Será revisado por el administrador antes de publicarse.
+            <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-start gap-2">
+              <CheckCircle2 :size="18" class="shrink-0 mt-0.5" />
+              <div>
+                <p>Reporte enviado correctamente. Será revisado por el administrador antes de publicarse.</p>
+                <p v-if="folioGenerado" class="mt-1">
+                  Tu número de folio es <strong class="break-all">{{ folioGenerado }}</strong>. Guárdalo para darle seguimiento en
+                  <RouterLink to="/seguimiento" class="underline font-semibold">Seguimiento de Reporte</RouterLink>.
+                </p>
+              </div>
             </div>
 
             <!-- Mensaje de error -->
@@ -142,7 +148,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase.js'
-import { useRouter } from 'vue-router'
 import { CheckCircle2, XCircle, AlertTriangle, LocateFixed, Camera } from 'lucide-vue-next'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -158,13 +163,12 @@ const DefaultIcon = L.icon({
 })
 L.Marker.prototype.options.icon = DefaultIcon
 
-const router = useRouter()
-
 const cargando = ref(false)
 const exito = ref(false)
 const error = ref(false)
 const errorValidacion = ref('')
 const errorTelefono = ref('')
+const folioGenerado = ref(null)
 
 const fechaHoy = new Date().toLocaleDateString('es-MX', {
   day: '2-digit', month: '2-digit', year: 'numeric'
@@ -300,7 +304,7 @@ const guardarReporte = async () => {
     }
   }
 
-  const { error: err } = await supabase
+  const { data: inserted, error: err } = await supabase
     .from('reportes')
     .insert([{
       tipo: form.value.tipo,
@@ -314,6 +318,7 @@ const guardarReporte = async () => {
       estado: 'En Revisión',
       moderado: false
     }])
+    .select('id')
 
   cargando.value = false
 
@@ -322,13 +327,11 @@ const guardarReporte = async () => {
     console.log('Error Supabase:', err)
   } else {
     exito.value = true
+    folioGenerado.value = inserted && inserted[0] ? inserted[0].id : null
     form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
     fotoPreview.value = null
     fotoArchivo.value = null
     if (marker) { map.removeLayer(marker); marker = null }
-    setTimeout(() => {
-      router.push('/')
-    }, 2000)
   }
 }
 </script>
