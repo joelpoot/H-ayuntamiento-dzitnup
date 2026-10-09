@@ -9,7 +9,7 @@
 
           <!-- Vista: Iniciar sesión -->
           <template v-if="vistaLogin === 'login'">
-            <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-widest mb-1">Panel de Administración</p>
+            <p class="text-xs font-semibold text-[#8a7249] uppercase tracking-widest mb-1">Panel de Administración</p>
             <h1 class="text-2xl font-bold text-[#14392b] mb-6">Iniciar Sesión</h1>
 
             <div v-if="errorLogin" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2">
@@ -29,7 +29,7 @@
                   <input v-model="loginForm.password" :type="mostrarPassword ? 'text' : 'password'" placeholder="••••••••" @keyup.enter="iniciarSesion"
                   class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:border-[#14392b]" />
                   <button type="button" @click="mostrarPassword = !mostrarPassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600">
                   <svg v-if="!mostrarPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round" />
                   <circle cx="12" cy="12" r="3" />
@@ -55,7 +55,7 @@
 
           <!-- Vista: Recuperar contraseña -->
           <template v-else>
-            <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-widest mb-1">Panel de Administración</p>
+            <p class="text-xs font-semibold text-[#8a7249] uppercase tracking-widest mb-1">Panel de Administración</p>
             <h1 class="text-2xl font-bold text-[#14392b] mb-2">Recuperar Contraseña</h1>
             <p class="text-sm text-gray-500 mb-6">Te enviaremos un enlace a tu correo para crear una nueva contraseña.</p>
 
@@ -163,8 +163,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-sm font-bold text-[#14392b] mb-1">Reportes por mes</h3>
-                <p class="text-xs text-gray-400 mb-4">Últimos 6 meses, por fecha de registro</p>
-                <div v-if="estadisticas.total === 0" class="text-sm text-gray-400">Aún no hay reportes registrados.</div>
+                <p class="text-xs text-gray-500 mb-4">Últimos 6 meses, por fecha de registro</p>
+                <div v-if="estadisticas.total === 0" class="text-sm text-gray-500">Aún no hay reportes registrados.</div>
                 <div v-else class="flex items-end gap-3 h-40 border-b border-gray-200 px-1">
                   <div v-for="m in estadisticas.porMes" :key="m.label + m.anio" class="flex-1 flex flex-col items-center justify-end h-full">
                     <span class="text-xs font-bold text-[#14392b] mb-1">{{ m.cantidad }}</span>
@@ -176,13 +176,13 @@
 
               <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-sm font-bold text-[#14392b] mb-1">Distribución por estado</h3>
-                <p class="text-xs text-gray-400 mb-4">Proporción sobre el total de reportes</p>
-                <div v-if="estadisticas.total === 0" class="text-sm text-gray-400">Aún no hay reportes registrados.</div>
+                <p class="text-xs text-gray-500 mb-4">Proporción sobre el total de reportes</p>
+                <div v-if="estadisticas.total === 0" class="text-sm text-gray-500">Aún no hay reportes registrados.</div>
                 <div v-else class="space-y-3">
                   <div v-for="e in estadisticas.porEstado" :key="e.estado">
                     <div class="flex justify-between text-xs mb-1">
                       <span class="font-semibold text-gray-600 flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" :class="colorBarra(e.estado)"></span>{{ e.estado }}</span>
-                      <span class="text-gray-400">{{ e.cantidad }} · {{ e.pct }}%</span>
+                      <span class="text-gray-500">{{ e.cantidad }} · {{ e.pct }}%</span>
                     </div>
                     <div class="h-2 rounded-full bg-gray-100 overflow-hidden">
                       <div class="h-full rounded-full" :class="colorBarra(e.estado)" :style="{ width: e.pct + '%' }"></div>
@@ -194,8 +194,8 @@
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 class="text-sm font-bold text-[#14392b] mb-1">Tipos con más incidencias</h3>
-              <p class="text-xs text-gray-400 mb-4">Ranking acumulado sobre el total de reportes</p>
-              <div v-if="estadisticas.porTipo.length === 0" class="text-sm text-gray-400">Aún no hay reportes registrados.</div>
+              <p class="text-xs text-gray-500 mb-4">Ranking acumulado sobre el total de reportes</p>
+              <div v-if="estadisticas.porTipo.length === 0" class="text-sm text-gray-500">Aún no hay reportes registrados.</div>
               <div v-else class="space-y-2">
                 <div v-for="t in estadisticas.porTipo" :key="t.tipo" class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                   <span class="text-sm text-gray-700">{{ t.tipo }}</span>
@@ -204,16 +204,16 @@
               </div>
             </div>
 
-            <p class="text-xs text-gray-400 mt-3">El tiempo de resolución solo considera reportes Resueltos con fecha de cierre capturada más abajo.</p>
+            <p class="text-xs text-gray-500 mt-3">El tiempo de resolución solo considera reportes Resueltos con fecha de cierre capturada más abajo.</p>
           </div>
 
-          <div v-if="cargandoReportes" class="text-center py-6 text-gray-400">Cargando...</div>
+          <div v-if="cargandoReportes" class="text-center py-6 text-gray-500">Cargando...</div>
           <div v-else class="space-y-3">
             <div v-for="r in reportes" :key="r.id"
               class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex">
               <div class="w-1.5 shrink-0" :class="colorBarra(r.estado)"></div>
               <div class="w-28 shrink-0 bg-gray-50 flex items-center justify-center border-r border-gray-100 p-2">
-                <img v-if="r.foto_url" :src="r.foto_url" class="w-full h-full object-contain cursor-pointer" @click="verImagen(r.foto_url)" />
+                <img v-if="r.foto_url" :src="r.foto_url" :alt="`Evidencia fotográfica: ${r.tipo}`" class="w-full h-full object-contain cursor-pointer" @click="verImagen(r.foto_url)" />
                 <ImageOff v-else :size="28" class="text-gray-300" />
               </div>
               <div class="flex-1 min-w-0">
@@ -222,7 +222,7 @@
                   <div class="flex gap-2 flex-wrap">
                     <span :class="estadoColor(r.estado)" class="text-xs px-3 py-1 rounded-full font-semibold">{{ r.estado }}</span>
                     <span v-if="!r.moderado" class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full font-semibold">Pendiente de revisión</span>
-                    <span v-else class="bg-[#c2a878] text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+                    <span v-else class="bg-[#8a7249] text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1">
                       <Check :size="12" />Aprobado
                     </span>
                   </div>
@@ -299,7 +299,7 @@
                       </div>
                     </template>
                     <button v-else @click="iniciarCierreFinanciero(r)"
-                      class="bg-[#c2a878] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#a8916a] transition-colors font-semibold flex items-center gap-1.5">
+                      class="bg-[#8a7249] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#6f5934] transition-colors font-semibold flex items-center gap-1.5">
                       <Save :size="14" />Registrar costo de cierre
                     </button>
                   </div>
@@ -345,16 +345,16 @@
               <input @change="seleccionarImagen" type="file" accept="image/*" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
               <div v-if="previstaImagen" class="mt-4">
                 <p class="text-xs text-gray-500 mb-1">Vista previa:</p>
-                <img :src="previstaImagen" class="w-48 h-48 object-cover rounded-lg border border-gray-200" />
+                <img :src="previstaImagen" alt="Vista previa de la imagen del aviso" class="w-48 h-48 object-cover rounded-lg border border-gray-200" />
               </div>
             </div>
             <div class="mt-6 text-center">
-              <button @click="publicarAviso" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Publicar Aviso</button>
+              <button @click="publicarAviso" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase">Publicar Aviso</button>
             </div>
           </div>
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Avisos Publicados</h2>
-            <div v-if="cargandoAvisos" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-if="cargandoAvisos" class="text-center py-6 text-gray-500">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="a in avisos" :key="a.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="avisoEditando && avisoEditando.id === a.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -371,7 +371,7 @@
                       class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-lg hover:bg-orange-200 transition-colors font-semibold flex items-center gap-1.5">
                       <Ban :size="14" />Cancelar aviso antes de su vigencia
                     </button>
-                    <span v-else-if="avisoVencido(avisoEditando)" class="text-xs text-gray-400">Ya venció por fecha, no se puede reactivar desde aquí.</span>
+                    <span v-else-if="avisoVencido(avisoEditando)" class="text-xs text-gray-500">Ya venció por fecha, no se puede reactivar desde aquí.</span>
                   </div>
                   <div class="md:col-span-2 flex gap-2 mt-2">
                     <button @click="guardarEdicion" class="bg-[#14392b] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#0a1f17] transition-colors font-semibold flex items-center gap-1.5"><Save :size="14" />Guardar</button>
@@ -380,16 +380,16 @@
                 </div>
                 <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start gap-3 sm:gap-4">
                   <div class="flex gap-3 min-w-0">
-                    <img v-if="a.imagen_url" :src="a.imagen_url" class="w-16 h-16 object-contain rounded-lg border border-gray-200 shrink-0" />
-                    <div v-else class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs shrink-0">Sin img</div>
+                    <img v-if="a.imagen_url" :src="a.imagen_url" :alt="a.titulo" class="w-16 h-16 object-contain rounded-lg border border-gray-200 shrink-0" />
+                    <div v-else class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs shrink-0">Sin img</div>
                     <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm break-words">{{ a.titulo }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ a.categoria }}</span>
+                        <span class="bg-[#8a7249] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ a.categoria }}</span>
                         <span :class="estadoAviso(a).clase" class="text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ estadoAviso(a).label }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1 break-words">{{ a.descripcion }}</p>
-                      <p class="text-xs text-gray-400 mt-1 break-words">Área: {{ a.area }} | Vig: {{ a.fecha_vigencia }}</p>
+                      <p class="text-xs text-gray-500 mt-1 break-words">Área: {{ a.area }} | Vig: {{ a.fecha_vigencia }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0 self-end sm:self-start">
@@ -418,13 +418,13 @@
             <div class="mt-4">
               <label class="text-xs font-semibold text-gray-500 uppercase">Imagen <span class="text-red-500">*</span></label>
               <input @change="seleccionarImagenGaleria" type="file" accept="image/*" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" />
-              <div v-if="previstaGaleria" class="mt-4"><p class="text-xs text-gray-500 mb-1">Vista previa:</p><img :src="previstaGaleria" class="w-48 h-48 object-cover rounded-lg border border-gray-200" /></div>
+              <div v-if="previstaGaleria" class="mt-4"><p class="text-xs text-gray-500 mb-1">Vista previa:</p><img :src="previstaGaleria" alt="Vista previa de la foto a subir" class="w-48 h-48 object-cover rounded-lg border border-gray-200" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="subirFoto" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Subir Foto</button></div>
+            <div class="mt-6 text-center"><button @click="subirFoto" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase">Subir Foto</button></div>
           </div>
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Fotos en Galería</h2>
-            <div v-if="cargandoGaleria" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-if="cargandoGaleria" class="text-center py-6 text-gray-500">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="f in galeria" :key="f.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="fotoEditando && fotoEditando.id === f.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -439,15 +439,15 @@
                 </div>
                 <div v-else class="flex flex-col sm:flex-row sm:justify-between items-start gap-3 sm:gap-4">
                   <div class="flex gap-3 min-w-0">
-                    <img v-if="f.imagen_url" :src="f.imagen_url" class="w-16 h-16 object-cover rounded-lg border border-gray-200 shrink-0" />
-                    <div v-else class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs shrink-0">Sin img</div>
+                    <img v-if="f.imagen_url" :src="f.imagen_url" :alt="f.titulo" class="w-16 h-16 object-cover rounded-lg border border-gray-200 shrink-0" />
+                    <div v-else class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs shrink-0">Sin img</div>
                     <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm break-words">{{ f.titulo }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ f.categoria }}</span>
+                        <span class="bg-[#8a7249] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ f.categoria }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1 break-words">{{ f.descripcion }}</p>
-                      <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><Calendar :size="12" />{{ f.fecha }}</p>
+                      <p class="text-xs text-gray-500 mt-1 flex items-center gap-1"><Calendar :size="12" />{{ f.fecha }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0 self-end sm:self-start">
@@ -477,11 +477,11 @@
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Hora Salida <span class="text-red-500">*</span></label><input v-model="nuevoHorario.hora_salida" type="text" placeholder="Ej. 3:00 PM" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Observaciones (opcional)</label><input v-model="nuevoHorario.observaciones" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarHorario" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Horario</button></div>
+            <div class="mt-6 text-center"><button @click="agregarHorario" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase">Agregar Horario</button></div>
           </div>
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Horarios Registrados</h2>
-            <div v-if="cargandoHorarios" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-if="cargandoHorarios" class="text-center py-6 text-gray-500">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="h in horarios" :key="h.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="horarioEditando && horarioEditando.id === h.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -502,7 +502,7 @@
                   <div class="min-w-0">
                     <p class="font-bold text-gray-800 text-sm break-words">{{ h.area }}</p>
                     <p class="text-xs text-gray-500 mt-1 break-words">{{ h.dias }} | {{ h.hora_entrada }} - {{ h.hora_salida }}</p>
-                    <p v-if="h.observaciones" class="text-xs text-gray-400 mt-1 break-words">{{ h.observaciones }}</p>
+                    <p v-if="h.observaciones" class="text-xs text-gray-500 mt-1 break-words">{{ h.observaciones }}</p>
                   </div>
                   <div class="flex gap-2 shrink-0 self-end sm:self-auto">
                     <button @click="iniciarEdicionHorario(h)" class="bg-blue-100 text-blue-700 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors font-semibold">Editar</button>
@@ -531,11 +531,11 @@
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Área <span class="text-red-500">*</span></label><input v-model="nuevoContacto.area" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Teléfono <span class="text-red-500">*</span></label><input v-model="nuevoContacto.telefono" @input="nuevoContacto.telefono = nuevoContacto.telefono.replace(/\D/g, '')" type="text" inputmode="numeric" maxlength="10" placeholder="Ej. 9991234567" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarContacto" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Contacto</button></div>
+            <div class="mt-6 text-center"><button @click="agregarContacto" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase">Agregar Contacto</button></div>
           </div>
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Contactos Registrados</h2>
-            <div v-if="cargandoDirectorio" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-if="cargandoDirectorio" class="text-center py-6 text-gray-500">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="c in directorio" :key="c.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="contactoEditando && contactoEditando.id === c.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -557,8 +557,8 @@
                     <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 shrink-0">{{ c.iniciales }}</div>
                     <div class="min-w-0">
                       <p class="font-bold text-gray-800 text-sm break-words">{{ c.nombre }}</p>
-                      <p class="text-xs text-[#c2a878] font-semibold uppercase">{{ c.cargo }}</p>
-                      <p class="text-xs text-gray-400 mt-0.5 flex items-center gap-1"><Phone :size="12" />{{ c.telefono }} | {{ c.area }}</p>
+                      <p class="text-xs text-[#8a7249] font-semibold uppercase">{{ c.cargo }}</p>
+                      <p class="text-xs text-gray-500 mt-0.5 flex items-center gap-1"><Phone :size="12" />{{ c.telefono }} | {{ c.area }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0 self-end sm:self-auto">
@@ -587,11 +587,11 @@
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Dirigido a</label><input v-model="nuevoEvento.dirigido" type="text" placeholder="Ej. Toda la comunidad" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div class="md:col-span-2"><label class="text-xs font-semibold text-gray-500 uppercase">Descripción</label><textarea v-model="nuevoEvento.descripcion" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]"></textarea></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarEvento" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Evento</button></div>
+            <div class="mt-6 text-center"><button @click="agregarEvento" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase">Agregar Evento</button></div>
           </div>
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Eventos Registrados</h2>
-            <div v-if="cargandoAgenda" class="text-center py-6 text-gray-400">Cargando...</div>
+            <div v-if="cargandoAgenda" class="text-center py-6 text-gray-500">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="e in agenda" :key="e.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="eventoEditando && eventoEditando.id === e.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -616,10 +616,10 @@
                     <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm break-words">{{ e.titulo }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ e.tipo }}</span>
+                        <span class="bg-[#8a7249] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ e.tipo }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-1 break-words">{{ e.descripcion }}</p>
-                      <div class="flex gap-3 mt-1 text-xs text-gray-400 flex-wrap">
+                      <div class="flex gap-3 mt-1 text-xs text-gray-500 flex-wrap">
                         <span class="flex items-center gap-1"><MapPin :size="12" />{{ e.lugar }}</span>
                         <span class="flex items-center gap-1"><Clock :size="12" />{{ e.hora }}</span>
                         <span class="flex items-center gap-1"><Users :size="12" />{{ e.dirigido }}</span>
@@ -650,12 +650,12 @@
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Nombre <span class="text-red-500">*</span></label><input v-model="nuevoProveedor.nombre" type="text" required class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Especialidad <span class="text-red-500">*</span></label><input v-model="nuevoProveedor.especialidad" type="text" required placeholder="Ej. Mantenimiento vial" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
-            <div class="mt-6 text-center"><button @click="agregarProveedor" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase">Agregar Proveedor</button></div>
+            <div class="mt-6 text-center"><button @click="agregarProveedor" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase">Agregar Proveedor</button></div>
           </div>
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Padrón de Proveedores</h2>
-            <p class="text-xs text-gray-400 mb-4">El total y los reportes atendidos se calculan sobre el trimestre calendario actual, a partir de los reportes ya cerrados con costo capturado.</p>
-            <div v-if="cargandoProveedores" class="text-center py-6 text-gray-400">Cargando...</div>
+            <p class="text-xs text-gray-500 mb-4">El total y los reportes atendidos se calculan sobre el trimestre calendario actual, a partir de los reportes ya cerrados con costo capturado.</p>
+            <div v-if="cargandoProveedores" class="text-center py-6 text-gray-500">Cargando...</div>
             <div v-else class="space-y-3">
               <div v-for="p in proveedores" :key="p.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <div v-if="proveedorEditando && proveedorEditando.id === p.id" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -671,7 +671,7 @@
                     <div class="w-9 h-9 rounded-full bg-[#14392b] text-white flex items-center justify-center font-bold text-sm shrink-0">{{ p.nombre.slice(0,2).toUpperCase() }}</div>
                     <div class="min-w-0">
                       <p class="font-bold text-gray-800 text-sm break-words">{{ p.nombre }}</p>
-                      <p class="text-xs text-gray-400 mt-0.5 break-words">{{ p.especialidad || 'Sin especialidad registrada' }} &middot; {{ reportesDeProveedor(p.id).length }} reportes atendidos este trimestre</p>
+                      <p class="text-xs text-gray-500 mt-0.5 break-words">{{ p.especialidad || 'Sin especialidad registrada' }} &middot; {{ reportesDeProveedor(p.id).length }} reportes atendidos este trimestre</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3 shrink-0 flex-wrap self-end sm:self-auto">
@@ -688,7 +688,7 @@
         <!-- Tab Transparencia -->
         <div v-if="tabActivo === 'transparencia'">
           <h2 class="text-[#14392b] font-bold text-lg mb-4">Indicadores de Gasto (trimestre actual)</h2>
-          <div v-if="cargandoIndicadores" class="text-center py-6 text-gray-400">Calculando...</div>
+          <div v-if="cargandoIndicadores" class="text-center py-6 text-gray-500">Calculando...</div>
           <template v-else>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               <div class="bg-[#14392b] text-white rounded-xl p-5 text-center">
@@ -706,7 +706,7 @@
             </div>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 class="text-sm font-bold text-[#14392b] mb-4">Costo promedio por tipo de reporte</h3>
-              <div v-if="indicadores.porTipo.length === 0" class="text-sm text-gray-400">Aún no hay reportes cerrados con costo capturado este trimestre.</div>
+              <div v-if="indicadores.porTipo.length === 0" class="text-sm text-gray-500">Aún no hay reportes cerrados con costo capturado este trimestre.</div>
               <div v-else class="flex items-end gap-6 h-40 border-b border-gray-200 px-2">
                 <div v-for="t in indicadores.porTipo" :key="t.tipo" class="flex-1 flex flex-col items-center justify-end h-full">
                   <span class="text-xs font-bold text-[#14392b] mb-1">{{ formatMonto(t.promedio) }}</span>
@@ -722,7 +722,7 @@
         <div v-if="tabActivo === 'bitacora'">
           <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
             <h2 class="text-[#14392b] font-bold text-lg">Bitácora de Auditoría</h2>
-            <p class="text-xs text-gray-400">Registro de solo lectura: últimas 200 acciones del panel</p>
+            <p class="text-xs text-gray-500">Registro de solo lectura: últimas 200 acciones del panel</p>
           </div>
 
           <div class="flex gap-3 flex-wrap mb-4">
@@ -736,8 +736,8 @@
             </select>
           </div>
 
-          <div v-if="cargandoBitacora" class="text-center py-6 text-gray-400">Cargando...</div>
-          <div v-else-if="bitacoraFiltrada.length === 0" class="text-center py-10 text-gray-400 text-sm bg-white rounded-xl border border-gray-100">
+          <div v-if="cargandoBitacora" class="text-center py-6 text-gray-500">Cargando...</div>
+          <div v-else-if="bitacoraFiltrada.length === 0" class="text-center py-10 text-gray-500 text-sm bg-white rounded-xl border border-gray-100">
             No hay movimientos registrados todavía.
           </div>
           <div v-else class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -783,7 +783,7 @@
               <div><label class="text-xs font-semibold text-gray-500 uppercase">Área</label><input v-model="nuevoUsuario.area" type="text" placeholder="Ej. Obras Públicas" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#14392b]" /></div>
             </div>
             <div class="mt-6 text-center">
-              <button @click="agregarUsuario" :disabled="cargandoAltaUsuario" class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase disabled:opacity-50 flex items-center gap-2 mx-auto">
+              <button @click="agregarUsuario" :disabled="cargandoAltaUsuario" class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase disabled:opacity-50 flex items-center gap-2 mx-auto">
                 <UserPlus :size="16" />{{ cargandoAltaUsuario ? 'Creando...' : 'Dar de Alta' }}
               </button>
             </div>
@@ -791,8 +791,8 @@
 
           <div class="mt-8">
             <h2 class="text-[#14392b] font-bold text-lg mb-4">Cuentas Registradas</h2>
-            <div v-if="cargandoUsuarios" class="text-center py-6 text-gray-400">Cargando...</div>
-            <div v-else-if="usuarios.length === 0" class="text-center py-10 text-gray-400 text-sm bg-white rounded-xl border border-gray-100">
+            <div v-if="cargandoUsuarios" class="text-center py-6 text-gray-500">Cargando...</div>
+            <div v-else-if="usuarios.length === 0" class="text-center py-10 text-gray-500 text-sm bg-white rounded-xl border border-gray-100">
               Aún no se ha dado de alta ningún operador.
             </div>
             <div v-else class="space-y-3">
@@ -812,11 +812,11 @@
                     <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-gray-800 text-sm break-words">{{ u.nombre }}</p>
-                        <span class="bg-[#c2a878] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ u.rol }}</span>
+                        <span class="bg-[#8a7249] text-white text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ u.rol }}</span>
                         <span :class="u.estado ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'" class="text-xs px-2 py-0.5 rounded-full font-semibold shrink-0">{{ u.estado ? 'Activo' : 'Inactivo' }}</span>
                       </div>
                       <p class="text-xs text-gray-500 mt-0.5 break-words">{{ u.correo }}</p>
-                      <p v-if="u.area" class="text-xs text-gray-400 mt-0.5 break-words">Área: {{ u.area }}</p>
+                      <p v-if="u.area" class="text-xs text-gray-500 mt-0.5 break-words">Área: {{ u.area }}</p>
                     </div>
                   </div>
                   <div class="flex gap-2 shrink-0 self-end sm:self-auto flex-wrap">

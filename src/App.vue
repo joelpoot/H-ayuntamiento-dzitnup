@@ -3,7 +3,9 @@
     <SplashScreen v-if="cargandoApp" @terminado="cargandoApp = false" />
     <template v-else>
       <Navbar v-if="!adminState.autenticado" />
-      <RouterView />
+      <main>
+        <RouterView />
+      </main>
     </template>
     <DialogoModal />
   </div>

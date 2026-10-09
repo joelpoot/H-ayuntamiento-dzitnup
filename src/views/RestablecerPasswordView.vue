@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10 w-full max-w-md">
-      <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-widest mb-1">Panel de Administración</p>
+      <p class="text-xs font-semibold text-[#8a7249] uppercase tracking-widest mb-1">Panel de Administración</p>
       <h1 class="text-2xl font-bold text-[#14392b] mb-2">Nueva Contraseña</h1>
       <p class="text-sm text-gray-500 mb-6">Ingresa tu nueva contraseña para continuar.</p>
 
@@ -27,7 +27,7 @@
             <input v-model="form.password" :type="mostrarPassword ? 'text' : 'password'" placeholder="Mínimo 6 caracteres"
               class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:border-[#14392b]" />
             <button type="button" @click="mostrarPassword = !mostrarPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600">
               <EyeOff v-if="mostrarPassword" :size="18" />
               <Eye v-else :size="18" />
             </button>
@@ -39,7 +39,7 @@
             <input v-model="form.confirmacion" :type="mostrarConfirmacion ? 'text' : 'password'" placeholder="Repite la contraseña" @keyup.enter="actualizarPassword"
               class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:border-[#14392b]" />
             <button type="button" @click="mostrarConfirmacion = !mostrarConfirmacion"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600">
               <EyeOff v-if="mostrarConfirmacion" :size="18" />
               <Eye v-else :size="18" />
             </button>

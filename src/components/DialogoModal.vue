@@ -35,7 +35,7 @@ import { dialogoState, resolverDialogo } from '../composables/useDialogo.js'
 
 const estilos = {
   danger: { icono: AlertTriangle, iconoFondo: 'bg-red-50', iconoColor: 'text-red-600', botonConfirmar: 'bg-red-600 hover:bg-red-700' },
-  warning: { icono: Ban, iconoFondo: 'bg-[#e8dcc4]', iconoColor: 'text-[#8a6d3f]', botonConfirmar: 'bg-[#c2a878] hover:bg-[#a8916a]' },
+  warning: { icono: Ban, iconoFondo: 'bg-[#e8dcc4]', iconoColor: 'text-[#8a6d3f]', botonConfirmar: 'bg-[#8a7249] hover:bg-[#6f5934]' },
   info: { icono: Info, iconoFondo: 'bg-[#14392b]/10', iconoColor: 'text-[#14392b]', botonConfirmar: 'bg-[#14392b] hover:bg-[#0a1f17]' },
   success: { icono: CheckCircle2, iconoFondo: 'bg-green-50', iconoColor: 'text-green-600', botonConfirmar: 'bg-green-600 hover:bg-green-700' },
 }

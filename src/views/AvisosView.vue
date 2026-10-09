@@ -23,7 +23,7 @@
     </div>
 
     <!-- Cargando -->
-    <div v-if="cargando" class="text-center py-10 text-gray-400">Cargando avisos...</div>
+    <div v-if="cargando" class="text-center py-10 text-gray-500">Cargando avisos...</div>
 
     <!-- Cards -->
     <div class="max-w-7xl mx-auto px-4 pb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -31,13 +31,13 @@
         class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center">
           <span class="text-white font-bold text-sm">{{ aviso.titulo }}</span>
-          <span class="bg-[#c2a878] text-white text-xs px-2 py-1 rounded-full font-semibold">{{ aviso.categoria }}</span>
+          <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full font-semibold">{{ aviso.categoria }}</span>
         </div>
         <div class="p-4">
           <p class="text-sm text-gray-600 mb-3">{{ aviso.descripcion }}</p>
           <div class="rounded-lg h-32 mb-3 overflow-hidden bg-gray-100 flex items-center justify-center">
-          <img v-if="aviso.imagen_url" :src="aviso.imagen_url" class="w-full h-full object-contain" />
-            <span v-else class="text-gray-400 text-sm">[ Sin imagen ]</span>
+          <img v-if="aviso.imagen_url" :src="aviso.imagen_url" :alt="aviso.titulo" class="w-full h-full object-contain" />
+            <span v-else class="text-gray-500 text-sm">[ Sin imagen ]</span>
           </div>
           <div class="text-xs text-gray-500 space-y-1">
             <p><span class="font-semibold">Área:</span> {{ aviso.area }}</p>
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Sin resultados -->
-    <div v-if="!cargando && avisosFiltrados.length === 0" class="text-center py-10 text-gray-400">
+    <div v-if="!cargando && avisosFiltrados.length === 0" class="text-center py-10 text-gray-500">
       No hay avisos en esta categoría.
     </div>
   </div>

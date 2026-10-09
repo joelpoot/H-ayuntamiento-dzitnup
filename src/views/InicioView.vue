@@ -2,7 +2,7 @@
   <div>
     <!-- Hero Banner -->
     <div class="relative h-90 flex items-center justify-center overflow-hidden">
-      <img src="/Cenote-Dzitnup-Valladolid-001.jpg" class="absolute inset-0 w-full h-full object-cover object-center" style="object-position: center 69%; filter: saturate(1.25) brightness(1.05) contrast(1.05)" />
+      <img src="/Cenote-Dzitnup-Valladolid-001.jpg" alt="Cenote Samulá, Dzitnup, Valladolid" class="absolute inset-0 w-full h-full object-cover object-center" style="object-position: center 69%; filter: saturate(1.25) brightness(1.05) contrast(1.05)" />
       <div class="absolute inset-0 bg-gradient-to-b from-[#14392b]/30 via-[#14392b]/60 to-[#0a1f17]/55"></div>
       <div class="absolute inset-0" style="background: radial-gradient(circle at center 30%, rgba(194,168,120,0.15), transparent 60%)"></div>
       <div class="relative text-center text-white px-4">
@@ -31,8 +31,8 @@
               <p class="text-xs text-gray-500">{{ ultimoAviso.descripcion }}</p>
             </div>
           </div>
-          <div v-else class="text-xs text-gray-400 mb-3">No hay avisos recientes.</div>
-          <RouterLink to="/avisos" class="text-[#c2a878] text-sm font-semibold hover:underline">Ver todos los avisos →</RouterLink>
+          <div v-else class="text-xs text-gray-500 mb-3">No hay avisos recientes.</div>
+          <RouterLink to="/avisos" class="text-[#8a7249] text-sm font-semibold hover:underline">Ver todos los avisos →</RouterLink>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
         <div class="p-4 flex flex-col items-center justify-center gap-4">
           <p class="text-gray-600 text-sm text-center">¿Detectaste un problema en tu comunidad? Repórtalo aquí.</p>
           <RouterLink to="/reportes"
-            class="bg-[#c2a878] text-white font-bold px-6 py-3 rounded-lg hover:bg-[#a8916a] transition-colors flex items-center gap-2">
+            class="bg-[#8a7249] text-white font-bold px-6 py-3 rounded-lg hover:bg-[#6f5934] transition-colors flex items-center gap-2">
             Enviar un Reporte
           </RouterLink>
         </div>
@@ -66,8 +66,8 @@
               <p class="text-xs text-gray-500">{{ evento.lugar }}</p>
             </div>
           </div>
-          <div v-if="proximosEventos.length === 0" class="text-xs text-gray-400">No hay eventos próximos.</div>
-          <RouterLink to="/agenda" class="text-[#c2a878] text-sm font-semibold hover:underline">Ver agenda completa →</RouterLink>
+          <div v-if="proximosEventos.length === 0" class="text-xs text-gray-500">No hay eventos próximos.</div>
+          <RouterLink to="/agenda" class="text-[#8a7249] text-sm font-semibold hover:underline">Ver agenda completa →</RouterLink>
         </div>
       </div>
 
@@ -110,11 +110,11 @@
             </div>
             <div>
               <p class="font-bold text-sm">{{ persona.nombre }}</p>
-              <p class="text-xs text-[#c2a878] font-semibold">{{ persona.cargo }}</p>
+              <p class="text-xs text-[#8a7249] font-semibold">{{ persona.cargo }}</p>
               <p class="text-xs text-gray-500 flex items-center gap-1"><Phone :size="12" />{{ persona.telefono }}</p>
             </div>
           </div>
-          <div v-if="directorioPreview.length === 0" class="text-xs text-gray-400">Sin contactos registrados.</div>
+          <div v-if="directorioPreview.length === 0" class="text-xs text-gray-500">Sin contactos registrados.</div>
         </div>
       </div>
 
@@ -127,13 +127,13 @@
           <div class="grid grid-cols-3 gap-2">
             <div v-for="foto in galeriaPreview" :key="foto.id"
               class="rounded-lg h-20 overflow-hidden bg-gray-200 flex items-center justify-center">
-              <img v-if="foto.imagen_url" :src="foto.imagen_url" class="w-full h-full object-cover" />
-              <span v-else class="text-xs text-gray-400 text-center px-1">{{ foto.titulo }}</span>
+              <img v-if="foto.imagen_url" :src="foto.imagen_url" :alt="foto.titulo || 'Foto de la galería'" class="w-full h-full object-cover" />
+              <span v-else class="text-xs text-gray-500 text-center px-1">{{ foto.titulo }}</span>
             </div>
             <div v-for="n in Math.max(0, 3 - galeriaPreview.length)" :key="'empty-' + n"
               class="bg-gray-200 rounded-lg h-20"></div>
           </div>
-          <RouterLink to="/galeria" class="text-[#c2a878] text-sm font-semibold hover:underline mt-3 block">Ver galería completa →</RouterLink>
+          <RouterLink to="/galeria" class="text-[#8a7249] text-sm font-semibold hover:underline mt-3 block">Ver galería completa →</RouterLink>
         </div>
       </div>
 

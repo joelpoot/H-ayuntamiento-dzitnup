@@ -16,7 +16,7 @@
     <div class="max-w-4xl mx-auto px-4 py-10 space-y-4">
 
       <!-- Cargando -->
-      <div v-if="cargando" class="text-center py-10 text-gray-400">Cargando directorio...</div>
+      <div v-if="cargando" class="text-center py-10 text-gray-500">Cargando directorio...</div>
 
       <div v-else v-for="(persona, i) in directorio" :key="i"
         class="fila-escalonada bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
@@ -33,7 +33,7 @@
             <!-- Info -->
             <div class="flex-1">
               <p class="font-bold text-gray-800">{{ persona.nombre }}</p>
-              <p class="text-xs font-semibold text-[#c2a878] uppercase tracking-wide">{{ persona.cargo }}</p>
+              <p class="text-xs font-semibold text-[#8a7249] uppercase tracking-wide">{{ persona.cargo }}</p>
               <p class="text-xs text-gray-500 mt-1 flex items-center gap-1"><Phone :size="12" />{{ persona.telefono }}</p>
             </div>
 

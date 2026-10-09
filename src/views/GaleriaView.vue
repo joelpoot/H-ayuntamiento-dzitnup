@@ -24,7 +24,7 @@
     </div>
 
     <!-- Cargando -->
-    <div v-if="cargando" class="text-center py-10 text-gray-400">Cargando galería...</div>
+    <div v-if="cargando" class="text-center py-10 text-gray-500">Cargando galería...</div>
 
     <!-- Carrusel -->
     <div v-else-if="galeriaFiltrada.length > 0" class="max-w-6xl mx-auto px-4 pb-14">
@@ -42,17 +42,17 @@
       >
         <SwiperSlide v-for="(foto, i) in galeriaFiltrada" :key="i" style="width: 360px">
           <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-            <div class="bg-gray-200 h-72 flex items-center justify-center text-gray-400 text-sm">
+            <div class="bg-gray-200 h-72 flex items-center justify-center text-gray-500 text-sm">
               <span v-if="!foto.imagen_url">[ {{ foto.titulo }} ]</span>
-              <img v-else :src="foto.imagen_url" class="w-full h-full object-cover" />
+              <img v-else :src="foto.imagen_url" :alt="foto.titulo || 'Foto de la galería'" class="w-full h-full object-cover" />
             </div>
             <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center">
               <p class="text-white font-bold text-sm">{{ foto.titulo }}</p>
-              <span class="bg-[#c2a878] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
+              <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
             </div>
             <div class="px-4 py-3">
               <p class="text-sm text-gray-600 line-clamp-2">{{ foto.descripcion }}</p>
-              <p v-if="foto.fecha" class="text-xs text-gray-400 mt-2">
+              <p v-if="foto.fecha" class="text-xs text-gray-500 mt-2">
                {{ new Date(foto.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) }}
               </p>
             </div>
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Sin resultados -->
-    <div v-if="!cargando && galeriaFiltrada.length === 0" class="text-center py-10 text-gray-400">
+    <div v-if="!cargando && galeriaFiltrada.length === 0" class="text-center py-10 text-gray-500">
       No hay fotos en esta categoría.
     </div>
   </div>

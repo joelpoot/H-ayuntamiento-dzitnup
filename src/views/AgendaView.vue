@@ -16,7 +16,7 @@
     <div class="max-w-4xl mx-auto px-4 py-10 space-y-4">
 
       <!-- Cargando -->
-      <div v-if="cargando" class="text-center py-10 text-gray-400">Cargando agenda...</div>
+      <div v-if="cargando" class="text-center py-10 text-gray-500">Cargando agenda...</div>
 
       <div v-else v-for="(evento, i) in agenda" :key="i"
         class="fila-escalonada bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
@@ -35,10 +35,10 @@
             <div class="flex-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <p class="font-bold text-gray-800">{{ evento.titulo }}</p>
-                <span class="bg-[#c2a878] text-white text-xs px-2 py-1 rounded-full">{{ evento.tipo }}</span>
+                <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full">{{ evento.tipo }}</span>
               </div>
               <p class="text-sm text-gray-500 mt-1">{{ evento.descripcion }}</p>
-              <div class="flex gap-4 mt-2 text-xs text-gray-400">
+              <div class="flex gap-4 mt-2 text-xs text-gray-500">
                 <span class="flex items-center gap-1"><MapPin :size="12" />{{ evento.lugar }}</span>
                 <span class="flex items-center gap-1"><Clock :size="12" />{{ evento.hora }}</span>
                 <span class="flex items-center gap-1"><Users :size="12" />{{ evento.dirigido }}</span>
@@ -50,7 +50,7 @@
       </div>
 
       <!-- Sin eventos -->
-      <div v-if="!cargando && agenda.length === 0" class="text-center py-10 text-gray-400">
+      <div v-if="!cargando && agenda.length === 0" class="text-center py-10 text-gray-500">
         No hay eventos programados.
       </div>
 

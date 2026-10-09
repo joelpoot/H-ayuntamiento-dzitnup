@@ -1,14 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import InicioView from '../views/InicioView.vue'
-import AvisosView from '../views/AvisosView.vue'
-import ReportesView from '../views/ReportesView.vue'
-import HorariosView from '../views/HorariosView.vue'
-import DirectorioView from '../views/DirectorioView.vue'
-import AgendaView from '../views/AgendaView.vue'
-import GaleriaView from '../views/GaleriaView.vue'
-import MapaView from '../views/MapaView.vue'
-import SeguimientoView from '../views/SeguimientoView.vue'
 
+// Cada vista se carga en su propio chunk bajo demanda (en vez de un solo
+// bundle gigante con todo junto). Reduce bastante el JS que el navegador
+// tiene que descargar y ejecutar para cualquier página en particular —
+// por ejemplo, Leaflet (mapa) o Swiper (galería) ya no van en el bundle
+// inicial si el visitante solo entra a Inicio o Avisos.
+const InicioView = () => import('../views/InicioView.vue')
+const AvisosView = () => import('../views/AvisosView.vue')
+const ReportesView = () => import('../views/ReportesView.vue')
+const SeguimientoView = () => import('../views/SeguimientoView.vue')
+const HorariosView = () => import('../views/HorariosView.vue')
+const DirectorioView = () => import('../views/DirectorioView.vue')
+const AgendaView = () => import('../views/AgendaView.vue')
+const GaleriaView = () => import('../views/GaleriaView.vue')
+const MapaView = () => import('../views/MapaView.vue')
 
 const router = createRouter({
   history: createWebHistory(),

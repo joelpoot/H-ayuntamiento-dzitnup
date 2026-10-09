@@ -42,7 +42,7 @@
 
             <div class="mt-6 text-center">
               <button @click="buscar" :disabled="cargando"
-                class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase tracking-wide disabled:opacity-50">
+                class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase tracking-wide disabled:opacity-50">
                 {{ cargando ? 'Buscando...' : 'Consultar estado' }}
               </button>
             </div>
@@ -67,9 +67,9 @@
               </div>
               <div class="p-4 text-sm text-gray-600 space-y-2">
                 <p>{{ resultado.descripcion }}</p>
-                <p class="text-xs text-gray-400 flex items-center gap-1"><MapPin :size="12" />{{ resultado.ubicacion }}</p>
-                <p class="text-xs text-gray-400 flex items-center gap-1"><Calendar :size="12" />{{ formatFecha(resultado.fecha_registro) }}</p>
-                <p v-if="!resultado.moderado" class="text-xs text-gray-400 italic mt-2">
+                <p class="text-xs text-gray-500 flex items-center gap-1"><MapPin :size="12" />{{ resultado.ubicacion }}</p>
+                <p class="text-xs text-gray-500 flex items-center gap-1"><Calendar :size="12" />{{ formatFecha(resultado.fecha_registro) }}</p>
+                <p v-if="!resultado.moderado" class="text-xs text-gray-500 italic mt-2">
                   Tu reporte aún está en revisión por el administrador antes de asignarse a un área para su atención.
                 </p>
               </div>

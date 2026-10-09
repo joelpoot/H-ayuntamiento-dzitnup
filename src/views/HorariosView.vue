@@ -21,7 +21,7 @@
         <div class="p-6">
 
           <!-- Cargando -->
-          <div v-if="cargando" class="text-center py-6 text-gray-400">Cargando horarios...</div>
+          <div v-if="cargando" class="text-center py-6 text-gray-500">Cargando horarios...</div>
 
           <table v-else class="w-full text-sm">
             <thead>
@@ -45,12 +45,12 @@
                   <td class="px-4 py-4 text-gray-500">{{ area.hora_entrada }} - {{ area.hora_salida }}</td>
                 </tr>
                 <tr v-if="area.observaciones" class="fila-escalonada border-b border-gray-50 hover:bg-[#f8f6f0] transition-colors" :style="{ animationDelay: (i * 0.12) + 's' }">
-                  <td colspan="3" class="px-4 pb-4 -mt-2 text-xs text-gray-400 italic">{{ area.observaciones }}</td>
+                  <td colspan="3" class="px-4 pb-4 -mt-2 text-xs text-gray-500 italic">{{ area.observaciones }}</td>
                 </tr>
               </template>
             </tbody>
           </table>
-          <p class="text-xs text-gray-400 italic mt-4">* Emergencias de seguridad operan en formato 24/7 de manera presencial.</p>
+          <p class="text-xs text-gray-500 italic mt-4">* Emergencias de seguridad operan en formato 24/7 de manera presencial.</p>
         </div>
       </div>
     </div>

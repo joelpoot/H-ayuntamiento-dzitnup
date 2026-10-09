@@ -52,7 +52,7 @@
           <div class="bg-[#14392b] px-4 py-3">
             <p class="text-white font-bold text-sm uppercase">Reportes Recientes</p>
           </div>
-          <div v-if="cargando" class="p-4 text-center text-gray-400 text-sm">Cargando...</div>
+          <div v-if="cargando" class="p-4 text-center text-gray-500 text-sm">Cargando...</div>
           <div v-else class="divide-y">
             <div v-for="(r, i) in reportes" :key="i" class="p-3">
               <div class="flex justify-between items-start">
@@ -65,7 +65,7 @@
                 </span>
               </div>
             </div>
-            <div v-if="reportes.length === 0" class="p-4 text-center text-gray-400 text-sm">
+            <div v-if="reportes.length === 0" class="p-4 text-center text-gray-500 text-sm">
               No hay reportes aún.
             </div>
           </div>

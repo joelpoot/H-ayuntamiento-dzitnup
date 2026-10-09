@@ -117,23 +117,23 @@
               <p v-if="errorArea" class="text-xs text-red-600 font-semibold mt-1 flex items-center gap-1">
                 <AlertTriangle :size="14" class="shrink-0" />{{ errorArea }}
               </p>
-              <p class="text-xs text-gray-400 mt-1 italic">Describe el lugar con una referencia conocida (una casa, negocio, escuela, etc.) y marca el punto exacto tocando el mapa. Tu ubicación no será compartida públicamente.</p>
+              <p class="text-xs text-gray-500 mt-1 italic">Describe el lugar con una referencia conocida (una casa, negocio, escuela, etc.) y marca el punto exacto tocando el mapa. Tu ubicación no será compartida públicamente.</p>
 
               <div id="mapaReporte" class="mt-3 h-64 w-full rounded-lg border border-gray-300 z-0"></div>
 
               <button @click="obtenerUbicacion" type="button"
-                class="mt-3 bg-[#c2a878] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#a8916a] transition-colors flex items-center gap-1.5">
+                class="mt-3 bg-[#8a7249] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#6f5934] transition-colors flex items-center gap-1.5">
                 <LocateFixed :size="14" />Usar mi ubicación actual
               </button>
-              <p class="text-xs text-gray-400 mt-2 italic">Usa este botón si estás en el lugar del reporte; así el mapa marcará tu ubicación exacta automáticamente.</p>
+              <p class="text-xs text-gray-500 mt-2 italic">Usa este botón si estás en el lugar del reporte; así el mapa marcará tu ubicación exacta automáticamente.</p>
             </div>
 
             <!-- Foto -->
             <div class="mt-6">
               <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Adjunta del Problema <span class="text-red-500">*</span></label>
               <div @click="$refs.inputFoto.click()"
-                class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex flex-col items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-[#14392b] transition-colors overflow-hidden">
-                <img v-if="fotoPreview" :src="fotoPreview" class="h-full w-full object-cover" />
+                class="mt-1 border-2 border-dashed border-gray-300 rounded-lg h-32 flex flex-col items-center justify-center text-gray-500 text-sm cursor-pointer hover:border-[#14392b] transition-colors overflow-hidden">
+                <img v-if="fotoPreview" :src="fotoPreview" alt="Vista previa de la fotografía del reporte" class="h-full w-full object-cover" />
                 <span v-else class="flex items-center gap-1.5"><Camera :size="16" />Subir imagen desde tu dispositivo</span>
               </div>
               <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoChange" />
@@ -143,7 +143,7 @@
             <!-- Botón guardar -->
             <div class="mt-6 text-center">
               <button @click="guardarReporte" :disabled="cargando"
-                class="bg-[#c2a878] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#a8916a] transition-colors uppercase tracking-wide disabled:opacity-50">
+                class="bg-[#8a7249] text-white font-bold px-8 py-3 rounded-lg hover:bg-[#6f5934] transition-colors uppercase tracking-wide disabled:opacity-50">
                 {{ cargando ? 'Enviando...' : 'Guardar Reporte' }}
               </button>
             </div>
@@ -170,14 +170,14 @@
                       <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-300"
                         :class="{
                           'bg-[#14392b] text-white': estadoEtapa(paso.id) === 'hecho',
-                          'bg-[#c2a878] text-white shadow-[0_0_0_4px_rgba(194,168,120,0.25)]': estadoEtapa(paso.id) === 'activo',
-                          'bg-gray-200 text-gray-400': estadoEtapa(paso.id) === 'pendiente',
+                          'bg-[#8a7249] text-white shadow-[0_0_0_4px_rgba(194,168,120,0.25)]': estadoEtapa(paso.id) === 'activo',
+                          'bg-gray-200 text-gray-500': estadoEtapa(paso.id) === 'pendiente',
                         }">
                         <Check v-if="estadoEtapa(paso.id) === 'hecho'" :size="12" />
                         <span v-else>{{ i + 1 }}</span>
                       </div>
                       <span class="text-[10px] font-semibold uppercase tracking-wide text-center leading-tight"
-                        :class="estadoEtapa(paso.id) === 'pendiente' ? 'text-gray-400' : 'text-[#14392b]'">
+                        :class="estadoEtapa(paso.id) === 'pendiente' ? 'text-gray-500' : 'text-[#14392b]'">
                         {{ paso.label }}
                       </span>
                     </div>
