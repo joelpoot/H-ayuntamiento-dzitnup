@@ -304,9 +304,16 @@ const guardarReporte = async () => {
     }
   }
 
-  const { data: inserted, error: err } = await supabase
+  // Se genera el folio en el navegador (en vez de pedirle a Supabase que
+  // regrese la fila insertada) porque la política RLS de "reportes" solo
+  // permite INSERT al visitante anónimo, no SELECT: encadenar .select()
+  // después del insert() hacía fallar el envío completo.
+  const folio = crypto.randomUUID()
+
+  const { error: err } = await supabase
     .from('reportes')
     .insert([{
+      id: folio,
       tipo: form.value.tipo,
       nombre: form.value.nombre,
       descripcion: form.value.descripcion,
@@ -318,7 +325,6 @@ const guardarReporte = async () => {
       estado: 'En Revisión',
       moderado: false
     }])
-    .select('id')
 
   cargando.value = false
 
@@ -327,7 +333,7 @@ const guardarReporte = async () => {
     console.log('Error Supabase:', err)
   } else {
     exito.value = true
-    folioGenerado.value = inserted && inserted[0] ? inserted[0].id : null
+    folioGenerado.value = folio
     form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
     fotoPreview.value = null
     fotoArchivo.value = null
