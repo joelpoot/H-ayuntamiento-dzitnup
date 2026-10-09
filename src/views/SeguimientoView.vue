@@ -48,9 +48,13 @@
             </div>
 
             <!-- No encontrado -->
-            <div v-if="buscado && !resultado" class="mt-6 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-              <AlertTriangle :size="18" class="shrink-0" />
-              No encontramos un reporte con ese folio y teléfono. Verifica los datos e intenta de nuevo.
+            <div v-if="buscado && !resultado" class="mt-6 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+              <AlertTriangle :size="18" class="shrink-0 mt-0.5" />
+              <span>
+                No encontramos ningún reporte con ese folio <strong>y</strong> ese teléfono juntos. Revisa que:
+                <br />• El folio sea exactamente el que se mostró al enviar tu reporte (puedes copiarlo y pegarlo para evitar errores).
+                <br />• El teléfono sea el mismo que registraste en ese momento.
+              </span>
             </div>
 
             <!-- Resultado -->
@@ -90,13 +94,25 @@ const buscado = ref(false)
 const resultado = ref(null)
 const errorValidacion = ref('')
 
+// El folio es un uuid (ej. 3f19a24c-1927-4890-b4b4-d504b5e0b9c5). Validar su
+// forma ANTES de consultar permite avisar de errores de formato (folio
+// incompleto, con espacios, copiado a medias) sin tener que preguntarle a
+// la base de datos nada todavía.
+const FORMATO_FOLIO = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 const buscar = async () => {
   errorValidacion.value = ''
   resultado.value = null
   buscado.value = false
 
-  if (!folio.value.trim()) {
+  const folioLimpio = folio.value.trim().toLowerCase()
+
+  if (!folioLimpio) {
     errorValidacion.value = 'Ingresa tu número de folio.'
+    return
+  }
+  if (!FORMATO_FOLIO.test(folioLimpio)) {
+    errorValidacion.value = 'Ese folio no tiene el formato correcto. Debe verse como "3f19a24c-1927-4890-b4b4-d504b5e0b9c5". Revisa que lo hayas copiado completo, sin espacios ni caracteres de más.'
     return
   }
   if (telefono.value.length !== 10) {
@@ -106,7 +122,7 @@ const buscar = async () => {
 
   cargando.value = true
   const { data, error } = await supabase.rpc('buscar_reporte_folio', {
-    p_folio: folio.value.trim(),
+    p_folio: folioLimpio,
     p_telefono: telefono.value,
   })
   cargando.value = false
