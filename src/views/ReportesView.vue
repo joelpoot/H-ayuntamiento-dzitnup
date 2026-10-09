@@ -128,6 +128,7 @@
                 <span v-else class="flex items-center gap-1.5"><Camera :size="16" />Subir imagen desde tu dispositivo</span>
               </div>
               <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoChange" />
+              <p v-if="errorFoto" class="text-xs text-red-500 mt-1">{{ errorFoto }}</p>
             </div>
 
             <!-- Botón guardar -->
@@ -261,20 +262,82 @@ onMounted(() => {
 // --- Foto ---
 const fotoPreview = ref(null)
 const fotoArchivo = ref(null)
+const errorFoto = ref('')
+
+const TIPOS_IMAGEN_PERMITIDOS = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
 
 const onFotoChange = (e) => {
+  errorFoto.value = ''
   const file = e.target.files[0]
-  if (file) {
-    fotoArchivo.value = file
-    fotoPreview.value = URL.createObjectURL(file)
+  if (!file) return
+
+  if (!TIPOS_IMAGEN_PERMITIDOS.includes(file.type)) {
+    errorFoto.value = 'Formato no admitido. Sube una foto en JPG, PNG, WEBP o GIF.'
+    e.target.value = ''
+    fotoArchivo.value = null
+    fotoPreview.value = null
+    return
   }
+
+  fotoArchivo.value = file
+  fotoPreview.value = URL.createObjectURL(file)
+}
+
+// Vuelve a dibujar la imagen en un canvas y la reexporta como JPEG: esto
+// normaliza por completo el archivo (ya no depende del nombre, extensión
+// ni metadatos originales) y de paso lo comprime. Rechaza con un mensaje
+// claro si el archivo está dañado o no es una imagen real.
+const comprimirFoto = (file, maxAncho = 1280, calidad = 0.75) => {
+  return new Promise((resolve, reject) => {
+    const lector = new FileReader()
+    lector.onerror = () => reject(new Error('No se pudo leer el archivo de la fotografía.'))
+    lector.onload = (e) => {
+      const img = new Image()
+      img.onerror = () => reject(new Error('El archivo no es una imagen válida o está dañado.'))
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let ancho = img.width, alto = img.height
+        if (ancho > maxAncho) { alto = Math.round((alto * maxAncho) / ancho); ancho = maxAncho }
+        canvas.width = ancho
+        canvas.height = alto
+        canvas.getContext('2d').drawImage(img, 0, 0, ancho, alto)
+        canvas.toBlob((blob) => {
+          if (!blob) { reject(new Error('No se pudo procesar la fotografía.')); return }
+          // Nombre 100% generado por nosotros: uuid + extensión fija .jpg,
+          // sin rastro del nombre/caracteres del archivo original.
+          resolve(new File([blob], `${crypto.randomUUID()}.jpg`, { type: 'image/jpeg' }))
+        }, 'image/jpeg', calidad)
+      }
+      img.src = e.target.result
+    }
+    lector.readAsDataURL(file)
+  })
+}
+
+// Sube la foto ya comprimida con nombre único y seguro (solo [a-z0-9-.]).
+// upsert:false evita sobrescribir un archivo existente ante una colisión
+// de nombre (prácticamente imposible con uuid, pero así falla en vez de
+// pisar una foto ajena).
+const subirFotoReporte = async (archivoComprimido) => {
+  const { error } = await supabase.storage.from('reportes').upload(archivoComprimido.name, archivoComprimido, {
+    contentType: 'image/jpeg',
+    upsert: false,
+  })
+  if (error) throw error
+  return archivoComprimido.name
 }
 
 const guardarReporte = async () => {
   errorTelefono.value = ''
+  errorFoto.value = ''
 
   if (!form.value.tipo || !form.value.descripcion || !form.value.latitud || !fotoArchivo.value || !form.value.telefono) {
     errorValidacion.value = 'Por favor llena los campos obligatorios: Tipo, Descripción, Ubicación en el mapa, Foto y Teléfono'
+    return
+  }
+
+  if (!TIPOS_IMAGEN_PERMITIDOS.includes(fotoArchivo.value.type)) {
+    errorFoto.value = 'Formato de imagen no admitido. Usa JPG, PNG, WEBP o GIF.'
     return
   }
 
@@ -289,25 +352,34 @@ const guardarReporte = async () => {
   error.value = false
   exito.value = false
 
-  let foto_url = null
-
-  if (fotoArchivo.value) {
-    const archivo = fotoArchivo.value
-    const nombreArchivo = `${Date.now()}_${archivo.name}`
-
-    const { error: uploadError } = await supabase.storage
-      .from('reportes')
-      .upload(nombreArchivo, archivo)
-
-    if (!uploadError) {
-      foto_url = nombreArchivo
-    }
+  // Paso 1: comprimir y normalizar la fotografía.
+  let archivoListo
+  try {
+    archivoListo = await comprimirFoto(fotoArchivo.value)
+  } catch (e) {
+    cargando.value = false
+    error.value = true
+    errorFoto.value = e.message || 'No se pudo procesar la fotografía. Intenta con otra imagen.'
+    return
   }
 
-  // Se genera el folio en el navegador (en vez de pedirle a Supabase que
-  // regrese la fila insertada) porque la política RLS de "reportes" solo
-  // permite INSERT al visitante anónimo, no SELECT: encadenar .select()
-  // después del insert() hacía fallar el envío completo.
+  // Paso 2: subir a Storage. La foto es obligatoria, así que si esto falla
+  // se detiene todo aquí y no se guarda ningún reporte (evita reportes sin
+  // evidencia, que es justo lo que el formulario exige).
+  let foto_url
+  try {
+    foto_url = await subirFotoReporte(archivoListo)
+  } catch (e) {
+    cargando.value = false
+    error.value = true
+    errorFoto.value = 'No se pudo subir la fotografía. Verifica tu conexión e intenta de nuevo.'
+    console.log('Error subiendo foto a Storage:', e)
+    return
+  }
+
+  // Paso 3: insertar el reporte. El folio se genera en el navegador (no se
+  // pide de vuelta con .select()) porque la política RLS de "reportes" solo
+  // permite INSERT al visitante anónimo, no SELECT.
   const folio = crypto.randomUUID()
 
   const { error: err } = await supabase
@@ -331,13 +403,17 @@ const guardarReporte = async () => {
   if (err) {
     error.value = true
     console.log('Error Supabase:', err)
-  } else {
-    exito.value = true
-    folioGenerado.value = folio
-    form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
-    fotoPreview.value = null
-    fotoArchivo.value = null
-    if (marker) { map.removeLayer(marker); marker = null }
+    // La foto ya se subió pero el reporte no se guardó: se borra para no
+    // dejar un archivo huérfano en Storage sin reporte asociado.
+    await supabase.storage.from('reportes').remove([foto_url])
+    return
   }
+
+  exito.value = true
+  folioGenerado.value = folio
+  form.value = { tipo: '', nombre: '', descripcion: '', ubicacion: '', telefono: '', latitud: null, longitud: null }
+  fotoPreview.value = null
+  fotoArchivo.value = null
+  if (marker) { map.removeLayer(marker); marker = null }
 }
 </script>
