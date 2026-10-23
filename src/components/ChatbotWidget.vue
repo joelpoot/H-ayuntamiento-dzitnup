@@ -140,8 +140,13 @@ const enviar = async () => {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ pregunta: texto }),
     })
-    const datos = await resp.json()
-    if (!resp.ok) throw new Error(datos?.error || 'No se pudo obtener una respuesta.')
+    // Se lee como texto primero: si el servidor responde vacío o con HTML
+    // (por ejemplo en localhost, donde /api no existe), resp.json() lanzaría
+    // un error técnico poco claro para el ciudadano.
+    let datos = null
+    try { datos = JSON.parse(await resp.text()) } catch { datos = null }
+    if (!datos) throw new Error('El asistente no está disponible en este momento. Intenta de nuevo más tarde.')
+    if (!resp.ok) throw new Error(datos.error || 'No se pudo obtener una respuesta.')
     mensajes.value.push({ rol: 'asistente', texto: datos.respuesta })
   } catch (e) {
     errorMsg.value = e.message || 'Ocurrió un error de conexión. Intenta de nuevo.'

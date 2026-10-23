@@ -37,7 +37,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const contexto = await construirContexto()
+    const fechas = fechaDeHoy()
+    const contexto = await construirContexto(fechas.iso)
 
     const respuesta = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -49,7 +50,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: MODELO,
         max_tokens: 400,
-        system: construirPromptSistema(contexto),
+        system: construirPromptSistema(contexto, fechas.legible),
         messages: [{ role: 'user', content: pregunta }],
       }),
     })
@@ -78,8 +79,19 @@ export default async function handler(req, res) {
 // datos de una comisaría (decenas de filas, no miles) esto es más simple,
 // barato y confiable que montar búsqueda semántica con embeddings, y cumple
 // igual el objetivo: el modelo solo ve información realmente publicada.
-async function construirContexto() {
-  const hoy = new Date().toISOString().split('T')[0]
+// El servidor de Vercel corre en UTC; se usa la hora de Yucatán para que
+// "hoy" coincida con lo que vive el ciudadano (en la noche local, UTC ya es
+// el día siguiente).
+function fechaDeHoy() {
+  const ahora = new Date()
+  const zona = 'America/Merida'
+  return {
+    iso: new Intl.DateTimeFormat('en-CA', { timeZone: zona, year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora),
+    legible: new Intl.DateTimeFormat('es-MX', { timeZone: zona, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(ahora),
+  }
+}
+
+async function construirContexto(hoy) {
 
   const [avisosRes, horariosRes, directorioRes, agendaRes] = await Promise.all([
     supabase
@@ -127,8 +139,10 @@ async function construirContexto() {
   ].join('\n\n')
 }
 
-function construirPromptSistema(contexto) {
+function construirPromptSistema(contexto, fechaLegible) {
   return `Eres el asistente virtual del Portal Web Municipal de la Comisaría de Dzitnup, Yucatán. Ayudas a los ciudadanos a encontrar información oficial que ya está publicada en el portal.
+
+Hoy es ${fechaLegible} (hora de Yucatán). Usa esta fecha si te preguntan qué día es o para saber qué eventos son próximos.
 
 REGLAS ESTRICTAS:
 - Responde ÚNICAMENTE con la información que aparece en el bloque de DATOS PUBLICADOS más abajo. Es el contenido real y actual del portal.
