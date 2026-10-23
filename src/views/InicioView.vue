@@ -167,6 +167,8 @@
       </div>
 
     </footer>
+
+    <ChatbotWidget />
   </div>
 </template>
 
@@ -175,6 +177,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { Phone, Mail, MapPin } from 'lucide-vue-next'
 import { supabase } from '../supabase.js'
+import ChatbotWidget from '../components/ChatbotWidget.vue'
 
 const ultimoAviso = ref(null)
 const proximosEventos = ref([])
