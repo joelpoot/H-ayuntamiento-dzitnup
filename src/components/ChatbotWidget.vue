@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+  <div ref="contenedor" class="fixed bottom-5 right-5 z-50 flex flex-col items-end">
 
     <!-- Panel del chat -->
     <transition
@@ -96,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { MessageCircle, X, Send } from 'lucide-vue-next'
 
 const abierto = ref(false)
@@ -106,6 +106,18 @@ const cargando = ref(false)
 const errorMsg = ref('')
 const areaMensajes = ref(null)
 const inputPregunta = ref(null)
+const contenedor = ref(null)
+
+// Cierra el chat al hacer clic en cualquier parte fuera del panel y del
+// botón flotante. La conversación se conserva al volver a abrirlo.
+const cerrarSiClicFuera = (e) => {
+  if (abierto.value && contenedor.value && !contenedor.value.contains(e.target)) {
+    abierto.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('pointerdown', cerrarSiClicFuera))
+onBeforeUnmount(() => document.removeEventListener('pointerdown', cerrarSiClicFuera))
 
 const alternar = async () => {
   abierto.value = !abierto.value
