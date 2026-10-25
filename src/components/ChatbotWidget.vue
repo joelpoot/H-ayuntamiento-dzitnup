@@ -97,6 +97,7 @@
 
 <script setup>
 import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { traducirError } from '../utils/traducirError.js'
 import { MessageCircle, X, Send } from 'lucide-vue-next'
 
 const abierto = ref(false)
@@ -161,7 +162,7 @@ const enviar = async () => {
     if (!resp.ok) throw new Error(datos.error || 'No se pudo obtener una respuesta.')
     mensajes.value.push({ rol: 'asistente', texto: datos.respuesta })
   } catch (e) {
-    errorMsg.value = e.message || 'Ocurrió un error de conexión. Intenta de nuevo.'
+    errorMsg.value = traducirError(e, 'Ocurrió un error de conexión. Intenta de nuevo.')
   } finally {
     cargando.value = false
     await scrollAbajo()

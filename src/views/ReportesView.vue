@@ -213,6 +213,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase, supabaseUrl, supabaseKey } from '../supabase.js'
+import { traducirError } from '../utils/traducirError.js'
 import { CheckCircle2, XCircle, AlertTriangle, LocateFixed, Camera, Check } from 'lucide-vue-next'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -482,7 +483,7 @@ const subirFotoReporte = (archivoComprimido, onProgreso) => {
       let mensaje = 'No se pudo subir la fotografía.'
       try {
         const cuerpo = JSON.parse(xhr.responseText)
-        if (cuerpo?.message) mensaje = cuerpo.message
+        if (cuerpo?.message) mensaje = traducirError(cuerpo.message, mensaje)
       } catch { /* respuesta no era JSON, se usa el mensaje genérico */ }
       reject(new Error(mensaje))
     }

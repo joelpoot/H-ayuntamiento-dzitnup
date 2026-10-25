@@ -842,6 +842,7 @@ import { ref, computed, onMounted } from 'vue'
 import { supabase, crearClienteSinSesion } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
 import { confirmar, avisar } from '../composables/useDialogo.js'
+import { traducirError } from '../utils/traducirError.js'
 import { XCircle, ImageOff, Check, MapPin, Calendar, User, Phone, CheckCircle2, Ban, Save, Clock, Users, Landmark, AlertTriangle, BarChart3, UserPlus, UserX, UserCheck } from 'lucide-vue-next'
 
 
@@ -1777,22 +1778,22 @@ const agregarUsuario = async () => {
   const clienteTemp = crearClienteSinSesion()
   const passwordTemporal = crypto.randomUUID()
 
+  // El correo de confirmación de Supabase es el único que recibe el operador:
+  // al abrirlo se confirma la cuenta, queda con sesión iniciada y llega
+  // directo a /admin/restablecer para definir su propia contraseña. No se
+  // manda además un correo de recuperación porque Supabase bloquea un
+  // segundo correo a la misma dirección durante 60 segundos.
   const { data: signUpData, error: signUpError } = await clienteTemp.auth.signUp({
     email: nuevoUsuario.value.correo,
     password: passwordTemporal,
+    options: { emailRedirectTo: `${window.location.origin}/admin/restablecer` },
   })
 
   if (signUpError) {
     cargandoAltaUsuario.value = false
-    errorValidacionUsuario.value = 'No se pudo crear la cuenta de acceso: ' + signUpError.message
+    errorValidacionUsuario.value = 'No se pudo crear la cuenta de acceso: ' + traducirError(signUpError)
     return
   }
-
-  // Envía al operador un enlace para que defina su propia contraseña,
-  // reutilizando el mismo flujo de "Olvidaste tu contraseña".
-  await clienteTemp.auth.resetPasswordForEmail(nuevoUsuario.value.correo, {
-    redirectTo: `${window.location.origin}/admin/restablecer`
-  })
 
   const { error: dbError } = await supabase.from('usuarios').insert([{
     auth_user_id: signUpData.user?.id || null,
@@ -1805,7 +1806,7 @@ const agregarUsuario = async () => {
 
   if (dbError) {
     cargandoAltaUsuario.value = false
-    errorValidacionUsuario.value = 'La cuenta de acceso se creó, pero no se pudo guardar su perfil: ' + dbError.message
+    errorValidacionUsuario.value = 'La cuenta de acceso se creó, pero no se pudo guardar su perfil: ' + traducirError(dbError)
     return
   }
 
@@ -1820,7 +1821,7 @@ const agregarUsuario = async () => {
   cargandoAltaUsuario.value = false
 
   if (adminError) {
-    errorValidacionUsuario.value = 'La cuenta se creó, pero no se le pudo otorgar acceso de administrador: ' + adminError.message
+    errorValidacionUsuario.value = 'La cuenta se creó, pero no se le pudo otorgar acceso de administrador: ' + traducirError(adminError)
     return
   }
 
@@ -1864,7 +1865,7 @@ const toggleEstadoUsuario = async (u) => {
     const { error: adminError } = nuevoEstado
       ? await supabase.rpc('alta_operador_admin', { p_auth_user_id: u.auth_user_id, p_correo: u.correo })
       : await supabase.rpc('baja_operador_admin', { p_auth_user_id: u.auth_user_id })
-    if (adminError) avisar(`El estado se guardó, pero no se pudo ${nuevoEstado ? 'restaurar' : 'revocar'} el acceso real: ` + adminError.message)
+    if (adminError) avisar(`El estado se guardó, pero no se pudo ${nuevoEstado ? 'restaurar' : 'revocar'} el acceso real: ` + traducirError(adminError))
   }
 
   u.estado = nuevoEstado
@@ -1879,7 +1880,7 @@ const eliminarUsuario = async (u) => {
 
   if (u.auth_user_id) {
     const { error: adminError } = await supabase.rpc('baja_operador_admin', { p_auth_user_id: u.auth_user_id })
-    if (adminError) avisar('El perfil se eliminó, pero no se pudo revocar su acceso real: ' + adminError.message)
+    if (adminError) avisar('El perfil se eliminó, pero no se pudo revocar su acceso real: ' + traducirError(adminError))
   }
 
   usuarios.value = usuarios.value.filter(x => x.id !== u.id)
