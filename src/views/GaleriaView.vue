@@ -46,9 +46,9 @@
               <span v-if="!foto.imagen_url">[ {{ foto.titulo }} ]</span>
               <img v-else :src="foto.imagen_url" :alt="foto.titulo || 'Foto de la galería'" class="w-full h-full object-cover" />
             </div>
-            <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center">
-              <p class="text-white font-bold text-sm">{{ foto.titulo }}</p>
-              <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full">{{ foto.categoria }}</span>
+            <div class="bg-[#14392b] px-4 py-3 flex justify-between items-start gap-3">
+              <p class="text-white font-bold text-sm min-w-0">{{ foto.titulo }}</p>
+              <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap shrink-0">{{ foto.categoria }}</span>
             </div>
             <div class="px-4 py-3">
               <p class="text-sm text-gray-600 line-clamp-2">{{ foto.descripcion }}</p>

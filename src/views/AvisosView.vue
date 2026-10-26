@@ -29,9 +29,9 @@
     <div class="max-w-7xl mx-auto px-4 pb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
       <div v-for="aviso in avisosFiltrados" :key="aviso.id"
         class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-        <div class="bg-[#14392b] px-4 py-3 flex justify-between items-center">
-          <span class="text-white font-bold text-sm">{{ aviso.titulo }}</span>
-          <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full font-semibold">{{ aviso.categoria }}</span>
+        <div class="bg-[#14392b] px-4 py-3 flex justify-between items-start gap-3">
+          <span class="text-white font-bold text-sm min-w-0">{{ aviso.titulo }}</span>
+          <span class="bg-[#8a7249] text-white text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap shrink-0">{{ aviso.categoria }}</span>
         </div>
         <div class="p-4">
           <p class="text-sm text-gray-600 mb-3">{{ aviso.descripcion }}</p>
