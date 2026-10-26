@@ -838,7 +838,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { supabase, crearClienteSinSesion } from '../supabase.js'
 import { adminState } from '../stores/adminState.js'
 import { confirmar, avisar } from '../composables/useDialogo.js'
@@ -907,13 +907,81 @@ const cargarTodo = () => {
   cargarUsuarios()
 }
 
+// --- Cierre de sesión por inactividad ---
+// Si nadie mueve el mouse, escribe o toca la pantalla durante 30 minutos,
+// se cierra la sesión. La hora de la última actividad se guarda en
+// sessionStorage para que recargar la página (F5) no reinicie el conteo.
+// Se revisa cada 30 segundos comparando horas (no con un solo setTimeout)
+// porque los navegadores pausan los temporizadores cuando la computadora se
+// suspende o la pestaña queda en segundo plano.
+const LIMITE_INACTIVIDAD_MS = 30 * 60 * 1000
+const CLAVE_ULTIMA_ACTIVIDAD = 'admin_ultima_actividad'
+const EVENTOS_ACTIVIDAD = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart']
+let ultimaActividad = Date.now()
+let revisionInactividad = null
+
+const guardarUltimaActividad = () => {
+  try { sessionStorage.setItem(CLAVE_ULTIMA_ACTIVIDAD, String(ultimaActividad)) } catch { /* sin almacenamiento, solo cuenta la variable */ }
+}
+
+const leerUltimaActividadGuardada = () => {
+  try { return Number(sessionStorage.getItem(CLAVE_ULTIMA_ACTIVIDAD)) || 0 } catch { return 0 }
+}
+
+const registrarActividad = () => {
+  const ahora = Date.now()
+  // Se guarda como máximo cada 5 segundos; mousemove se dispara muchísimas veces.
+  if (ahora - ultimaActividad > 5000) {
+    ultimaActividad = ahora
+    guardarUltimaActividad()
+  }
+}
+
+const revisarInactividad = () => {
+  if (autenticado.value && Date.now() - ultimaActividad >= LIMITE_INACTIVIDAD_MS) {
+    cerrarSesionPorInactividad()
+  }
+}
+
+const iniciarVigilanciaInactividad = () => {
+  detenerVigilanciaInactividad()
+  ultimaActividad = Date.now()
+  guardarUltimaActividad()
+  EVENTOS_ACTIVIDAD.forEach((evento) => window.addEventListener(evento, registrarActividad, { passive: true }))
+  document.addEventListener('visibilitychange', revisarInactividad)
+  revisionInactividad = setInterval(revisarInactividad, 30 * 1000)
+}
+
+const detenerVigilanciaInactividad = () => {
+  EVENTOS_ACTIVIDAD.forEach((evento) => window.removeEventListener(evento, registrarActividad))
+  document.removeEventListener('visibilitychange', revisarInactividad)
+  clearInterval(revisionInactividad)
+  revisionInactividad = null
+}
+
+const cerrarSesionPorInactividad = async () => {
+  await cerrarSesion()
+  errorLogin.value = true
+  mensajeErrorLogin.value = 'Tu sesión se cerró después de 30 minutos sin actividad. Inicia sesión de nuevo.'
+}
+
+// Al salir del panel hacia otra página del sitio se dejan de escuchar los
+// eventos; la sesión sigue abierta y el conteo continúa desde la hora guardada.
+onBeforeUnmount(detenerVigilanciaInactividad)
+
 // Verifica si ya hay una sesión activa al cargar la página
 onMounted(async () => {
   const { data } = await supabase.auth.getSession()
   if (data.session) {
+    const actividadPrevia = leerUltimaActividadGuardada()
+    if (actividadPrevia && Date.now() - actividadPrevia >= LIMITE_INACTIVIDAD_MS) {
+      cerrarSesionPorInactividad()
+      return
+    }
     autenticado.value = true
     adminState.autenticado = true
     usuarioActual.value = data.session.user?.email || ''
+    iniciarVigilanciaInactividad()
     cargarTodo()
   }
 })
@@ -952,10 +1020,13 @@ const iniciarSesion = async () => {
   autenticado.value = true
   adminState.autenticado = true
   loginForm.value = { email: '', password: '' }
+  iniciarVigilanciaInactividad()
   cargarTodo()
 }
 
 const cerrarSesion = async () => {
+  detenerVigilanciaInactividad()
+  try { sessionStorage.removeItem(CLAVE_ULTIMA_ACTIVIDAD) } catch { /* nada que borrar */ }
   await supabase.auth.signOut()
   autenticado.value = false
   adminState.autenticado = false
